@@ -1,12 +1,15 @@
 # ts_data_visualisation
 The typescript / knockout implementation of the interactive reporting app.
 
-Comiling this is somewhat complicated as it relies on a large 100+MB data file that we don't want to put into R.
+Compiling this is somewhat complicated as it relies on a large 100+MB data file that we don't want to put into git.
 
 The data set is `201710gavi_summary.rds` from the Montagu report `native-201710gavi-method2`.
 
-To compile this report we need to grab that data file, convert it to a JSON file, prepend the file with
-`const impactData = ` and turn the file into a javascript file. Then move the `.js` into `data\`.
+To compile this report we need to 
+* grab that data file,
+* convert it to a JSON file,
+* prepend the file with `const impactData = ` and turn the file into a javascript file
+* move the `.js` into `data\`.
 
 A simple R script to create this file is:
 ```
