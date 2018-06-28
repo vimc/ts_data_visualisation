@@ -1,0 +1,36 @@
+{
+  "name": "data_vis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "mkdir -p out && cp data/impactData.js out/impactData.js && webpack",
+    "watch": "mkdir -p out && cp data/impactData.js out/impactData.js && webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/chart.js": "^2.7.20",
+    "@types/knockout": "^3.4.54",
+    "awesome-typescript-loader": "^5.0.0",
+    "babel-preset-env": "^1.7.0",
+    "chart.js": "^2.7.2",
+    "chartjs": "^0.3.24",
+    "chartjs-plugin-datalabels": "^0.3.0",
+    "file-loader": "^1.1.11",
+    "knockout": "^3.4.2",
+    "source-map-loader": "^0.2.3",
+    "typescript": "^2.9.1",
+    "videojs-contrib-hls": "^5.12.3-rc-1",
+    "webpack": "^4.11.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.3.4",
+    "babel-core": "^6.26.3",
+    "json-loader": "^0.5.7",
+    "raw-loader": "^0.5.1",
+    "webpack-cli": "^3.0.4",
+    "webpack-command": "^0.2.1"
+  }
+}

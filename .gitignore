@@ -1,0 +1,7 @@
+.idea/*
+.awcache/*
+*.log
+package-lock.json
+node_modules/*
+/data/impactData.js
+/out/impactData.js

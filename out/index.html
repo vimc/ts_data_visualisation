@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link type="text/css" rel="stylesheet"
+          href="bootstrap.css"/>
+    <link type="text/css" rel="stylesheet" href="styles.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css"/>
+</head>
+<body class="d-none" data-bind="css:{'d-none':false}">
+<!--TODO loading screen logic here-->
+<nav class="navbar navbar-light d-block">
+    <a class="navbar-brand" href="#">
+        <img src="./logo-dark-drop.png"/>
+    </a>
+    <div class="d-inline-block"
+         style="color: #0056b3; font-size: 22px; font-weight: 500;vertical-align: -webkit-baseline-middle;">
+        VIMC Data Visualisation Tool
+    </div>
+    <!--<div class="float-right small" style="color: #0056b3;">-->
+    <!--version:20180524-142831-4228995a-->
+    <!--</div>-->
+</nav>
+
+<div class="filter-bar sidebar" data-bind="css: { in: showSidebar}">
+    <div class="m-3">
+        <a href="#" data-bind="visible: !showSidebar(), click: () => showSidebar(true)" style="text-decoration: none !important;">
+            <svg height="20" style="vertical-align: text-bottom;" viewBox="0 0 8 16" version="1.1" width="16"
+                 aria-hidden="true">
+                <path fill-rule="evenodd" fill="#007bff" d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3l5 5z"></path>
+            </svg>
+            <svg height="20" style="vertical-align: text-bottom; margin-left:-12px;" viewBox="0 0 8 16" version="1.1"
+                 width="16" aria-hidden="true">
+                <path fill-rule="evenodd" fill="#007bff" d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3l5 5z"></path>
+            </svg>
+        </a>
+        <a href="#" data-bind="visible: showSidebar, click: () => showSidebar(false)" style="text-decoration: none !important;">
+            <svg height="20" style="vertical-align: text-bottom;" class="octicon octicon-chevron-left"
+                 viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true">
+                <path fill-rule="evenodd"
+                      fill="#007bff" d="M5.5 3L7 4.5 3.25 8 7 11.5 5.5 13l-5-5 5-5z"></path>
+            </svg>
+            <svg height="20" style="vertical-align: text-bottom; margin-left:-12px" class="octicon octicon-chevron-left"
+                 viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true">
+                <path fill-rule="evenodd"
+                      fill="#007bff" d="M5.5 3L7 4.5 3.25 8 7 11.5 5.5 13l-5-5 5-5z"></path>
+            </svg>
+            <span style="margin-top: -10px">collapse filter menu</span>
+        </a>
+    </div>
+
+    <ul class="nav flex-column border-bottom border-top" data-bind="visible: showSidebar">
+        <li class="nav-item" data-bind="with: yearFilter">
+            <a class="nav-link nav-parent"
+               href="#"
+               data-bind="text: name,
+                              css: { active: isOpen },
+                              click: toggleOpen"></a>
+
+            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        Year Low:
+                        <select class=form-control data-bind="options: $parent.yearOptions, value: $parent.yearLo"></select>
+                        Year High:
+                        <select class=form-control data-bind="options: $parent.yearOptions, value: $parent.yearHi"></select>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+
+        <li class="nav-item" data-bind="with: activityFilter">
+            <a class="nav-link nav-parent"
+               href="#"
+               data-bind="text: name,
+                              css: { active: isOpen },
+                              click: toggleOpen"></a>
+
+            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        <div data-bind="foreach: $parent.vacStratOptions">
+                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedVacStrats">
+                            <label data-bind="text: $data"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item" data-bind="with: countryFilter">
+            <a class="nav-link nav-parent"
+               href="#"
+               data-bind="text: name,
+                              css: { active: isOpen },
+                              click: toggleOpen"></a>
+
+            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        Country Groups
+                        <button type="button" class="btn" data-bind="click: $parent.selectCountryGroup('all')">All</button>
+                        <button type="button" class="btn" data-bind="click: $parent.selectCountryGroup('none')">None</button>
+                        <button type="button" class="btn" data-bind="click: $parent.selectCountryGroup('gavi73')">Gavi73</button>
+                        <button type="button" class="btn" data-bind="click: $parent.selectCountryGroup('gavi69')">Gavi69</button>
+                        <button type="button" class="btn" data-bind="click: $parent.selectCountryGroup('pine')">PINE</button>
+                        <hr>
+                        Indiviual Countries
+                        <div data-bind="foreach: $parent.countryOptions">
+                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedCountries">
+                            <label data-bind="text: $root.countryCodeToName($data)"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+
+<div class="contents container-fluid">
+    <div class="row">
+        <div class="col-12 p-5">
+            <form class="mb-5">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <p>Compare across <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                                title="What should we use as the x-axis for the graph?">
+                    </span></p>
+                        <select class="form-control" data-bind="options: compareOptions, value: compare"></select>
+                    </div>
+                    <div class="col-4" style="margin-top: 46px;">
+                        <div class="form-check" data-bind="visible: compare() == 'year'">
+                            <input class="form-check-input" type="checkbox" data-bind="checked: cumPlot" id="cumulativePlotId">
+                            <label class="form-check-label" for="cumulativePlotId">
+                                Cumulative
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <p>Disaggregate by <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                                 title="What should we disaggregate by?">
+                    </span></p>
+                        <select class="form-control" data-bind="options: disaggOptions, value: disagg"></select>
+                    </div>
+                    <div class="col-4">
+                        <p>Max bars <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                          title="How many values should we plot on the x-axis?">
+                   </span></p>
+                        <select type="number" class="form-control" style="width: 100px;" data-bind="options: maxPlotOptions, value: maxBars"></select>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="btn-group mt-1 mb-5" role="group">
+                <button type="button" class="btn btn-primary active" data-bind="click: () => humanReadableBurdenOutcome('deaths'),
+                 css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
+                </button>
+                <button type="button" class="btn btn-primary" data-bind="click: () => humanReadableBurdenOutcome('dalys'),
+                 css: {active: humanReadableBurdenOutcome() == 'dalys'}">Dalys
+                </button>
+                <button type="button" class="btn btn-primary" data-bind="click: () => humanReadableBurdenOutcome('cases'),
+                 css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
+                </button>
+                <button type="button" class="btn btn-primary" data-bind="click: () => humanReadableBurdenOutcome('fvps'),
+                 css: {active: humanReadableBurdenOutcome() == 'fvps'}">FVPS
+                </button>
+            </div>
+
+            <div style="max-width: 1000px">
+                <canvas id="myChart"></canvas>
+            </div>
+            <div class="row">
+                <button class="btn btn-success"  data-bind="click: render">Redraw Plot</button>
+                <div class="col-4" style="margin-top: 46px;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels" id="hideLabelsId">
+                        <label class="form-check-label" for="hideLabelsId">
+                            Hide Labels
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="impactData.js"></script>
+<script src="bundle.js"></script>
+
+</body>
+</html>

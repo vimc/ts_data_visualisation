@@ -1,0 +1,9 @@
+* Make the text in the UI more human readable
+* Add total labels to the top of each bar
+* Add a loading screen
+* Sort out missing colours
+* Add functionality to compare across touchstones
+* Implement the cumulative plot
+* Better automated titles
+* When comparing years allow line plots
+* Redraw after every UI input
