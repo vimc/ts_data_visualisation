@@ -9,7 +9,7 @@ To compile this report we need to
 * grab that data file,
 * convert it to a JSON file,
 * prepend the file with `const impactData = ` and turn the file into a javascript file
-* move the `.js` into `data\`.
+* move the `.js` into `data/`.
 
 A simple R script to create this file is:
 ```
@@ -26,3 +26,15 @@ system("cat temporary.json >> impactData.js")
 # remove the json file
 file.remove("temporary.json")
 ```
+
+## TODO list
+* Make the text in the UI more human readable
+* Add total labels to the top of each bar
+* Add a loading screen
+* Sort out missing colours
+* Add functionality to compare across touchstones
+* Implement the cumulative plot
+* Better automated titles
+* When comparing years allow line plots
+* Redraw after every UI input
+* Make the country checkbox interface nicer
