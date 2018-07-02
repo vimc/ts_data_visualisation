@@ -123,18 +123,19 @@ class DataVisModel {
             this.chartObject.destroy();
         }
 
+        // do we want to produce a cumulative plot
+        const cumulative = (this.compare() == "year" && this.cumPlot())
+
         const filterData = new DataFilterer().filterData(this.burdenOutcome(), this.maxBars(), this.compare(), this.disagg(),
                                                          this.yearLo(), this.yearHi(), this.selectedVacStrats(),
-                                                         this.selectedCountries(), impactData, plotColours);
+                                                         this.selectedCountries(), cumulative, impactData, plotColours);
+
         const datasets = filterData[0];
         let compareNames: string[] = [...filterData[1]]
+        
         // when we put countries along convert the names to human readable
         if (this.compare() == "country") {
             compareNames = compareNames.map(this.countryCodeToName)
-        }
-
-        if (this.compare() == "year" && this.cumPlot()) {
-            console.debug("Not implemented yet")
         }
 
         const hideLabel: boolean = this.hideLabels()

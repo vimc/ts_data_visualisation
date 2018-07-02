@@ -12,6 +12,7 @@ export class DataFilterer {
                yearHi: number,
                activityTypes: string[],
                selectedCountries: string[],
+               cumulative: boolean,
                impactData: ImpactDataRow[],
                plotColours: { [p: string] : string }): any[] {
         // filter focal model
@@ -46,7 +47,8 @@ export class DataFilterer {
         let datasets = [];
         for (let aggVar of aggVars) {
             const dataByCountry = dataByAggregate[aggVar];
-            const deathsAvertedForVaccine: number[] = compVarsAsList.map(function (country: string) {
+            // this is not const so that we can convert it to a cumulative plot later
+            let deathsAvertedForVaccine: number[] = compVarsAsList.map(function (country: string) {
                 const data: ImpactDataRow[] = dataByCountry[country];
                 if (typeof data !== 'undefined') { // this is necessary to prevent errors when this compare / aggregate combo is empty
                     return data.map(x => x[metric])
@@ -57,6 +59,13 @@ export class DataFilterer {
                     return 0;
                 }
             });
+
+            // we're doing a cumulative plot
+            if (cumulative) {
+                deathsAvertedForVaccine = deathsAvertedForVaccine
+                    .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i-1] || 0)], [])
+            }
+
             datasets.push({
                 label: aggVar,
                 data: deathsAvertedForVaccine,
