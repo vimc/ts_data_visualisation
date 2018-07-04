@@ -4,6 +4,7 @@ MUST
 * Download data as .CSV (and .JSON?)
 * Add total labels to the top of each bar
 * Add functionality to compare across touchstones
+* Generate unique file names based on the filters
 SHOULD
 * Display data as a table
 * Make the text in the UI more human readable

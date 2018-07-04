@@ -1,4 +1,5 @@
 import {DataFilterer} from "./DataFilterer";
+import {TableMaker} from "./CreateDataTable";
 
 declare const impactData: ImpactDataRow[];
 import {ImpactDataRow} from "./ImpactDataRow";
@@ -19,6 +20,7 @@ import * as ko from "knockout";
 import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
+var jsonexport = require('jsonexport');
 
 class Filter {
     isOpen: KnockoutObservable<boolean>;
@@ -75,6 +77,8 @@ class DataVisModel {
     canvas: any;
     ctx: any;
     chartObject: Chart;
+
+    dataTable: any;
 
     deaths: Array<number>;
 
@@ -143,6 +147,8 @@ class DataVisModel {
         const maxPerData = datasets.map(function(d: any) {return Math.max(...d.data)})
         const labelthreshold: number = Math.max(...maxPerData);
 
+        this.dataTable = new TableMaker().createTable(datasets, compareNames)
+
         this.chartObject = new Chart(this.ctx, {
             type: 'bar',
             data: {
@@ -150,6 +156,20 @@ class DataVisModel {
                 datasets: datasets
             },
             options: {
+                // animation: {
+                //     onComplete: function () {
+                //         // render the value of the chart above the bar
+                //         var ctx = this.chart.ctx;
+                //         ctx.textAlign = 'center';
+                //         ctx.textBaseline = 'bottom';
+                //         this.data.datasets.forEach(function (ds: any) {
+                //             for (var i = 0; i < ds.data.length; i++) {
+                //                 var model = ds._meta[Object.keys(ds._meta)[0]].data[i]._model;
+                //                 ctx.fillText(ds.data[i], model.x, model.y - 5);
+                //             }
+                //         });
+                //     }
+                // },
                 legend: {
                     display: true
                 },
@@ -201,10 +221,19 @@ class DataVisModel {
     }
 
     exportPlot() {
-        console.debug("Hello World")
         this.canvas = document.getElementById('myChart');
-        this.canvas.toBlob(function(blob: any) {
-            saveAs(blob, "pretty image.png");
+        this.canvas.toBlob(function(blob: Blob) {
+            saveAs(blob, "untitled.png");
+        });
+    }
+
+    exportData() {
+        jsonexport(this.dataTable, function(err: any, csv: any) {
+            if(err) {
+                return; // probably do something else here
+            }
+            var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "data.csv");
         });
     }
 
