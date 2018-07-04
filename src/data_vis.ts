@@ -18,6 +18,7 @@ require("./css/bootstrap.css")
 import * as ko from "knockout";
 import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels"
+import {saveAs} from "file-saver"
 
 class Filter {
     isOpen: KnockoutObservable<boolean>;
@@ -196,6 +197,14 @@ class DataVisModel {
                     }
                 }
             }
+        });
+    }
+
+    exportPlot() {
+        console.debug("Hello World")
+        this.canvas = document.getElementById('myChart');
+        this.canvas.toBlob(function(blob: any) {
+            saveAs(blob, "pretty image.png");
         });
     }
 
