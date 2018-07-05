@@ -20,7 +20,9 @@ import * as ko from "knockout";
 import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
-var jsonexport = require('jsonexport');
+const jsonexport = require('jsonexport');
+// const $  = require( 'jquery' );
+// const dt = require( 'datatables.net' )( window, $ );
 
 class Filter {
     isOpen: KnockoutObservable<boolean>;
@@ -38,37 +40,37 @@ class Filter {
 
 class DataVisModel {
     // UI knockout variables
-    showSidebar: KnockoutObservable<boolean>;
-    yearFilter: KnockoutObservable<Filter>;
+    showSidebar:    KnockoutObservable<boolean>;
+    yearFilter:     KnockoutObservable<Filter>;
     activityFilter: KnockoutObservable<Filter>;
-    countryFilter: KnockoutObservable<Filter>;
-    hideLabels: KnockoutObservable<boolean>;
+    countryFilter:  KnockoutObservable<Filter>;
+    hideLabels:     KnockoutObservable<boolean>;
 
     // the  variable that we are going to compare along the x axis
     compareOptions: Array<string>;
 
     // the variable that we are going to disaggregate by
-    disaggOptions: Array<string>;
+    disaggOptions:  Array<string>;
     maxPlotOptions: Array<number>;
-    yearOptions: Array<number>;
-    compare: KnockoutObservable<string>;
-    disagg: KnockoutObservable<string>;
-    maxBars: KnockoutObservable<number>;
-    cumPlot: KnockoutObservable<boolean>;
-    yearLo: KnockoutObservable<number>;
-    yearHi: KnockoutObservable<number>;
+    yearOptions:    Array<number>;
+    compare:        KnockoutObservable<string>;
+    disagg:         KnockoutObservable<string>;
+    maxBars:        KnockoutObservable<number>;
+    cumPlot:        KnockoutObservable<boolean>;
+    yearLo:         KnockoutObservable<number>;
+    yearHi:         KnockoutObservable<number>;
 
     humanReadableBurdenOutcome: KnockoutObservable<string>;
-    burdenOutcome: KnockoutComputed<string>;
-    plotTitle: KnockoutComputed<string>;
-    yAxisTitle: KnockoutComputed<string>;
+    burdenOutcome:              KnockoutComputed<string>;
+    plotTitle:                  KnockoutComputed<string>;
+    yAxisTitle:                 KnockoutComputed<string>;
     //////////////////////////////////////////////////////////////////////////////
     // Vaccination strategy
-    vacStratOptions: Array<string>;
+    vacStratOptions:   Array<string>;
     selectedVacStrats: KnockoutObservableArray<string>;
     //////////////////////////////////////////////////////////////////////////////
     // Countries!
-    countryOptions: Array<string>;
+    countryOptions:    Array<string>;
     selectedCountries: KnockoutObservableArray<string>;
     //////////////////////////////////////////////////////////////////////////////
     // Touchstone
@@ -78,7 +80,8 @@ class DataVisModel {
     ctx: any;
     chartObject: Chart;
 
-    dataTable: any;
+    filteredTable: KnockoutObservableArray<any>;
+    gridViewModel: any;
 
     deaths: Array<number>;
 
@@ -147,7 +150,19 @@ class DataVisModel {
         const maxPerData = datasets.map(function(d: any) {return Math.max(...d.data)})
         const labelthreshold: number = Math.max(...maxPerData);
 
-        this.dataTable = new TableMaker().createTable(datasets, compareNames)
+        this.filteredTable = new TableMaker().createTable(datasets, compareNames)
+
+        // Aborted attempt to render filteredTable as a DataTable
+        // $(document).ready(function() {
+        //     $('#example').DataTable( {
+        //         data: this.filteredTable,
+        //         columns: [
+        //             { title: this.compare() },
+        //             { title: this.disagg() },
+        //             { title: this.humanReadableBurdenOutcome() }
+        //         ]
+        //     } );
+        // } );
 
         this.chartObject = new Chart(this.ctx, {
             type: 'bar',
@@ -156,6 +171,7 @@ class DataVisModel {
                 datasets: datasets
             },
             options: {
+                // Work in progress display labels of the sum above the stacked bars
                 // animation: {
                 //     onComplete: function () {
                 //         // render the value of the chart above the bar
@@ -228,7 +244,7 @@ class DataVisModel {
     }
 
     exportData() {
-        jsonexport(this.dataTable, function(err: any, csv: any) {
+        jsonexport(this.filteredTable(), function(err: any, csv: any) {
             if(err) {
                 return; // probably do something else here
             }

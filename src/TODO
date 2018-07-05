@@ -1,10 +1,11 @@
 Todo
 MUST
-* Download .PNG of plot
-* Download data as .CSV (and .JSON?)
 * Add total labels to the top of each bar
 * Add functionality to compare across touchstones
 * Generate unique file names based on the filters
+* Improve download of plot as .PNG
+* Improve download of data as .CSV (and .JSON?)
+* Add data information about which version / commits / data sets are being used
 SHOULD
 * Display data as a table
 * Make the text in the UI more human readable

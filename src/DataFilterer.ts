@@ -15,46 +15,36 @@ export class DataFilterer {
                cumulative: boolean,
                impactData: ImpactDataRow[],
                plotColours: { [p: string] : string }): any[] {
-        // filter focal model
-        const filtData0: ImpactDataRow[] = impactData.filter(function(row) {return row.is_focal == true;})
- //       console.debug(filtData0)
-        // filter so that support = gavi
-        const filtData1: ImpactDataRow[] = this.filterBySupport(filtData0, "gavi")
- //       console.debug(filtData1)
-        // filter by years
-        const filtData2: ImpactDataRow[] = this.filterBYear(filtData1, yearLo, yearHi);
- //       console.debug(filtData2)
-        // filter by touchstone
-        const filtData3: ImpactDataRow[] = this.filterByTouchstone(filtData2, "201710gavi");
- //       console.debug(filtData3)
-        // filter by activity type
-        const filtData4: ImpactDataRow[] = this.filterByActivityType(filtData3, activityTypes);
- //       console.debug(filtData4)
-        // filter by activity type
-        const filtData5: ImpactDataRow[] = this.filterByCountrySet(filtData4, selectedCountries);
- //       console.debug(filtData5)
-        // TODO there might efficiencies to be had here by filtering in the right order...
 
-        // now we filter by the compare and disaggregate parameters
-        const temp = this.filterByCompare(maxPlot, compare, metric, filtData5);
+        let filtData = this.filterByFocality(impactData, true); // filter focal model
+        filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
+        filtData = this.filterBYear(filtData, yearLo, yearHi); // filter by years
+        filtData = this.filterByTouchstone(filtData, "201710gavi"); // filter by touchstone
+        filtData = this.filterByActivityType(filtData, activityTypes); // filter by activity type
+        filtData = this.filterByCountrySet(filtData, selectedCountries); // filter by activity type
+        // TODO there might efficiencies to be had here by filtering in the right order...
+        // TODO There is a more functional way to do this is we define a wrapper class for ImpactDataRow[]
+
+        // now we filter by the compare variable
+        const temp = this.filterByCompare(maxPlot, compare, metric, filtData);
         const compVars: any[] = temp[1];
         const filteredData: ImpactDataRow[] = temp[0];
 
+        // get an array of all the remaining disagg values
         const aggVars: any[] = [...this.getUniqueVariables(-1, disagg, metric, filteredData)];
-        const compVarsAsList = [...compVars];
-        const dataByAggregate = this.groupDataByVaccineAndThenCountry(compare, disagg, aggVars, filteredData);
+        const dataByAggregate = this.groupDataByDisaggAndThenCompare(compare, disagg, aggVars, filteredData);
 
         let datasets = [];
         for (let aggVar of aggVars) {
-            const dataByCountry = dataByAggregate[aggVar];
-            // this is not const so that we can convert it to a cumulative plot later
-            let deathsAvertedForVaccine: number[] = compVarsAsList.map(function (country: string) {
-                const data: ImpactDataRow[] = dataByCountry[country];
+            const dataByCompare = dataByAggregate[aggVar];
+            // this is not const in case we need to convert it to a cumulative plot later
+            let summedMatricForDisagg: number[] = compVars.map(function (country: string) {
+                const data: ImpactDataRow[] = dataByCompare[country];
                 if (typeof data !== 'undefined') { // this is necessary to prevent errors when this compare / aggregate combo is empty
                     return data.map(x => x[metric])
                         .filter(x => !isNaN(x))
                         .reduce((acc, x) => acc + x, 0)
-                        .toPrecision(3);
+                        .toPrecision(3); // this should possibly be an argument or calculated at run time
                 } else {
                     return 0;
                 }
@@ -62,74 +52,81 @@ export class DataFilterer {
 
             // we're doing a cumulative plot
             if (cumulative) {
-                deathsAvertedForVaccine = deathsAvertedForVaccine
+                summedMatricForDisagg = summedMatricForDisagg
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i-1] || 0)], [])
             }
 
             datasets.push({
                 label: aggVar,
-                data: deathsAvertedForVaccine,
+                data: summedMatricForDisagg,
                 backgroundColor: plotColours[aggVar]
             });
         }
-
         return [datasets, compVars];
     }
 
-    private groupDataByVaccineAndThenCountry(compare: string, disagg: string, vaccines: string[],
+    private groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],
                                              filteredData: ImpactDataRow[]): ImpactDataByVaccineAndThenCountry {
-        const dataByVaccine: ImpactDataByVaccineAndThenCountry = {};
-        for (let vaccine in vaccines) {
-            dataByVaccine[vaccine] = {};
+        const dataByDisagg: ImpactDataByVaccineAndThenCountry = {};
+        for (let disagg in disaggVars) {
+            dataByDisagg[disagg] = {};
         }
         for (let row of filteredData) {
-            let dataByCountry = dataByVaccine[row[disagg]];
-            if (!dataByCountry) {
-                dataByCountry = dataByVaccine[row[disagg]] = {};
+            let dataByCompare = dataByDisagg[row[disaggName]];
+            if (!dataByCompare) {
+                dataByCompare = dataByDisagg[row[disaggName]] = {};
             }
 
-            let list = dataByCountry[row[compare]];
+            let list = dataByCompare[row[compareName]];
             if (!list) {
-                list = dataByCountry[row[compare]] = [];
+                list = dataByCompare[row[compareName]] = [];
             }
 
             list.push(row);
         }
-        return dataByVaccine;
+        return dataByDisagg;
     }
 
+    // This function calls getUniqueVariables to find the largest compare variables wrt to metric
+    // Then it calculates the maxPlot largest compare variables and filters out the rest from the original dataset
+    // It will return an array of the largest compare variables and the original dataset with all but the largest removed
     private filterByCompare(maxPlot: number,
                             compare: string,
                             metric: string,
-                            impactData: ImpactDataRow[]): any[] {
-        const uniqueCompare: Set<any> = this.getUniqueVariables(maxPlot, compare, metric, impactData);
-        const filteredData = impactData.filter(d => uniqueCompare.has(d[compare]));
+                            impactData: ImpactDataRow[]): [ImpactDataRow[], any[]] {
+        const uniqueCompare: any[] = this.getUniqueVariables(maxPlot, compare, metric, impactData);
+        const filteredData = impactData.filter(d => (uniqueCompare.indexOf(d[compare]) > -1));
         return [filteredData, uniqueCompare];
     }
 
     // TODO Tidy this up!
+    // This function groups the data by the compare variable, then sums by the metric variable
+    // It returns an array of the largest maxPlot compare variables wrt metric
     private getUniqueVariables(maxPlot: number,
                                compare: string,
                                metric: string,
-                               impactData: ImpactDataRow[]): Set<any> {
+                               impactData: ImpactDataRow[]): any[] {
         if (maxPlot > 0) {
             // this is taken from https://stackoverflow.com/a/49717936
             let groupedSummed = new Map<string, number>();
             impactData.map(function(row){
                  groupedSummed.set(row[compare], (groupedSummed.get(row[compare]) || 0) + row[metric])
-            })
+            });
             if (compare != "year") {
-                const sortedGroupSummed = [...groupedSummed].sort(function(a, b) {return a[1] < b[1] ? 1 : -1; })
-                const sortedCompares = sortedGroupSummed.map(function (d) { return d[0]; })
-                return new Set<any>(sortedCompares.slice(0, maxPlot))
+                const sortedGroupSummed = [...groupedSummed].sort(function(a, b) {return a[1] < b[1] ? 1 : -1; });
+                const sortedCompares = sortedGroupSummed.map(function (d) { return d[0]; });
+                return sortedCompares.slice(0, maxPlot)
             } else {
-                const unsortedGroupSummed =  [...groupedSummed].map(function (d) { return d[0]; })
-                return new Set<any>(unsortedGroupSummed.slice(0, maxPlot).sort())
+                const unsortedGroupSummed =  [...groupedSummed].map(function (d) { return d[0]; });
+                return unsortedGroupSummed.slice(0, maxPlot).sort()
             }
         } else {
-            const allUnique: Set<any> = new Set([...new Set((impactData.map(x => x[compare])))].sort());
-            return allUnique;
+            return [...new Set((impactData.map(x => x[compare])))].sort();
         }
+    }
+
+    private filterByFocality(impactData: ImpactDataRow[], isFocal: boolean): ImpactDataRow[] {
+        return impactData.filter(function(row) {return row.is_focal == isFocal;})
     }
 
     private filterBySupport(impactData: ImpactDataRow[], supportType: string): ImpactDataRow[] {
@@ -141,23 +138,15 @@ export class DataFilterer {
     }
 
     private filterByCountrySet(impactData: ImpactDataRow[], countrySet: string[]): ImpactDataRow[] {
-        return impactData.filter(function(row) {
-            let index: number = countrySet.indexOf(row.country)
-            return index >= 0;
-        })
+        return impactData.filter(function(row) {return countrySet.indexOf(row.country) > -1;})
     }
 
     private filterByActivityType(impactData: ImpactDataRow[], selectedActivityType: string[]): ImpactDataRow[] {
-        return impactData.filter(function(row) {
-            let index: number = selectedActivityType.indexOf(row.activity_type)
-            return index >= 0;
-        })
+        return impactData.filter(function(row) {return selectedActivityType.indexOf(row.activity_type) > -1;})
     }
 
     private filterBYear(impactData: ImpactDataRow[], yearLow: number, yearHigh:  number) {
-        let dataFiltered = impactData.filter(function(row) {return row.year >= yearLow;})
-        dataFiltered = dataFiltered.filter(function(row) {return row.year <= yearHigh;})
-
-        return dataFiltered;
+        return impactData.filter(function(row) {return row.year >= yearLow;})
+                         .filter(function(row) {return row.year <= yearHigh;})
     }
 }

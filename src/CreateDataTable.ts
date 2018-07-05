@@ -1,6 +1,8 @@
+import * as ko from "knockout";
+
 export class TableMaker {
-    createTable(dataSets: any[], compareNames: string[]) : any[] {
-        let returnData = [];
+    createTable(dataSets: any[], compareNames: string[]) : KnockoutObservableArray<any> {
+        let returnData = ko.observableArray([]);
         for (let ds of dataSets) {
             const label = ds.label
             for (let i = 0; i < compareNames.length; ++i) {
