@@ -20,6 +20,7 @@ import * as ko from "knockout";
 import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
+import {FilteredRow} from "./FilteredRow";
 const jsonexport = require('jsonexport');
 // const $  = require( 'jquery' );
 // const dt = require( 'datatables.net' )( window, $ );
@@ -38,6 +39,19 @@ class Filter {
     }
 }
 
+function rescaleLabel(value: number, scale: number): string {
+    if (scale > 1000000000) {
+        return value / 1000000000 + "B";
+    }
+    if (scale > 1000000) {
+        return value / 1000000 + "M";
+    }
+    if (scale > 1000)  {
+        return value / 1000 + "K";
+    }
+    return value.toString();
+}
+
 class DataVisModel {
     // UI knockout variables
     showSidebar:    KnockoutObservable<boolean>;
@@ -45,6 +59,7 @@ class DataVisModel {
     activityFilter: KnockoutObservable<Filter>;
     countryFilter:  KnockoutObservable<Filter>;
     hideLabels:     KnockoutObservable<boolean>;
+    hideLegend:     KnockoutObservable<boolean>;
 
     // the  variable that we are going to compare along the x axis
     compareOptions: Array<string>;
@@ -123,18 +138,7 @@ class DataVisModel {
         return countryDict[countryCode];
     }
 
-    rescaleLabel(value: number, scale: number): string {
-        if (scale > 1000000000) {
-            return value / 1000000000 + "B";
-        }
-        if (scale > 1000000) {
-            return value / 1000000 + "M";
-        }
-        if (scale > 1000)  {
-            return value / 1000 + "K";
-        }
-        return value.toString();
-    }
+
 
     render() {
         this.canvas = document.getElementById('myChart');
@@ -161,10 +165,8 @@ class DataVisModel {
 
         const hideLabel: boolean = this.hideLabels();
         const maxTotal = Math.max(...totals);
-        console.debug(totals)
-        console.debug(maxTotal)
         this.filteredTable = new TableMaker().createTable(datasets, compareNames);
-
+console.debug(this.filteredTable())
         // Aborted attempt to render filteredTable as a DataTable
         // $(document).ready(function() {
         //     $('#example').DataTable( {
@@ -184,21 +186,6 @@ class DataVisModel {
                 datasets: datasets,
             },
             options: {
-                // Work in progress display labels of the sum above the stacked bars
-                // animation: {
-                //     onComplete: function () {
-                //         // render the value of the chart above the bar
-                //         var ctx = this.chart.ctx;
-                //         ctx.textAlign = 'center';
-                //         ctx.textBaseline = 'bottom';
-                //         this.data.datasets.forEach(function (ds: any) {
-                //             for (var i = 0; i < ds.data.length; i++) {
-                //                 var model = ds._meta[Object.keys(ds._meta)[0]].data[i]._model;
-                //                 ctx.fillText(ds.data[i], model.x, model.y - 5);
-                //             }
-                //         });
-                //     }
-                // },
                 legend: {
                     display: true
                 },
@@ -217,23 +204,49 @@ class DataVisModel {
                         },
                         stacked: true,
                         ticks: {
-                            callback: (value, index, values) => this.rescaleLabel(value, value)
+                            callback: (value, index, values) => rescaleLabel(value, value)
                         }
                     }]
                 },
                 plugins: {
-                    datalabels: {
-                        color: "white",
-                        display: function(context: any) {
-                            if (!hideLabel)
-                                return context.dataset.data[context.dataIndex] > maxTotal / 10;
-                            else
-                                return false;
-                        },
-                        font: {
-                            weight: "bold"
-                        },
-                        formatter: (value: any, context: any) => this.rescaleLabel(value, maxTotal)
+                    datalabels:{
+                            color: "white",
+                            display: function(context: any) {
+                                if (!hideLabel)
+                                    return context.dataset.data[context.dataIndex] > maxTotal / 10;
+                                else
+                                    return false;
+                            },
+                            font: {
+                                weight: "bold"
+                            },
+                            formatter: (value: any, ctx: any) => rescaleLabel(value, maxTotal)
+                         },
+                        //  {
+                        //     formatter: (value: number, ctx: any) => this.rescaleLabel(totals[ctx.dataIndex].toPrecision(3),
+                        //                                                               totals[ctx.dataIndex].toPrecision(3)),
+                        //     align: 'end',
+                        //     anchor: 'end',
+                        //     display: function (ctx: any) {
+                        //         return ctx.datasetIndex === (datasets.length - 1) // only show this label on the final
+                        //     },
+                        //     font: {
+                        //         weight: "bold"
+                        // }
+                },
+                animation: {
+                    onComplete: function() {
+                        const chart = this.chart;
+                        const context = chart.ctx;
+                        const lastDataSet: number = datasets.length - 1
+                        const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
+                        // this is a lot of nonsense to grab the plot meta data
+                        // for the final (topmost) data set
+                        lastMeta.data.forEach(function(bar: any, index: number) {
+                            const data = rescaleLabel(totals[index].toPrecision(3),
+                                                      totals[index].toPrecision(3));
+                            context.fillText(data, bar._model.x - 10, bar._model.y - 5);
+                        });
                     }
                 }
             }
@@ -295,6 +308,7 @@ class DataVisModel {
 
         this.cumPlot = ko.observable(false);
         this.hideLabels = ko.observable(false);
+        this.hideLegend = ko.observable(false);
 
         this.vacStratOptions = ["routine", "campaign"];
         this.selectedVacStrats = ko.observableArray(this.vacStratOptions);
