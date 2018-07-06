@@ -1,4 +1,5 @@
 import {ImpactDataRow} from "./ImpactDataRow";
+import {FilteredRow} from "./FilteredRow";
 
 export type ImpactDataByCountry = { [country: string]: ImpactDataRow[] };
 export type ImpactDataByVaccineAndThenCountry = { [vaccine: string]: ImpactDataByCountry };
@@ -34,11 +35,12 @@ export class DataFilterer {
         const aggVars: any[] = [...this.getUniqueVariables(-1, disagg, metric, filteredData)];
         const dataByAggregate = this.groupDataByDisaggAndThenCompare(compare, disagg, aggVars, filteredData);
 
-        let datasets = [];
+
+        let datasets: FilteredRow[] = [];
         for (let aggVar of aggVars) {
             const dataByCompare = dataByAggregate[aggVar];
             // this is not const in case we need to convert it to a cumulative plot later
-            let summedMatricForDisagg: number[] = compVars.map(function (country: string) {
+            let summedMetricForDisagg: number[] = compVars.map(function (country: string) {
                 const data: ImpactDataRow[] = dataByCompare[country];
                 if (typeof data !== 'undefined') { // this is necessary to prevent errors when this compare / aggregate combo is empty
                     return data.map(x => x[metric])
@@ -52,17 +54,25 @@ export class DataFilterer {
 
             // we're doing a cumulative plot
             if (cumulative) {
-                summedMatricForDisagg = summedMatricForDisagg
+                summedMetricForDisagg = summedMetricForDisagg
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i-1] || 0)], [])
             }
-
-            datasets.push({
-                label: aggVar,
-                data: summedMatricForDisagg,
-                backgroundColor: plotColours[aggVar]
-            });
+            const fRow: FilteredRow = { label: aggVar,
+                                        data: summedMetricForDisagg,
+                                        backgroundColor: plotColours[aggVar] };
+            datasets.push(fRow);
         }
-        return [datasets, compVars];
+        // while we're here we might as well calculate the sum for each compare variable as we need them later
+        let totals: number[] = [];
+        for (let i = 0; i < compVars.length; ++i) {
+            let total: number = 0;
+            for (let ds of datasets) {
+                total += (+ds.data[i]);
+            }
+            totals.push(total);
+        }
+
+        return [datasets, compVars, totals];
     }
 
     private groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],

@@ -113,14 +113,27 @@ class DataVisModel {
                     "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]);
                 break;
             default:
-                console.debug(cntGrp)
+                console.debug(cntGrp);
                 this.selectedCountries([]);
                 break;
         }
     }
 
     countryCodeToName(countryCode: string) {
-        return countryDict[countryCode]
+        return countryDict[countryCode];
+    }
+
+    rescaleLabel(value: number, scale: number): string {
+        if (scale > 1000000000) {
+            return value / 1000000000 + "B";
+        }
+        if (scale > 1000000) {
+            return value / 1000000 + "M";
+        }
+        if (scale > 1000)  {
+            return value / 1000 + "K";
+        }
+        return value.toString();
     }
 
     render() {
@@ -139,18 +152,18 @@ class DataVisModel {
                                                          this.selectedCountries(), cumulative, impactData, plotColours);
 
         const datasets = filterData[0];
-        let compareNames: string[] = [...filterData[1]]
-        
+        let compareNames: string[] = [...filterData[1]];
+        const totals = filterData[2];
         // when we put countries along convert the names to human readable
         if (this.compare() == "country") {
             compareNames = compareNames.map(this.countryCodeToName)
         }
 
-        const hideLabel: boolean = this.hideLabels()
-        const maxPerData = datasets.map(function(d: any) {return Math.max(...d.data)})
-        const labelthreshold: number = Math.max(...maxPerData);
-
-        this.filteredTable = new TableMaker().createTable(datasets, compareNames)
+        const hideLabel: boolean = this.hideLabels();
+        const maxTotal = Math.max(...totals);
+        console.debug(totals)
+        console.debug(maxTotal)
+        this.filteredTable = new TableMaker().createTable(datasets, compareNames);
 
         // Aborted attempt to render filteredTable as a DataTable
         // $(document).ready(function() {
@@ -168,7 +181,7 @@ class DataVisModel {
             type: 'bar',
             data: {
                 labels: compareNames,
-                datasets: datasets
+                datasets: datasets,
             },
             options: {
                 // Work in progress display labels of the sum above the stacked bars
@@ -204,17 +217,8 @@ class DataVisModel {
                         },
                         stacked: true,
                         ticks: {
-                            callback: function(value, index, values): string {
-                                if (labelthreshold > 1000000) {
-                                    return value/1000000 + "M";
-                                }
-                                if (labelthreshold > 1000)  {
-                                    return value/1000 + "K";
-                                }
-                                return value;
-                            }}
-
-
+                            callback: (value, index, values) => this.rescaleLabel(value, value)
+                        }
                     }]
                 },
                 plugins: {
@@ -222,14 +226,14 @@ class DataVisModel {
                         color: "white",
                         display: function(context: any) {
                             if (!hideLabel)
-                                return context.dataset.data[context.dataIndex] > labelthreshold / 10;
+                                return context.dataset.data[context.dataIndex] > maxTotal / 10;
                             else
                                 return false;
                         },
                         font: {
                             weight: "bold"
                         },
-                        formatter: Math.round
+                        formatter: (value: any, context: any) => this.rescaleLabel(value, maxTotal)
                     }
                 }
             }
