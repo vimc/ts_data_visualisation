@@ -245,7 +245,7 @@ console.debug(this.filteredTable())
                         lastMeta.data.forEach(function(bar: any, index: number) {
                             const data = rescaleLabel(totals[index].toPrecision(3),
                                                       totals[index].toPrecision(3));
-                            context.fillText(data, bar._model.x - 10, bar._model.y - 5);
+                            context.fillText(data, bar._model.x - 12, bar._model.y - 5);
                         });
                     }
                 }
