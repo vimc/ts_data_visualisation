@@ -37,10 +37,11 @@ html, body {
     -moz-transition: max-height 500s ease;
     -o-transition: max-height 500ms ease;
     transition: max-height 500ms ease;
+    overflow-y: auto;
 }
 
 .filter.in {
-    max-height: 1200px;
+    max-height: 700px;
 }
 
 .sidebar.in {
@@ -105,4 +106,12 @@ ul.countries-list {
     -webkit-column-count: 5;
     column-count: 5;
     column-gap: 0px;
+}
+
+input[type='checkbox'], label {
+    float: left;   
+}
+
+input[type='checkbox'] {
+    clear: both;    
 }
