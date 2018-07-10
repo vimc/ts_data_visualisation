@@ -97,3 +97,33 @@ export const countryDict: { [code: string] : string} = {
     "ZMB": "Zambia",
     "ZWE": "Zimbabwe"
 }
+
+export const vaccineDict: { [code: string] : string} = {
+    HepB: "Hepatitis B",
+    HepB_BD: "HepB_BD",
+    Hib3: "Hib3",
+    HPV: "HPV",
+    JE: "Japanese encephalitis",
+    MCV1: "MCV1",
+    MCV2: "MCV2",
+    Measles: "Measles",
+    MenA: "MenA",
+    PCV3: "PCV3",
+    Rota: "Rotavirus",
+    RCV2: "RCV2",
+    Rubella: "Rubella",
+    YF: "Yellow Fever"
+}
+
+export const diseaseDict: { [code: string] : string} = {
+    HepB: "Hepatitis B", 
+    Hib: "Hib", 
+    HPV: "HPV",
+    JE: "Japanese encephalitis",
+    Measles: "Measles",
+    MenA: "MenA",
+    PCV: "PCV",
+    Rota: "Rotavirus",
+    Rubella: "Rubella",
+    YF: "Yellow Fever"
+}

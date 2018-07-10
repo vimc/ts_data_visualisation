@@ -3,7 +3,7 @@ import {TableMaker} from "./CreateDataTable";
 
 declare const impactData: ImpactDataRow[];
 import {ImpactDataRow} from "./ImpactDataRow";
-import {countryDict} from "./Dictionaries"
+import {countryDict, vaccineDict, diseaseDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 
 require("./index.html");
@@ -58,6 +58,8 @@ class DataVisModel {
     yearFilter:     KnockoutObservable<Filter>;
     activityFilter: KnockoutObservable<Filter>;
     countryFilter:  KnockoutObservable<Filter>;
+    diseaseFilter:  KnockoutObservable<Filter>;
+    vaccineFilter:  KnockoutObservable<Filter>;
     hideLabels:     KnockoutObservable<boolean>;
     hideLegend:     KnockoutObservable<boolean>;
 
@@ -78,7 +80,6 @@ class DataVisModel {
     humanReadableBurdenOutcome: KnockoutObservable<string>;
     burdenOutcome:              KnockoutComputed<string>;
     plotTitle:                  KnockoutObservable<string>;
-    //plotTitle:                  KnockoutComputed<string>;
     yAxisTitle:                 KnockoutComputed<string>;
     //////////////////////////////////////////////////////////////////////////////
     // Vaccination strategy
@@ -88,6 +89,14 @@ class DataVisModel {
     // Countries!
     countryOptions:    Array<string>;
     selectedCountries: KnockoutObservableArray<string>;
+    //////////////////////////////////////////////////////////////////////////////
+    // Countries!
+    vaccineOptions:    Array<string>;
+    selectedVaccines:  KnockoutObservableArray<string>;
+    //////////////////////////////////////////////////////////////////////////////
+    // Countries!
+    diseaseOptions:    Array<string>;
+    selectedDiseases:  KnockoutObservableArray<string>;
     //////////////////////////////////////////////////////////////////////////////
     // Touchstone
     activeTouchstone: KnockoutComputed<string>;
@@ -139,7 +148,13 @@ class DataVisModel {
         return countryDict[countryCode];
     }
 
+    diseaseCodeToDisease(diseaseCode: string) {
+        return diseaseDict[diseaseCode];
+    }
 
+    vaccineCodeToVaccine(vaccineCode: string) {
+        return vaccineDict[vaccineCode];
+    }
 
     render() {
         this.canvas = document.getElementById('myChart');
@@ -152,9 +167,19 @@ class DataVisModel {
         // do we want to produce a cumulative plot
         const cumulative = (this.compare() == "year" && this.cumPlot())
 
-        const filterData = new DataFilterer().filterData(this.burdenOutcome(), this.maxBars(), this.compare(), this.disagg(),
-                                                         this.yearLo(), this.yearHi(), this.selectedVacStrats(),
-                                                         this.selectedCountries(), cumulative, impactData, plotColours);
+        const filterData = new DataFilterer().filterData(this.burdenOutcome(),    // What outcome are we using e.g death, DALYs
+                                                         this.maxBars(),          // How many bars on the plot
+                                                         this.compare(),          // variable we are comparing across
+                                                         this.disagg(),           // variable we are disaggregating by
+                                                         this.yearLo(),           // lower bound on year
+                                                         this.yearHi(),           // upper bound on yeat
+                                                         this.selectedVacStrats(),// which vaccination strategies do we care about
+                                                         this.selectedCountries(),// which countries do we care about
+                                                         this.selectedDiseases(), // which diseases do we care about
+                                                         this.selectedVaccines(), // which vaccines do we care about
+                                                         cumulative,              // are we creating a cumulative plot
+                                                         impactData,              // the data set
+                                                         plotColours);            // the colours used in the plot
 
         const datasets = filterData[0];
         let compareNames: string[] = [...filterData[1]];
@@ -293,7 +318,8 @@ class DataVisModel {
         this.yearFilter = ko.observable(new Filter("Years"));
         this.activityFilter = ko.observable(new Filter("Activity"));
         this.countryFilter = ko.observable(new Filter("Country"));
-
+        this.diseaseFilter = ko.observable(new Filter("Disease"));
+        this.vaccineFilter = ko.observable(new Filter("Vaccine"));
 
         this.compareOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
                                "disease", "vaccine"];
@@ -315,6 +341,16 @@ class DataVisModel {
                               "SYR", "TCD", "TGO", "TJK", "TKM", "TLS", "TON", "TUV", "TZA", "UGA", "UKR", "UZB", "VNM",
                               "VUT", "WSM", /*"XK",*/ "YEM", "ZMB", "ZWE"]
         this.selectedCountries = ko.observableArray(["IND", "PAK", "NGA", "ETH"]);
+
+        this.vaccineOptions = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1",
+                               "MCV2", "Measles", "MenA", "PCV3", "Rota",
+                               "RCV2", "Rubella", "YF"];
+        this.selectedVaccines = ko.observableArray(this.vaccineOptions);
+
+        this.diseaseOptions = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA",
+                               "PCV", "Rota", "Rubella", "YF"];
+        this.selectedDiseases = ko.observableArray(this.diseaseOptions);
+
 
         this.yearLo = ko.observable(2016);
         this.yearHi = ko.observable(2020);

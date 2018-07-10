@@ -5,24 +5,27 @@ export type ImpactDataByCountry = { [country: string]: ImpactDataRow[] };
 export type ImpactDataByVaccineAndThenCountry = { [vaccine: string]: ImpactDataByCountry };
 
 export class DataFilterer {
-    filterData(metric: string,
-               maxPlot: number,
-               compare: string,
-               disagg: string,
-               yearLo: number,
-               yearHi: number,
-               activityTypes: string[],
+    filterData(metric:            string,
+               maxPlot:           number,
+               compare:           string,
+               disagg:            string,
+               yearLo:            number,
+               yearHi:            number,
+               activityTypes:     string[],
                selectedCountries: string[],
-               cumulative: boolean,
-               impactData: ImpactDataRow[],
-               plotColours: { [p: string] : string }): any[] {
-
+               selectedDiseases:  string[],
+               selectedVaccines:  string[],
+               cumulative:        boolean,
+               impactData:        ImpactDataRow[],
+               plotColours:       { [p: string] : string }): any[] {
         let filtData = this.filterByFocality(impactData, true); // filter focal model
         filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
         filtData = this.filterBYear(filtData, yearLo, yearHi); // filter by years
         filtData = this.filterByTouchstone(filtData, "201710gavi"); // filter by touchstone
         filtData = this.filterByActivityType(filtData, activityTypes); // filter by activity type
         filtData = this.filterByCountrySet(filtData, selectedCountries); // filter by activity type
+        filtData = this.filterByDisease(filtData, selectedDiseases); // filter by diseases
+        filtData = this.filterByVaccine(filtData, selectedVaccines); // filter by vaccine
         // TODO there might efficiencies to be had here by filtering in the right order...
         // TODO There is a more functional way to do this is we define a wrapper class for ImpactDataRow[]
 
@@ -145,6 +148,14 @@ export class DataFilterer {
 
     private filterByTouchstone(impactData: ImpactDataRow[], touchStone: string): ImpactDataRow[] {
         return impactData.filter(function(row) {return row.touchstone === touchStone;})
+    }
+
+    private filterByDisease(impactData: ImpactDataRow[], diseaseSet: string[]): ImpactDataRow[] {
+        return impactData.filter(function(row) {return diseaseSet.indexOf(row.disease) > -1;})
+    }
+
+    private filterByVaccine(impactData: ImpactDataRow[], vaccineSet: string[]): ImpactDataRow[] {
+        return impactData.filter(function(row) {return vaccineSet.indexOf(row.vaccine) > -1;})
     }
 
     private filterByCountrySet(impactData: ImpactDataRow[], countrySet: string[]): ImpactDataRow[] {

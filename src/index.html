@@ -118,6 +118,44 @@
                 </div>
             </div>
         </li>
+
+        <li class="nav-item" data-bind="with: diseaseFilter">
+            <a class="nav-link nav-parent"
+               href="#"
+               data-bind="text: name,
+                              css: { active: isOpen },
+                              click: toggleOpen"></a>
+
+            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        <div data-bind="foreach: $parent.diseaseOptions">
+                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedDiseases">
+                            <label data-bind="text: $root.diseaseCodeToDisease($data)"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item" data-bind="with: vaccineFilter">
+            <a class="nav-link nav-parent"
+               href="#"
+               data-bind="text: name,
+                              css: { active: isOpen },
+                              click: toggleOpen"></a>
+
+            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        <div data-bind="foreach: $parent.vaccineOptions">
+                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedVaccines">
+                            <label data-bind="text: $root.vaccineCodeToVaccine($data)"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
     </ul>
 </div>
 
@@ -161,9 +199,6 @@
             </form>
 
             <div class="btn-group mt-1 mb-5" role="group">
-<!--                 <button type="button" class="btn btn-primary active" data-bind="click: () => humanReadableBurdenOutcome('deaths'),
-                 css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
-                </button> -->
                 <button type="button" class="btn btn-primary active" data-bind="click: () => changeBurden('deaths'),
                  css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
                 </button>
@@ -181,12 +216,6 @@
             <div style="max-width: 1000px">
                 <canvas id="myChart"></canvas>
             </div>
-<!--             <div class="form-check">
-                <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels" id="hideLabelsId">
-                <label class="form-check-label" for="hideLabelsId">
-                    Hide Labels
-                </label>
-            </div> -->
             <div>
                 Title: <input data-bind="value: plotTitle" size="80"/>
                 <button class="btn btn-success btn-sm" data-bind="click: applyTitle">Apply</button>
