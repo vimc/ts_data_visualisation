@@ -260,6 +260,11 @@ class DataVisModel {
         });
     }
 
+    changeBurden(burden: string) {
+        this.humanReadableBurdenOutcome(burden)
+        this.plotTitle(this.defaultTitle());
+    }
+
     defaultTitle() {
         switch(this.humanReadableBurdenOutcome()) {
             case "deaths":
@@ -276,13 +281,10 @@ class DataVisModel {
     }
 
     resetTitle() {
-//        this.plotTitle = ko.computed(function() { return this.defaultTitle(); }, this);
         this.plotTitle(this.defaultTitle());
-        console.debug(["resetTitle", this.plotTitle()]);
     }
 
     applyTitle() {
-        console.debug(["applyTitle", this.plotTitle()]);
         this.render();
     }
 
@@ -344,10 +346,6 @@ class DataVisModel {
                     return "deaths_averted"
             }
         }, this);
-
-        // this.plotTitle = ko.computed(function() {
-        //     return this.defaultTitle();
-        // }, this);
 
         this.plotTitle = ko.observable(this.defaultTitle());
 

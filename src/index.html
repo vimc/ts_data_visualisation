@@ -109,7 +109,7 @@
                         <button type="button" class="btn" data-bind="click: $parent.selectCountryGroup('gavi69')">Gavi69</button>
                         <button type="button" class="btn" data-bind="click: $parent.selectCountryGroup('pine')">PINE</button>
                         <hr>
-                        Indiviual Countries
+                        Individual Countries
                         <div data-bind="foreach: $parent.countryOptions">
                             <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedCountries">
                             <label data-bind="text: $root.countryCodeToName($data)"></label>
@@ -161,16 +161,19 @@
             </form>
 
             <div class="btn-group mt-1 mb-5" role="group">
-                <button type="button" class="btn btn-primary active" data-bind="click: () => humanReadableBurdenOutcome('deaths'),
+<!--                 <button type="button" class="btn btn-primary active" data-bind="click: () => humanReadableBurdenOutcome('deaths'),
+                 css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
+                </button> -->
+                <button type="button" class="btn btn-primary active" data-bind="click: () => changeBurden('deaths'),
                  css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
                 </button>
-                <button type="button" class="btn btn-primary" data-bind="click: () => humanReadableBurdenOutcome('dalys'),
+                <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
                  css: {active: humanReadableBurdenOutcome() == 'dalys'}">Dalys
                 </button>
-                <button type="button" class="btn btn-primary" data-bind="click: () => humanReadableBurdenOutcome('cases'),
+                <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
                  css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
                 </button>
-                <button type="button" class="btn btn-primary" data-bind="click: () => humanReadableBurdenOutcome('fvps'),
+                <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
                  css: {active: humanReadableBurdenOutcome() == 'fvps'}">FVPS
                 </button>
             </div>
