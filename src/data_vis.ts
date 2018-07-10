@@ -77,7 +77,8 @@ class DataVisModel {
 
     humanReadableBurdenOutcome: KnockoutObservable<string>;
     burdenOutcome:              KnockoutComputed<string>;
-    plotTitle:                  KnockoutComputed<string>;
+    plotTitle:                  KnockoutObservable<string>;
+    //plotTitle:                  KnockoutComputed<string>;
     yAxisTitle:                 KnockoutComputed<string>;
     //////////////////////////////////////////////////////////////////////////////
     // Vaccination strategy
@@ -166,7 +167,6 @@ class DataVisModel {
         const hideLabel: boolean = this.hideLabels();
         const maxTotal = Math.max(...totals);
         this.filteredTable = new TableMaker().createTable(datasets, compareNames);
-console.debug(this.filteredTable())
         // Aborted attempt to render filteredTable as a DataTable
         // $(document).ready(function() {
         //     $('#example').DataTable( {
@@ -220,19 +220,8 @@ console.debug(this.filteredTable())
                             font: {
                                 weight: "bold"
                             },
-                            formatter: (value: any, ctx: any) => rescaleLabel(value, maxTotal)
-                         },
-                        //  {
-                        //     formatter: (value: number, ctx: any) => this.rescaleLabel(totals[ctx.dataIndex].toPrecision(3),
-                        //                                                               totals[ctx.dataIndex].toPrecision(3)),
-                        //     align: 'end',
-                        //     anchor: 'end',
-                        //     display: function (ctx: any) {
-                        //         return ctx.datasetIndex === (datasets.length - 1) // only show this label on the final
-                        //     },
-                        //     font: {
-                        //         weight: "bold"
-                        // }
+                            formatter: (value: number, ctx: any) => rescaleLabel(value, maxTotal)
+                         }
                 },
                 animation: {
                     onComplete: function() {
@@ -245,6 +234,7 @@ console.debug(this.filteredTable())
                         lastMeta.data.forEach(function(bar: any, index: number) {
                             const data = rescaleLabel(totals[index].toPrecision(3),
                                                       totals[index].toPrecision(3));
+                            // magic numbers to the labels look reasonable
                             context.fillText(data, bar._model.x - 12, bar._model.y - 5);
                         });
                     }
@@ -268,6 +258,32 @@ console.debug(this.filteredTable())
             var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
             saveAs(blob, "data.csv");
         });
+    }
+
+    defaultTitle() {
+        switch(this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "Future deaths averted between " + this.yearLo() + " and " + this.yearHi()
+            case "cases":
+                return "Future cases averted between " + this.yearLo() + " and " + this.yearHi()
+            case "dalys":
+                return "Future DALYS averted between " + this.yearLo() + " and " + this.yearHi()
+            case "fvps":
+                return "Future fvps between " + this.yearLo() + " and " + this.yearHi()
+            default:
+                return "Future deaths averted"
+        }
+    }
+
+    resetTitle() {
+//        this.plotTitle = ko.computed(function() { return this.defaultTitle(); }, this);
+        this.plotTitle(this.defaultTitle());
+        console.debug(["resetTitle", this.plotTitle()]);
+    }
+
+    applyTitle() {
+        console.debug(["applyTitle", this.plotTitle()]);
+        this.render();
     }
 
     constructor() {
@@ -329,20 +345,11 @@ console.debug(this.filteredTable())
             }
         }, this);
 
-        this.plotTitle = ko.computed(function() {
-            switch(this.humanReadableBurdenOutcome()) {
-                case "deaths":
-                    return "Future deaths averted between " + this.yearLo() + " and " + this.yearHi()
-                case "cases":
-                    return "Future cases averted between " + this.yearLo() + " and " + this.yearHi()
-                case "dalys":
-                    return "Future DALYS averted between " + this.yearLo() + " and " + this.yearHi()
-                case "fvps":
-                    return "Future fvps between " + this.yearLo() + " and " + this.yearHi()
-                default:
-                    return "Future deaths averted"
-            }
-        }, this);
+        // this.plotTitle = ko.computed(function() {
+        //     return this.defaultTitle();
+        // }, this);
+
+        this.plotTitle = ko.observable(this.defaultTitle());
 
         this.yAxisTitle = ko.computed(function() {
             switch(this.humanReadableBurdenOutcome()) {

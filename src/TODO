@@ -1,6 +1,5 @@
 Todo
 MUST
-* Add total labels to the top of each bar
 * Add functionality to compare across touchstones
 * Generate unique file names based on the filters
 * Improve download of plot as .PNG
@@ -10,9 +9,9 @@ SHOULD
 * Display data as a table
 * Make the text in the UI more human readable
 * Add a loading screen
-* Sort out missing colours
 * Better automated titles
 * Clean up the country list
+* Fix wierd display bug with label at top of bar
 MAYBE
 * Redraw after every UI input
 * When comparing years allow line plots

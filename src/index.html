@@ -178,18 +178,27 @@
             <div style="max-width: 1000px">
                 <canvas id="myChart"></canvas>
             </div>
-            <div class="col-4" style="margin-top: 46px;">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels" id="hideLabelsId">
-                    <label class="form-check-label" for="hideLabelsId">
-                        Hide Labels
-                    </label>
-                </div>
+<!--             <div class="form-check">
+                <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels" id="hideLabelsId">
+                <label class="form-check-label" for="hideLabelsId">
+                    Hide Labels
+                </label>
+            </div> -->
+            <div>
+                Title: <input data-bind="value: plotTitle" size="80"/>
+                <button class="btn btn-success btn-sm" data-bind="click: applyTitle">Apply</button>
+                <button class="btn btn-success btn-sm" data-bind="click: resetTitle">Reset</button>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels" id="hideLabelsId">
+                <label class="form-check-label" for="hideLabelsId">
+                    Hide Labels
+                </label>
             </div>
             <div class="row">
-                <button class="btn btn-success btn-sm"  data-bind="click: render">Redraw Plot</button>
-                <button class="btn btn-success btn-sm"  data-bind="click: exportPlot">Export plot as png</button>
-                <button class="btn btn-success btn-sm"  data-bind="click: exportData">Export data as csv</button>
+                <button class="btn btn-success btn-sm" data-bind="click: render">Redraw Plot</button>
+                <button class="btn btn-success btn-sm" data-bind="click: exportPlot">Export plot as png</button>
+                <button class="btn btn-success btn-sm" data-bind="click: exportData">Export data as csv</button>
             </div>
             <div data-bind='simpleGrid: filteredTable'></div>
         </div>
