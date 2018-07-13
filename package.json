@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "mkdir -p out && cp data/impactData.js out/impactData.js && webpack",
-    "watch": "mkdir -p out && cp data/impactData.js out/impactData.js && webpack --watch",
+    "build": "mkdir -p out && cp data/impactData.js out/impactData.js && cp data/reportInfo.js out/reportInfo.js && webpack",
+    "watch": "mkdir -p out && cp data/impactData.js out/impactData.js && cp data/reportInfo.js out/reportInfo.js && webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

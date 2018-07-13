@@ -2,6 +2,7 @@ import {DataFilterer} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 
 declare const impactData: ImpactDataRow[];
+declare const reportInfo: any;
 import {ImpactDataRow} from "./ImpactDataRow";
 import {countryDict, vaccineDict, diseaseDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
@@ -100,6 +101,11 @@ class DataVisModel {
     //////////////////////////////////////////////////////////////////////////////
     // Touchstone
     activeTouchstone: KnockoutComputed<string>;
+    //////////////////////////////////////////////////////////////////////////////
+    // Id tracking info
+    repId: KnockoutObservable<string>; // id of montagu report for app
+    depId: KnockoutObservable<string>; // id of montagu report for data
+    AppId: KnockoutObservable<string>; // git has of app source code
 
     canvas: any;
     ctx: any;
@@ -321,6 +327,10 @@ class DataVisModel {
         this.diseaseFilter = ko.observable(new Filter("Disease"));
         this.vaccineFilter = ko.observable(new Filter("Vaccine"));
 
+        this.repId = ko.observable("Report id: " + reportInfo.rep_id);
+        this.depId = ko.observable("Data id: " + reportInfo.dep_id);
+        this.AppId = ko.observable("App. id: " + reportInfo.git_id);
+
         this.compareOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
                                "disease", "vaccine"];
         this.disaggOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
@@ -329,7 +339,7 @@ class DataVisModel {
         this.maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
         this.yearOptions = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
-                            2021, 2022, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2030];
+                            2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
 
         // the data for South Sudan (SSD), Palestinian Territories (PSE) and Kosovo (XK) are dodgy so I've omitted them
         this.countryOptions = ["AFG", "AGO", "ALB", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BIH", "BLZ", "BOL", "BTN",
@@ -350,7 +360,6 @@ class DataVisModel {
         this.diseaseOptions = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA",
                                "PCV", "Rota", "Rubella", "YF"];
         this.selectedDiseases = ko.observableArray(this.diseaseOptions);
-
 
         this.yearLo = ko.observable(2016);
         this.yearHi = ko.observable(2020);

@@ -3,5 +3,5 @@
 *.log
 package-lock.json
 node_modules/*
-/data/impactData.js
+/data/*
 /out/*
