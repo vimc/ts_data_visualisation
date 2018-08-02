@@ -66,9 +66,9 @@
                 <div class="nav-item nav-option">
                     <div class="nav-link">
                         Year Low:
-                        <select class=form-control data-bind="options: $parent.yearOptions, value: $parent.yearLo"></select>
+                        <select class=form-control data-bind="options: rangeValues, value: selectedLow"></select>
                         Year High:
-                        <select class=form-control data-bind="options: $parent.yearOptions, value: $parent.yearHi"></select>
+                        <select class=form-control data-bind="options: rangeValues, value: selectedHigh"></select>
                     </div>
                 </div>
             </div>
@@ -85,8 +85,8 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: $parent.vacStratOptions">
-                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedVacStrats">
+                        <div data-bind="foreach: options">
+                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
                             <label data-bind="text: $data"></label>
                         </div>
                     </div>
@@ -112,8 +112,8 @@
                         <button type="button" class="btn" data-bind="click: $parent.selectCountryGroup('pine')">PINE</button>
                         <hr>
                         Individual Countries
-                        <div data-bind="foreach: $parent.countryOptions">
-                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedCountries">
+                        <div data-bind="foreach: options">
+                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
                             <label data-bind="text: $root.countryCodeToName($data)"></label>
                         </div>
                     </div>
@@ -131,8 +131,8 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: $parent.diseaseOptions">
-                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedDiseases">
+                        <div data-bind="foreach: options">
+                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
                             <label data-bind="text: $root.diseaseCodeToDisease($data)"></label>
                         </div>
                     </div>
@@ -150,8 +150,8 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: $parent.vaccineOptions">
-                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $root.selectedVaccines">
+                        <div data-bind="foreach: options">
+                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
                             <label data-bind="text: $root.vaccineCodeToVaccine($data)"></label>
                         </div>
                     </div>

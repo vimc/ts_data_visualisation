@@ -1,54 +1,23 @@
-const path = require('path');
+const path = require('path'),
+helper = require("./webpack.common");
 
-module.exports = {
-    name: "data_vis",
-    entry: "./src/data_vis.ts",
-    devtool: "source-map",
+function makeConfig() {
+        return Object.assign({
+            mode: "production",
+            name: "data_vis",
+            entry: "./src/data_vis.ts",
 
-    resolve: {
-        // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ["*", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
-    },
-
-    output: {
-        filename: "bundle.js",
-        path: path.join(__dirname, "out")
-    },
-
-    module: {
-        rules: [
-            // All files with a '.ts' extension will be handled by 'awesome-typescript-loader'.
-            // and then fed through Babel to compiled from ES6 to ES5
-            {
-                test: /\.ts$/,
-                loaders: [
-                    {
-                        loader: "awesome-typescript-loader",
-                        options: {
-                            useBabel: true,
-                            useCache: true
-                        }
-                    }
-                ],
-                exclude: [/node_modules/]
+            output: {
+                filename: "bundle.js",
+                path: path.join(__dirname, "out")
             },
-            {
-                enforce: 'pre',
-                test: /\.js$/,
-                loader: "source-map-loader"
-            },
-            {
-                test: /\.(html)|(png)|(css)|(svg)$/,
-                loader: "file-loader",
-                options: {
-                    name: "[name].[ext]"
-                }
+
+            // apparently necessary to get data-forge to compile
+            // https://github.com/webpack-contrib/css-loader/issues/447
+            node: {
+                fs: "empty"
             }
-        ]
-    },
-    // apparently necessary to get data-forge to compile
-    // https://github.com/webpack-contrib/css-loader/issues/447
-    node: {
-        fs: "empty"
-    }
+        }, helper.commonConfig())
+
 }
+module.exports = makeConfig();

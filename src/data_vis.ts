@@ -22,23 +22,11 @@ import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
 import {FilteredRow} from "./FilteredRow";
+import {Filter, ListFilter, RangeFilter, CountryFilter} from "./Filter";
+import {diseases, vaccines, countries, activityTypes} from "./Data";
 const jsonexport = require('jsonexport');
 // const $  = require( 'jquery' );
 // const dt = require( 'datatables.net' )( window, $ );
-
-class Filter {
-    isOpen: KnockoutObservable<boolean>;
-    name: KnockoutObservable<string>
-
-    toggleOpen() {
-        this.isOpen(!this.isOpen());
-    }
-
-    constructor(name: string) {
-        this.isOpen = ko.observable(false);
-        this.name = ko.observable(name);
-    }
-}
 
 function rescaleLabel(value: number, scale: number): string {
     if (scale > 1000000000) {
@@ -55,14 +43,15 @@ function rescaleLabel(value: number, scale: number): string {
 
 class DataVisModel {
     // UI knockout variables
-    showSidebar:    KnockoutObservable<boolean>;
-    yearFilter:     KnockoutObservable<Filter>;
-    activityFilter: KnockoutObservable<Filter>;
-    countryFilter:  KnockoutObservable<Filter>;
-    diseaseFilter:  KnockoutObservable<Filter>;
-    vaccineFilter:  KnockoutObservable<Filter>;
     hideLabels:     KnockoutObservable<boolean>;
     hideLegend:     KnockoutObservable<boolean>;
+
+    showSidebar = ko.observable(true);
+    yearFilter = ko.observable(new RangeFilter({name: "Years", min: 2011, max: 2030, selectedLow: 2016, selectedHigh:2020}));
+    activityFilter = ko.observable(new ListFilter({name: "Activity", options: activityTypes}));
+    countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries}));
+    diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases}));
+    vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines}));
 
     // the  variable that we are going to compare along the x axis
     compareOptions: Array<string>;
@@ -70,35 +59,16 @@ class DataVisModel {
     // the variable that we are going to disaggregate by
     disaggOptions:  Array<string>;
     maxPlotOptions: Array<number>;
-    yearOptions:    Array<number>;
     compare:        KnockoutObservable<string>;
     disagg:         KnockoutObservable<string>;
     maxBars:        KnockoutObservable<number>;
     cumPlot:        KnockoutObservable<boolean>;
-    yearLo:         KnockoutObservable<number>;
-    yearHi:         KnockoutObservable<number>;
 
     humanReadableBurdenOutcome: KnockoutObservable<string>;
     burdenOutcome:              KnockoutComputed<string>;
     plotTitle:                  KnockoutObservable<string>;
     yAxisTitle:                 KnockoutComputed<string>;
-    //////////////////////////////////////////////////////////////////////////////
-    // Vaccination strategy
-    vacStratOptions:   Array<string>;
-    selectedVacStrats: KnockoutObservableArray<string>;
-    //////////////////////////////////////////////////////////////////////////////
-    // Countries!
-    countryOptions:    Array<string>;
-    selectedCountries: KnockoutObservableArray<string>;
-    //////////////////////////////////////////////////////////////////////////////
-    // Countries!
-    vaccineOptions:    Array<string>;
-    selectedVaccines:  KnockoutObservableArray<string>;
-    //////////////////////////////////////////////////////////////////////////////
-    // Countries!
-    diseaseOptions:    Array<string>;
-    selectedDiseases:  KnockoutObservableArray<string>;
-    //////////////////////////////////////////////////////////////////////////////
+
     // Touchstone
     activeTouchstone: KnockoutComputed<string>;
     //////////////////////////////////////////////////////////////////////////////
@@ -117,37 +87,37 @@ class DataVisModel {
     deaths: Array<number>;
 
     selectCountryGroup(cntGrp: string) {
-        switch(cntGrp) {
-            case "all":
-                this.selectedCountries(this.countryOptions);
-                break;
-            case "none":
-                this.selectedCountries([]);
-                break;
-            case "pine":
-                this.selectedCountries(["IND", "PAK", "NGA", "ETH"]);
-                break;
-            case "gavi73":
-                this.selectedCountries(["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
-                    "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI", "ETH", "GEO", "GHA", "GIN", "GMB", "GNB",
-                    "GUY", "HND", "HTI", "IDN", "IND", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
-                    "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL", "PAK", "PNG", "PRK",
-                    "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
-                    "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]);
-                break;
-            case "gavi69":
-                this.selectedCountries(["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
-                    "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI", "GEO", "GHA", "GIN", "GMB", "GNB",
-                    "GUY", "HND", "HTI", "IDN", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
-                    "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NIC", "NPL", "PNG", "PRK",
-                    "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
-                    "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]);
-                break;
-            default:
-                console.debug(cntGrp);
-                this.selectedCountries([]);
-                break;
-        }
+        // switch(cntGrp) {
+        //     case "all":
+        //         this.selectedCountries(this.countryOptions);
+        //         break;
+        //     case "none":
+        //         this.selectedCountries([]);
+        //         break;
+        //     case "pine":
+        //         this.selectedCountries(["IND", "PAK", "NGA", "ETH"]);
+        //         break;
+        //     case "gavi73":
+        //         this.selectedCountries(["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
+        //             "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI", "ETH", "GEO", "GHA", "GIN", "GMB", "GNB",
+        //             "GUY", "HND", "HTI", "IDN", "IND", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
+        //             "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL", "PAK", "PNG", "PRK",
+        //             "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
+        //             "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]);
+        //         break;
+        //     case "gavi69":
+        //         this.selectedCountries(["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
+        //             "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI", "GEO", "GHA", "GIN", "GMB", "GNB",
+        //             "GUY", "HND", "HTI", "IDN", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
+        //             "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NIC", "NPL", "PNG", "PRK",
+        //             "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
+        //             "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]);
+        //         break;
+        //     default:
+        //         console.debug(cntGrp);
+        //         this.selectedCountries([]);
+        //         break;
+        // }
     }
 
     countryCodeToName(countryCode: string) {
@@ -177,12 +147,12 @@ class DataVisModel {
                                                          this.maxBars(),          // How many bars on the plot
                                                          this.compare(),          // variable we are comparing across
                                                          this.disagg(),           // variable we are disaggregating by
-                                                         this.yearLo(),           // lower bound on year
-                                                         this.yearHi(),           // upper bound on yeat
-                                                         this.selectedVacStrats(),// which vaccination strategies do we care about
-                                                         this.selectedCountries(),// which countries do we care about
-                                                         this.selectedDiseases(), // which diseases do we care about
-                                                         this.selectedVaccines(), // which vaccines do we care about
+                                                         this.yearFilter().selectedLow(),           // lower bound on year
+                                                         this.yearFilter().selectedHigh(),           // upper bound on yeat
+                                                         this.activityFilter().selectedOptions(),// which vaccination strategies do we care about
+                                                         this.countryFilter().selectedOptions(),// which countries do we care about
+                                                         this.diseaseFilter().selectedOptions(), // which diseases do we care about
+                                                         this.vaccineFilter().selectedOptions(), // which vaccines do we care about
                                                          cumulative,              // are we creating a cumulative plot
                                                          impactData,              // the data set
                                                          plotColours);            // the colours used in the plot
@@ -299,13 +269,13 @@ class DataVisModel {
     defaultTitle() {
         switch(this.humanReadableBurdenOutcome()) {
             case "deaths":
-                return "Future deaths averted between " + this.yearLo() + " and " + this.yearHi()
+                return "Future deaths averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             case "cases":
-                return "Future cases averted between " + this.yearLo() + " and " + this.yearHi()
+                return "Future cases averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             case "dalys":
-                return "Future DALYS averted between " + this.yearLo() + " and " + this.yearHi()
+                return "Future DALYS averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             case "fvps":
-                return "Future fvps between " + this.yearLo() + " and " + this.yearHi()
+                return "fvps between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             default:
                 return "Future deaths averted"
         }
@@ -320,12 +290,8 @@ class DataVisModel {
     }
 
     constructor() {
-        this.showSidebar = ko.observable(true);
-        this.yearFilter = ko.observable(new Filter("Years"));
-        this.activityFilter = ko.observable(new Filter("Activity"));
-        this.countryFilter = ko.observable(new Filter("Country"));
-        this.diseaseFilter = ko.observable(new Filter("Disease"));
-        this.vaccineFilter = ko.observable(new Filter("Vaccine"));
+        // the data for South Sudan (SSD), Palestinian Territories (PSE) and Kosovo (XK) are dodgy so I've omitted them
+
 
         this.repId = ko.observable("Report id: " + reportInfo.rep_id);
         this.depId = ko.observable("Data id: " + reportInfo.dep_id);
@@ -338,32 +304,6 @@ class DataVisModel {
 
         this.maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
-        this.yearOptions = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
-                            2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
-
-        // the data for South Sudan (SSD), Palestinian Territories (PSE) and Kosovo (XK) are dodgy so I've omitted them
-        this.countryOptions = ["AFG", "AGO", "ALB", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BIH", "BLZ", "BOL", "BTN",
-                              "CAF", "CHN", "CIV", "CMR", "COD", "COG", "COM", "CPV", "CUB", "DJI", "EGY", "ERI", "ETH",
-                              "FJI", "FSM", "GEO", "GHA", "GIN", "GMB", "GNB", "GTM", "GUY", "HND", "HTI", "IDN", "IND",
-                              "IRQ", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MAR", "MDA", "MDG", "MHL",
-                              "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL", "PAK", "PHL", "PNG",
-                              "PRK", "PRY", /*"PSE",*/ "RWA", "SDN", "SEN", "SLB", "SLE", "SLV", "SOM", /*"SSD",*/ "STP", "SWZ",
-                              "SYR", "TCD", "TGO", "TJK", "TKM", "TLS", "TON", "TUV", "TZA", "UGA", "UKR", "UZB", "VNM",
-                              "VUT", "WSM", /*"XK",*/ "YEM", "ZMB", "ZWE"]
-        this.selectedCountries = ko.observableArray(["IND", "PAK", "NGA", "ETH"]);
-
-        this.vaccineOptions = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1",
-                               "MCV2", "Measles", "MenA", "PCV3", "Rota",
-                               "RCV2", "Rubella", "YF"];
-        this.selectedVaccines = ko.observableArray(this.vaccineOptions);
-
-        this.diseaseOptions = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA",
-                               "PCV", "Rota", "Rubella", "YF"];
-        this.selectedDiseases = ko.observableArray(this.diseaseOptions);
-
-        this.yearLo = ko.observable(2016);
-        this.yearHi = ko.observable(2020);
-
         this.compare = ko.observable(this.compareOptions[1]);
         this.disagg = ko.observable(this.disaggOptions[7]);
 
@@ -372,9 +312,6 @@ class DataVisModel {
         this.cumPlot = ko.observable(false);
         this.hideLabels = ko.observable(false);
         this.hideLegend = ko.observable(false);
-
-        this.vacStratOptions = ["routine", "campaign"];
-        this.selectedVacStrats = ko.observableArray(this.vacStratOptions);
 
         this.humanReadableBurdenOutcome = ko.observable("deaths");
         this.burdenOutcome = ko.computed(function() {
@@ -403,7 +340,7 @@ class DataVisModel {
                 case "dalys":
                     return "Future DALYS averted"
                 case "fvps":
-                    return "Future fvps"
+                    return "fvps"
                 default:
                     return "Future deaths averted"
             }
