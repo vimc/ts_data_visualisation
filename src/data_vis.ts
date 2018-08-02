@@ -49,9 +49,9 @@ class DataVisModel {
     showSidebar = ko.observable(true);
     yearFilter = ko.observable(new RangeFilter({name: "Years", min: 2011, max: 2030, selectedLow: 2016, selectedHigh:2020}));
     activityFilter = ko.observable(new ListFilter({name: "Activity", options: activityTypes}));
-    countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries}));
-    diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases}));
-    vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines}));
+    countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries, humanNames: countryDict}));
+    diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases, humanNames: diseaseDict}));
+    vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines, humanNames: vaccineDict}));
 
     // the  variable that we are going to compare along the x axis
     compareOptions: Array<string>;
@@ -84,18 +84,8 @@ class DataVisModel {
     filteredTable: KnockoutObservableArray<any>;
     gridViewModel: any;
 
-    deaths: Array<number>;
-
     countryCodeToName(countryCode: string) {
         return countryDict[countryCode];
-    }
-
-    diseaseCodeToDisease(diseaseCode: string) {
-        return diseaseDict[diseaseCode];
-    }
-
-    vaccineCodeToVaccine(vaccineCode: string) {
-        return vaccineDict[vaccineCode];
     }
 
     render() {

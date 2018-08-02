@@ -17,6 +17,7 @@ export interface RangeFilterOptions extends FilterOptions {
 export interface ListFilterOptions extends FilterOptions {
     options: Array<string>;
     selected?: Array<string>;
+    humanNames?: { [code: string] : string }
 }
 
 export interface CountryFilterOptions extends ListFilterOptions {
@@ -39,11 +40,20 @@ export class Filter {
 export class ListFilter extends Filter {
     options = ko.observableArray<string>();
     selectedOptions = ko.observableArray<string>();
+    dictionary: { [code: string] : string };
+
+    makeHumanreadable(code: string): string {
+        if (this.dictionary)
+            return this.dictionary[code];
+
+        return null;
+    }
 
     constructor(options: ListFilterOptions) {
         super({name: options.name});
         this.options(options.options);
         this.selectedOptions(options.selected || options.options);
+        this.dictionary = (options.humanNames || options.humanNames);
     }
 }
 
@@ -72,7 +82,6 @@ export class CountryFilter extends ListFilter {
         }
     }
 
-
     constructor(options: CountryFilterOptions) {
         super(options);
         this.options(options.options);
@@ -97,5 +106,4 @@ export class RangeFilter extends Filter {
         this.selectedLow(options.selectedLow || options.min);
         this.selectedHigh(options.selectedHigh || options.max);
     }
-
 }

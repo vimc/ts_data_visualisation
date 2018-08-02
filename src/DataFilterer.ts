@@ -20,19 +20,8 @@ export interface DataFiltererOptions {
 
 export class DataFilterer {
      filterData(filterOptions: DataFiltererOptions,
-    //            metric:            string,
-    //            maxPlot:           number,
-    //            compare:           string,
-    //            disagg:            string,
-    //            yearLo:            number,
-    //            yearHi:            number,
-    //            activityTypes:     string[],
-    //            selectedCountries: string[],
-    //            selectedDiseases:  string[],
-    //            selectedVaccines:  string[],
-    //            cumulative:        boolean,
-               impactData:        ImpactDataRow[],
-               plotColours:       { [p: string] : string }): any[] {
+                impactData:    ImpactDataRow[],
+                plotColours:   { [p: string] : string }): any[] {
         let filtData = this.filterByFocality(impactData, true); // filter focal model
         filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
         filtData = this.filterBYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
