@@ -86,40 +86,6 @@ class DataVisModel {
 
     deaths: Array<number>;
 
-    selectCountryGroup(cntGrp: string) {
-        // switch(cntGrp) {
-        //     case "all":
-        //         this.selectedCountries(this.countryOptions);
-        //         break;
-        //     case "none":
-        //         this.selectedCountries([]);
-        //         break;
-        //     case "pine":
-        //         this.selectedCountries(["IND", "PAK", "NGA", "ETH"]);
-        //         break;
-        //     case "gavi73":
-        //         this.selectedCountries(["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
-        //             "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI", "ETH", "GEO", "GHA", "GIN", "GMB", "GNB",
-        //             "GUY", "HND", "HTI", "IDN", "IND", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
-        //             "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL", "PAK", "PNG", "PRK",
-        //             "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
-        //             "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]);
-        //         break;
-        //     case "gavi69":
-        //         this.selectedCountries(["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
-        //             "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI", "GEO", "GHA", "GIN", "GMB", "GNB",
-        //             "GUY", "HND", "HTI", "IDN", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
-        //             "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NIC", "NPL", "PNG", "PRK",
-        //             "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
-        //             "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]);
-        //         break;
-        //     default:
-        //         console.debug(cntGrp);
-        //         this.selectedCountries([]);
-        //         break;
-        // }
-    }
-
     countryCodeToName(countryCode: string) {
         return countryDict[countryCode];
     }
@@ -347,7 +313,7 @@ class DataVisModel {
         }, this);
 
         // initialise to pine countries selected
-        this.selectCountryGroup("pine")
+        this.countryFilter().selectCountryGroup("pine")
         this.render();
     };
 

@@ -1,5 +1,8 @@
 import * as ko from "knockout";
 
+// for country filters
+import {countries, pineCountries, gavi69, gavi73} from "./Data";
+
 export interface FilterOptions {
     name: string;
 }
@@ -45,7 +48,31 @@ export class ListFilter extends Filter {
 }
 
 export class CountryFilter extends ListFilter {
-    
+    selectCountryGroup(cntGrp: string) {
+        switch(cntGrp) {
+            case "all":
+                this.selectedOptions(this.options());
+                break;
+            case "none":
+                this.selectedOptions([]);
+                break;
+            case "pine":
+                this.selectedOptions(pineCountries);
+                break;
+            case "gavi73":
+                this.selectedOptions(gavi73);
+                break;
+            case "gavi69":
+                this.selectedOptions(gavi69);
+                break;
+            default:
+                console.debug(cntGrp);
+                this.selectedOptions([]);
+                break;
+        }
+    }
+
+
     constructor(options: CountryFilterOptions) {
         super(options);
         this.options(options.options);

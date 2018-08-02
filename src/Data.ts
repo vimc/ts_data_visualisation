@@ -7,6 +7,20 @@ export const countries = ["AFG", "AGO", "ALB", "ARM", "AZE", "BDI", "BEN", "BFA"
     "SYR", "TCD", "TGO", "TJK", "TKM", "TLS", "TON", "TUV", "TZA", "UGA", "UKR", "UZB", "VNM",
     "VUT", "WSM", /*"XK",*/ "YEM", "ZMB", "ZWE"]
 
+export const pineCountries = ["IND", "PAK", "NGA", "ETH"];
+export const gavi69 = ["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
+                    "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI", "GEO", "GHA", "GIN", "GMB", "GNB",
+                    "GUY", "HND", "HTI", "IDN", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
+                    "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NIC", "NPL", "PNG", "PRK",
+                    "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
+                    "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"];
+export const gavi73 = ["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
+                    "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI", "ETH", "GEO", "GHA", "GIN", "GMB", "GNB",
+                    "GUY", "HND", "HTI", "IDN", "IND", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
+                    "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL", "PAK", "PNG", "PRK",
+                    "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
+                    "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]              
+
 export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA",
     "PCV", "Rota", "Rubella", "YF"]
 
