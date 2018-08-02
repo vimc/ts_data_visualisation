@@ -1,0 +1,117 @@
+html, body {
+    height: 100%;
+}
+
+.navbar {
+    background-color: rgba(54, 162, 235, 0.2);
+}
+
+.sidebar {
+    float: left;
+    overflow-y: auto;
+    -webkit-transition: width 500s ease;
+    -moz-transition: width 500s ease;
+    -o-transition: width 500ms ease;
+    transition: width 500ms ease;
+    width: 0;
+    border: 0;
+    bottom: 0;
+    min-height: calc(100% - 102px);
+    height: auto;
+}
+
+.sidebar.filter-bar {
+    width: 65px;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+}
+
+.a {
+    cursor: pointer;
+}
+
+.filter {
+    max-height: 0;
+    overflow: hidden;
+    -webkit-transition: max-height 500s ease;
+    -moz-transition: max-height 500s ease;
+    -o-transition: max-height 500ms ease;
+    transition: max-height 500ms ease;
+    overflow-y: auto;
+}
+
+.filter.in {
+    max-height: 700px;
+}
+
+.sidebar.in {
+    width: 180px;
+}
+
+.sidebar.filter-bar.in {
+    width: 340px;
+}
+
+.nav-link:not(.country-nav-link).active {
+    background: rgba(54, 162, 235, 0.2);
+}
+
+.nav-link.country-nav-link {
+    background: rgba(54, 162, 235, 0.2)
+}
+
+.nav-parent, .nav-parent-country {
+    text-decoration: none !important;
+}
+
+.nav-parent.active::after {
+    content: url('caret-up-dark.svg');
+    vertical-align: middle;
+    float: right;
+}
+
+.nav-parent:not(.active)::after, .nav-parent-country:not(.active)::after {
+    vertical-align: middle;
+    content: url('caret-down.svg');
+    float: right;
+}
+
+.nav-parent-country::after {
+    vertical-align: middle;
+    content: url('caret-up-dark.svg');
+    float: right;
+}
+
+.toggle-caret-secondary.open::after {
+    vertical-align: -webkit-baseline-middle;
+    content: url('caret-up-secondary.svg');
+}
+
+.toggle-caret-secondary:not(.open)::after {
+    vertical-align: -webkit-baseline-middle;
+    content: url('caret-down-secondary.svg');
+}
+
+.nav-option:nth-child(even) {
+    background: #f8f9fa
+}
+
+.nav-option:nth-child(odd) {
+    background: #FFF
+}
+
+ul.countries-list {
+    -moz-column-count: 5;
+    -moz-column-gap: 0px;
+    -webkit-column-count: 5;
+    column-count: 5;
+    column-gap: 0px;
+}
+
+input[type='checkbox'], label {
+    float: left;   
+}
+
+input[type='checkbox'] {
+    clear: both;    
+}
