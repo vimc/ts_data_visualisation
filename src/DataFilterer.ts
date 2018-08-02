@@ -4,39 +4,54 @@ import {FilteredRow} from "./FilteredRow";
 export type ImpactDataByCountry = { [country: string]: ImpactDataRow[] };
 export type ImpactDataByVaccineAndThenCountry = { [vaccine: string]: ImpactDataByCountry };
 
+export interface DataFiltererOptions {
+    metric:            string;
+    maxPlot:           number;
+    compare:           string;
+    disagg:            string;
+    yearLow:           number;
+    yearHigh:          number;
+    activityTypes:     Array<string>;
+    selectedCountries: Array<string>;
+    selectedDiseases:  Array<string>;
+    selectedVaccines:  Array<string>;
+    cumulative:        boolean;
+}
+
 export class DataFilterer {
-    filterData(metric:            string,
-               maxPlot:           number,
-               compare:           string,
-               disagg:            string,
-               yearLo:            number,
-               yearHi:            number,
-               activityTypes:     string[],
-               selectedCountries: string[],
-               selectedDiseases:  string[],
-               selectedVaccines:  string[],
-               cumulative:        boolean,
+     filterData(filterOptions: DataFiltererOptions,
+    //            metric:            string,
+    //            maxPlot:           number,
+    //            compare:           string,
+    //            disagg:            string,
+    //            yearLo:            number,
+    //            yearHi:            number,
+    //            activityTypes:     string[],
+    //            selectedCountries: string[],
+    //            selectedDiseases:  string[],
+    //            selectedVaccines:  string[],
+    //            cumulative:        boolean,
                impactData:        ImpactDataRow[],
                plotColours:       { [p: string] : string }): any[] {
         let filtData = this.filterByFocality(impactData, true); // filter focal model
         filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
-        filtData = this.filterBYear(filtData, yearLo, yearHi); // filter by years
+        filtData = this.filterBYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
         filtData = this.filterByTouchstone(filtData, "201710gavi"); // filter by touchstone
-        filtData = this.filterByActivityType(filtData, activityTypes); // filter by activity type
-        filtData = this.filterByCountrySet(filtData, selectedCountries); // filter by activity type
-        filtData = this.filterByDisease(filtData, selectedDiseases); // filter by diseases
-        filtData = this.filterByVaccine(filtData, selectedVaccines); // filter by vaccine
+        filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type
+        filtData = this.filterByCountrySet(filtData, filterOptions.selectedCountries); // filter by activity type
+        filtData = this.filterByDisease(filtData, filterOptions.selectedDiseases); // filter by diseases
+        filtData = this.filterByVaccine(filtData, filterOptions.selectedVaccines); // filter by vaccine
         // TODO there might efficiencies to be had here by filtering in the right order...
         // TODO There is a more functional way to do this is we define a wrapper class for ImpactDataRow[]
 
         // now we filter by the compare variable
-        const temp = this.filterByCompare(maxPlot, compare, metric, filtData);
+        const temp = this.filterByCompare(filterOptions.maxPlot, filterOptions.compare, filterOptions.metric, filtData);
         const compVars: any[] = temp[1];
         const filteredData: ImpactDataRow[] = temp[0];
 
         // get an array of all the remaining disagg values
-        const aggVars: any[] = [...this.getUniqueVariables(-1, disagg, metric, filteredData)];
-        const dataByAggregate = this.groupDataByDisaggAndThenCompare(compare, disagg, aggVars, filteredData);
+        const aggVars: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, filterOptions.metric, filteredData)];
+        const dataByAggregate = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars, filteredData);
 
 
         let datasets: FilteredRow[] = [];
@@ -46,7 +61,7 @@ export class DataFilterer {
             let summedMetricForDisagg: number[] = compVars.map(function (country: string) {
                 const data: ImpactDataRow[] = dataByCompare[country];
                 if (typeof data !== 'undefined') { // this is necessary to prevent errors when this compare / aggregate combo is empty
-                    return data.map(x => x[metric])
+                    return data.map(x => x[filterOptions.metric])
                         .filter(x => !isNaN(x))
                         .reduce((acc, x) => acc + x, 0)
                         .toPrecision(3); // this should possibly be an argument or calculated at run time
@@ -56,7 +71,7 @@ export class DataFilterer {
             });
 
             // we're doing a cumulative plot
-            if (cumulative) {
+            if (filterOptions.cumulative) {
                 summedMetricForDisagg = summedMetricForDisagg
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i-1] || 0)], [])
             }

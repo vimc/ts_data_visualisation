@@ -1,4 +1,4 @@
-import {DataFilterer} from "./DataFilterer";
+import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 
 declare const impactData: ImpactDataRow[];
@@ -106,22 +106,21 @@ class DataVisModel {
             this.chartObject.destroy();
         }
 
-        // do we want to produce a cumulative plot
-        const cumulative = (this.compare() == "year" && this.cumPlot())
+        const filterOptions = {
+            metric:            this.burdenOutcome(), // What outcome are we using e.g death, DALYs
+            maxPlot:           this.maxBars(), // How many bars on the plot
+            compare:           this.compare(), // variable we are comparing across
+            disagg:            this.disagg(), // variable we are disaggregating by
+            yearLow:           this.yearFilter().selectedLow(), // lower bound on year
+            yearHigh:          this.yearFilter().selectedHigh(), // upper bound on yeat
+            activityTypes:     this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
+            selectedDiseases:  this.diseaseFilter().selectedOptions(), // which diseases do we care about
+            selectedVaccines:  this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            cumulative:        (this.compare() == "year" && this.cumPlot()) // are we creating a cumulative plot
+        }
 
-        const filterData = new DataFilterer().filterData(this.burdenOutcome(),    // What outcome are we using e.g death, DALYs
-                                                         this.maxBars(),          // How many bars on the plot
-                                                         this.compare(),          // variable we are comparing across
-                                                         this.disagg(),           // variable we are disaggregating by
-                                                         this.yearFilter().selectedLow(),           // lower bound on year
-                                                         this.yearFilter().selectedHigh(),           // upper bound on yeat
-                                                         this.activityFilter().selectedOptions(),// which vaccination strategies do we care about
-                                                         this.countryFilter().selectedOptions(),// which countries do we care about
-                                                         this.diseaseFilter().selectedOptions(), // which diseases do we care about
-                                                         this.vaccineFilter().selectedOptions(), // which vaccines do we care about
-                                                         cumulative,              // are we creating a cumulative plot
-                                                         impactData,              // the data set
-                                                         plotColours);            // the colours used in the plot
+        const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours)
 
         const datasets = filterData[0];
         let compareNames: string[] = [...filterData[1]];
