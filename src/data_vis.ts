@@ -1,11 +1,19 @@
-import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
+import {DataFilterer} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
+import {ImpactDataRow} from "./ImpactDataRow";
+import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
+import {plotColours} from "./PlotColours"
+import * as ko from "knockout";
+import {Chart} from "chart.js";
+import "chartjs-plugin-datalabels"
+import {saveAs} from "file-saver"
+import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
+import {activityTypes, countries, diseases, vaccines} from "./Data";
+
+import 'bootstrap/dist/css/bootstrap.css';
 
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
-import {ImpactDataRow} from "./ImpactDataRow";
-import {countryDict, vaccineDict, diseaseDict} from "./Dictionaries"
-import {plotColours} from "./PlotColours"
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -15,18 +23,8 @@ require("./image/caret-up-dark.svg");
 require("./image/caret-up-secondary.svg");
 require("./image/caret-down-secondary.svg");
 require("./css/styles.css");
-require("./css/bootstrap.css")
 
-import * as ko from "knockout";
-import {Chart} from "chart.js";
-import "chartjs-plugin-datalabels"
-import {saveAs} from "file-saver"
-import {FilteredRow} from "./FilteredRow";
-import {Filter, ListFilter, RangeFilter, CountryFilter} from "./Filter";
-import {diseases, vaccines, countries, activityTypes} from "./Data";
 const jsonexport = require('jsonexport');
-// const $  = require( 'jquery' );
-// const dt = require( 'datatables.net' )( window, $ );
 
 function rescaleLabel(value: number, scale: number): string {
     if (scale > 1000000000) {
@@ -35,7 +33,7 @@ function rescaleLabel(value: number, scale: number): string {
     if (scale > 1000000) {
         return value / 1000000 + "M";
     }
-    if (scale > 1000)  {
+    if (scale > 1000) {
         return value / 1000 + "K";
     }
     return value.toString();
@@ -43,11 +41,17 @@ function rescaleLabel(value: number, scale: number): string {
 
 class DataVisModel {
     // UI knockout variables
-    hideLabels:     KnockoutObservable<boolean>;
-    hideLegend:     KnockoutObservable<boolean>;
+    hideLabels: KnockoutObservable<boolean>;
+    hideLegend: KnockoutObservable<boolean>;
 
     showSidebar = ko.observable(true);
-    yearFilter = ko.observable(new RangeFilter({name: "Years", min: 2011, max: 2030, selectedLow: 2016, selectedHigh:2020}));
+    yearFilter = ko.observable(new RangeFilter({
+        name: "Years",
+        min: 2011,
+        max: 2030,
+        selectedLow: 2016,
+        selectedHigh: 2020
+    }));
     activityFilter = ko.observable(new ListFilter({name: "Activity", options: activityTypes}));
     countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries, humanNames: countryDict}));
     diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases, humanNames: diseaseDict}));
@@ -57,17 +61,17 @@ class DataVisModel {
     compareOptions: Array<string>;
 
     // the variable that we are going to disaggregate by
-    disaggOptions:  Array<string>;
+    disaggOptions: Array<string>;
     maxPlotOptions: Array<number>;
-    compare:        KnockoutObservable<string>;
-    disagg:         KnockoutObservable<string>;
-    maxBars:        KnockoutObservable<number>;
-    cumPlot:        KnockoutObservable<boolean>;
+    compare: KnockoutObservable<string>;
+    disagg: KnockoutObservable<string>;
+    maxBars: KnockoutObservable<number>;
+    cumPlot: KnockoutObservable<boolean>;
 
     humanReadableBurdenOutcome: KnockoutObservable<string>;
-    burdenOutcome:              KnockoutComputed<string>;
-    plotTitle:                  KnockoutObservable<string>;
-    yAxisTitle:                 KnockoutComputed<string>;
+    burdenOutcome: KnockoutComputed<string>;
+    plotTitle: KnockoutObservable<string>;
+    yAxisTitle: KnockoutComputed<string>;
 
     // Touchstone
     activeTouchstone: KnockoutComputed<string>;
@@ -97,17 +101,17 @@ class DataVisModel {
         }
 
         const filterOptions = {
-            metric:            this.burdenOutcome(), // What outcome are we using e.g death, DALYs
-            maxPlot:           this.maxBars(), // How many bars on the plot
-            compare:           this.compare(), // variable we are comparing across
-            disagg:            this.disagg(), // variable we are disaggregating by
-            yearLow:           this.yearFilter().selectedLow(), // lower bound on year
-            yearHigh:          this.yearFilter().selectedHigh(), // upper bound on yeat
-            activityTypes:     this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
+            maxPlot: this.maxBars(), // How many bars on the plot
+            compare: this.compare(), // variable we are comparing across
+            disagg: this.disagg(), // variable we are disaggregating by
+            yearLow: this.yearFilter().selectedLow(), // lower bound on year
+            yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
+            activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
-            selectedDiseases:  this.diseaseFilter().selectedOptions(), // which diseases do we care about
-            selectedVaccines:  this.vaccineFilter().selectedOptions(), // which vaccines do we care about
-            cumulative:        (this.compare() == "year" && this.cumPlot()) // are we creating a cumulative plot
+            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
+            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            cumulative: (this.compare() == "year" && this.cumPlot()) // are we creating a cumulative plot
         }
 
         const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours)
@@ -123,17 +127,6 @@ class DataVisModel {
         const hideLabel: boolean = this.hideLabels();
         const maxTotal = Math.max(...totals);
         this.filteredTable = new TableMaker().createTable(datasets, compareNames);
-        // Aborted attempt to render filteredTable as a DataTable
-        // $(document).ready(function() {
-        //     $('#example').DataTable( {
-        //         data: this.filteredTable,
-        //         columns: [
-        //             { title: this.compare() },
-        //             { title: this.disagg() },
-        //             { title: this.humanReadableBurdenOutcome() }
-        //         ]
-        //     } );
-        // } );
 
         this.chartObject = new Chart(this.ctx, {
             type: 'bar',
@@ -165,31 +158,31 @@ class DataVisModel {
                     }]
                 },
                 plugins: {
-                    datalabels:{
-                            color: "white",
-                            display: function(context: any) {
-                                if (!hideLabel)
-                                    return context.dataset.data[context.dataIndex] > maxTotal / 10;
-                                else
-                                    return false;
-                            },
-                            font: {
-                                weight: "bold"
-                            },
-                            formatter: (value: number, ctx: any) => rescaleLabel(value, maxTotal)
-                         }
+                    datalabels: {
+                        color: "white",
+                        display: function (context: any) {
+                            if (!hideLabel)
+                                return context.dataset.data[context.dataIndex] > maxTotal / 10;
+                            else
+                                return false;
+                        },
+                        font: {
+                            weight: "bold"
+                        },
+                        formatter: (value: number, ctx: any) => rescaleLabel(value, maxTotal)
+                    }
                 },
                 animation: {
-                    onComplete: function() {
+                    onComplete: function () {
                         const chart = this.chart;
                         const context = chart.ctx;
                         const lastDataSet: number = datasets.length - 1
                         const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
                         // this is a lot of nonsense to grab the plot meta data
                         // for the final (topmost) data set
-                        lastMeta.data.forEach(function(bar: any, index: number) {
+                        lastMeta.data.forEach(function (bar: any, index: number) {
                             const data = rescaleLabel(totals[index].toPrecision(3),
-                                                      totals[index].toPrecision(3));
+                                totals[index].toPrecision(3));
                             // magic numbers to the labels look reasonable
                             context.fillText(data, bar._model.x - 12, bar._model.y - 5);
                         });
@@ -201,14 +194,14 @@ class DataVisModel {
 
     exportPlot() {
         this.canvas = document.getElementById('myChart');
-        this.canvas.toBlob(function(blob: Blob) {
+        this.canvas.toBlob(function (blob: Blob) {
             saveAs(blob, "untitled.png");
         });
     }
 
     exportData() {
-        jsonexport(this.filteredTable(), function(err: any, csv: any) {
-            if(err) {
+        jsonexport(this.filteredTable(), function (err: any, csv: any) {
+            if (err) {
                 return; // probably do something else here
             }
             var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
@@ -222,7 +215,7 @@ class DataVisModel {
     }
 
     defaultTitle() {
-        switch(this.humanReadableBurdenOutcome()) {
+        switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
                 return "Future deaths averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             case "cases":
@@ -253,9 +246,9 @@ class DataVisModel {
         this.AppId = ko.observable("App. id: " + reportInfo.git_id);
 
         this.compareOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-                               "disease", "vaccine"];
+            "disease", "vaccine"];
         this.disaggOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-                              "disease", "vaccine"];
+            "disease", "vaccine"];
 
         this.maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
@@ -269,8 +262,8 @@ class DataVisModel {
         this.hideLegend = ko.observable(false);
 
         this.humanReadableBurdenOutcome = ko.observable("deaths");
-        this.burdenOutcome = ko.computed(function() {
-            switch(this.humanReadableBurdenOutcome()) {
+        this.burdenOutcome = ko.computed(function () {
+            switch (this.humanReadableBurdenOutcome()) {
                 case "deaths":
                     return "deaths_averted"
                 case "cases":
@@ -286,8 +279,8 @@ class DataVisModel {
 
         this.plotTitle = ko.observable(this.defaultTitle());
 
-        this.yAxisTitle = ko.computed(function() {
-            switch(this.humanReadableBurdenOutcome()) {
+        this.yAxisTitle = ko.computed(function () {
+            switch (this.humanReadableBurdenOutcome()) {
                 case "deaths":
                     return "Future deaths averted"
                 case "cases":
