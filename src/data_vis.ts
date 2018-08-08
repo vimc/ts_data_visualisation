@@ -10,8 +10,6 @@ import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
 import {activityTypes, countries, diseases, vaccines} from "./Data";
 
-import 'bootstrap/dist/css/bootstrap.css';
-
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
 
@@ -23,6 +21,8 @@ require("./image/caret-up-dark.svg");
 require("./image/caret-up-secondary.svg");
 require("./image/caret-down-secondary.svg");
 require("./css/styles.css");
+
+import 'bootstrap/dist/css/bootstrap.css';
 
 const jsonexport = require('jsonexport');
 
@@ -127,7 +127,6 @@ class DataVisModel {
         const hideLabel: boolean = this.hideLabels();
         const maxTotal = Math.max(...totals);
         this.filteredTable = new TableMaker().createTable(datasets, compareNames);
-
         this.chartObject = new Chart(this.ctx, {
             type: 'bar',
             data: {
