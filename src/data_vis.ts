@@ -39,9 +39,6 @@ function rescaleLabel(value: number, scale: number): string {
 }
 
 class DataVisModel {
-    // UI knockout variables
-    hideLabels: KnockoutObservable<boolean>;
-    hideLegend: KnockoutObservable<boolean>;
 
     showSidebar = ko.observable(true);
     yearFilter = ko.observable(new RangeFilter({
@@ -55,30 +52,28 @@ class DataVisModel {
     countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries, humanNames: countryDict}));
     diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases, humanNames: diseaseDict}));
     vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines, humanNames: vaccineDict}));
+    
+    xAxisOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
+        "disease", "vaccine"];
 
-    // the  variable that we are going to compare along the x axis
-    compareOptions: Array<string>;
+    disaggregationOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
+        "disease", "vaccine"];
 
-    // the variable that we are going to disaggregate by
-    disaggOptions: Array<string>;
-    maxPlotOptions: Array<number>;
-    compare: KnockoutObservable<string>;
-    disagg: KnockoutObservable<string>;
-    maxBars: KnockoutObservable<number>;
-    cumPlot: KnockoutObservable<boolean>;
+    maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
-    humanReadableBurdenOutcome: KnockoutObservable<string>;
-    burdenOutcome: KnockoutComputed<string>;
-    plotTitle: KnockoutObservable<string>;
-    yAxisTitle: KnockoutComputed<string>;
+    compare = ko.observable<string>(this.xAxisOptions[1]);
+    disaggregateBy = ko.observable<string>(this.disaggregationOptions[7]);
+    maxBars = ko.observable<number>(5);
+    cumulativePlot = ko.observable<boolean>(false);
 
-    // Touchstone
-    activeTouchstone: KnockoutComputed<string>;
-    //////////////////////////////////////////////////////////////////////////////
-    // Id tracking info
-    repId: KnockoutObservable<string>; // id of montagu report for app
-    depId: KnockoutObservable<string>; // id of montagu report for data
-    AppId: KnockoutObservable<string>; // git has of app source code
+    reportId = ko.observable("Report id: " + reportInfo.rep_id);
+    dataId = ko.observable("Data id: " + reportInfo.dep_id);
+    appId = ko.observable("App. id: " + reportInfo.git_id);
+
+    hideLabels = ko.observable<boolean>(false);
+    hideLegend = ko.observable<boolean>(false);
+
+    humanReadableBurdenOutcome = ko.observable("deaths");
 
     canvas: any;
     ctx: any;
@@ -103,14 +98,14 @@ class DataVisModel {
             metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
             maxPlot: this.maxBars(), // How many bars on the plot
             compare: this.compare(), // variable we are comparing across
-            disagg: this.disagg(), // variable we are disaggregating by
+            disagg: this.disaggregateBy(), // variable we are disaggregating by
             yearLow: this.yearFilter().selectedLow(), // lower bound on year
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
             selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
             selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
-            cumulative: (this.compare() == "year" && this.cumPlot()) // are we creating a cumulative plot
+            cumulative: (this.compare() == "year" && this.cumulativePlot()) // are we creating a cumulative plot
         }
 
         const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours)
@@ -235,68 +230,46 @@ class DataVisModel {
         this.render();
     }
 
+    burdenOutcome = ko.computed(function () {
+        switch (this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "deaths_averted"
+            case "cases":
+                return "cases_averted"
+            case "dalys":
+                return "dalys_averted"
+            case "fvps":
+                return "fvps"
+            default:
+                return "deaths_averted"
+        }
+    }, this);
+
+    plotTitle = ko.observable(this.defaultTitle());
+
+    yAxisTitle = ko.computed(function () {
+        switch (this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "Future deaths averted"
+            case "cases":
+                return "Future cases averted"
+            case "dalys":
+                return "Future DALYS averted"
+            case "fvps":
+                return "fvps"
+            default:
+                return "Future deaths averted"
+        }
+    }, this);
+
     constructor() {
-        // the data for South Sudan (SSD), Palestinian Territories (PSE) and Kosovo (XK) are dodgy so I've omitted them
-
-
-        this.repId = ko.observable("Report id: " + reportInfo.rep_id);
-        this.depId = ko.observable("Data id: " + reportInfo.dep_id);
-        this.AppId = ko.observable("App. id: " + reportInfo.git_id);
-
-        this.compareOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-            "disease", "vaccine"];
-        this.disaggOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-            "disease", "vaccine"];
-
-        this.maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-
-        this.compare = ko.observable(this.compareOptions[1]);
-        this.disagg = ko.observable(this.disaggOptions[7]);
-
-        this.maxBars = ko.observable(5);
-
-        this.cumPlot = ko.observable(false);
-        this.hideLabels = ko.observable(false);
-        this.hideLegend = ko.observable(false);
-
-        this.humanReadableBurdenOutcome = ko.observable("deaths");
-        this.burdenOutcome = ko.computed(function () {
-            switch (this.humanReadableBurdenOutcome()) {
-                case "deaths":
-                    return "deaths_averted"
-                case "cases":
-                    return "cases_averted"
-                case "dalys":
-                    return "dalys_averted"
-                case "fvps":
-                    return "fvps"
-                default:
-                    return "deaths_averted"
-            }
-        }, this);
-
-        this.plotTitle = ko.observable(this.defaultTitle());
-
-        this.yAxisTitle = ko.computed(function () {
-            switch (this.humanReadableBurdenOutcome()) {
-                case "deaths":
-                    return "Future deaths averted"
-                case "cases":
-                    return "Future cases averted"
-                case "dalys":
-                    return "Future DALYS averted"
-                case "fvps":
-                    return "fvps"
-                default:
-                    return "Future deaths averted"
-            }
-        }, this);
 
         // initialise to pine countries selected
-        this.countryFilter().selectCountryGroup("pine")
-        this.render();
-    };
+        this.countryFilter().selectCountryGroup("pine");
 
+        this.render();
+
+    }
 
 }
 

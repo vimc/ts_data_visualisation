@@ -23,9 +23,9 @@
         VIMC Data Visualisation Tool
     </div>
     <div class="float-right small" style="color: #0056b3; white-space: pre-wrap;">
-        <span data-bind="text: repId"/></span>
-        <span data-bind="text: depId"/></span>
-        <span data-bind="text: AppId"/></span>
+        <span data-bind="text: reportId"/></span>
+        <span data-bind="text: dataId"/></span>
+        <span data-bind="text: appId"/></span>
     </div>
 </nav>
 
@@ -201,11 +201,11 @@
                         <p>Compare across <span class="info icon" data-toggle="tooltip" data-placement="top"
                                                 title="What should we use as the x-axis for the graph?">
                     </span></p>
-                        <select class="form-control" data-bind="options: compareOptions, value: compare"></select>
+                        <select class="form-control" data-bind="options: xAxisOptions, value: compare"></select>
                     </div>
                     <div class="col-4" style="margin-top: 46px;">
                         <div class="form-check" data-bind="visible: compare() == 'year'">
-                            <input class="form-check-input" type="checkbox" data-bind="checked: cumPlot"
+                            <input class="form-check-input" type="checkbox" data-bind="checked: cumulativePlot"
                                    id="cumulativePlotId">
                             <label class="form-check-label" for="cumulativePlotId">
                                 Cumulative
@@ -218,7 +218,7 @@
                         <p>Disaggregate by <span class="info icon" data-toggle="tooltip" data-placement="top"
                                                  title="What should we disaggregate by?">
                     </span></p>
-                        <select class="form-control" data-bind="options: disaggOptions, value: disagg"></select>
+                        <select class="form-control" data-bind="options: disaggregationOptions, value: disaggregateBy"></select>
                     </div>
                     <div class="col-4">
                         <p>Max bars <span class="info icon" data-toggle="tooltip" data-placement="top"
