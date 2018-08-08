@@ -23,6 +23,8 @@ require("./image/caret-up-secondary.svg");
 require("./image/caret-down-secondary.svg");
 require("./css/styles.css");
 
+const $ = require("jquery");
+
 const jsonexport = require('jsonexport');
 
 function rescaleLabel(value: number, scale: number): string {
@@ -86,6 +88,84 @@ class DataVisModel {
         return countryDict[countryCode];
     }
 
+    exportPlot() {
+        this.canvas = document.getElementById('myChart');
+        this.canvas.toBlob(function (blob: Blob) {
+            saveAs(blob, "untitled.png");
+        });
+    }
+
+    exportData() {
+        jsonexport(this.filteredTable(), function (err: any, csv: any) {
+            if (err) {
+                return; // probably do something else here
+            }
+            var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "data.csv");
+        });
+    }
+
+    changeBurden(burden: string) {
+        this.humanReadableBurdenOutcome(burden)
+        this.plotTitle(this.defaultTitle());
+    }
+
+    defaultTitle() {
+        switch (this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "Future deaths averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "cases":
+                return "Future cases averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "dalys":
+                return "Future DALYS averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "fvps":
+                return "fvps between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            default:
+                return "Future deaths averted"
+        }
+    }
+
+    resetTitle() {
+        this.plotTitle(this.defaultTitle());
+    }
+
+    applyTitle() {
+        this.render();
+    }
+
+    burdenOutcome = ko.computed(function () {
+        switch (this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "deaths_averted"
+            case "cases":
+                return "cases_averted"
+            case "dalys":
+                return "dalys_averted"
+            case "fvps":
+                return "fvps"
+            default:
+                return "deaths_averted"
+        }
+    }, this);
+
+    plotTitle = ko.observable(this.defaultTitle());
+
+    yAxisTitle = ko.computed(function () {
+        switch (this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "Future deaths averted";
+            case "cases":
+                return "Future cases averted";
+            case "dalys":
+                return "Future DALYS averted";
+            case "fvps":
+                return "fvps";
+            default:
+                return "Future deaths averted"
+        }
+    }, this);
+
+
     render() {
         this.canvas = document.getElementById('myChart');
         this.ctx = this.canvas.getContext('2d');
@@ -106,7 +186,7 @@ class DataVisModel {
             selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
             selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
             cumulative: (this.compare() == "year" && this.cumulativePlot()) // are we creating a cumulative plot
-        }
+        };
 
         const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours)
 
@@ -185,93 +265,13 @@ class DataVisModel {
         });
     }
 
-    exportPlot() {
-        this.canvas = document.getElementById('myChart');
-        this.canvas.toBlob(function (blob: Blob) {
-            saveAs(blob, "untitled.png");
-        });
-    }
-
-    exportData() {
-        jsonexport(this.filteredTable(), function (err: any, csv: any) {
-            if (err) {
-                return; // probably do something else here
-            }
-            var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, "data.csv");
-        });
-    }
-
-    changeBurden(burden: string) {
-        this.humanReadableBurdenOutcome(burden)
-        this.plotTitle(this.defaultTitle());
-    }
-
-    defaultTitle() {
-        switch (this.humanReadableBurdenOutcome()) {
-            case "deaths":
-                return "Future deaths averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "cases":
-                return "Future cases averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "dalys":
-                return "Future DALYS averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "fvps":
-                return "fvps between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            default:
-                return "Future deaths averted"
-        }
-    }
-
-    resetTitle() {
-        this.plotTitle(this.defaultTitle());
-    }
-
-    applyTitle() {
-        this.render();
-    }
-
-    burdenOutcome = ko.computed(function () {
-        switch (this.humanReadableBurdenOutcome()) {
-            case "deaths":
-                return "deaths_averted"
-            case "cases":
-                return "cases_averted"
-            case "dalys":
-                return "dalys_averted"
-            case "fvps":
-                return "fvps"
-            default:
-                return "deaths_averted"
-        }
-    }, this);
-
-    plotTitle = ko.observable(this.defaultTitle());
-
-    yAxisTitle = ko.computed(function () {
-        switch (this.humanReadableBurdenOutcome()) {
-            case "deaths":
-                return "Future deaths averted"
-            case "cases":
-                return "Future cases averted"
-            case "dalys":
-                return "Future DALYS averted"
-            case "fvps":
-                return "fvps"
-            default:
-                return "Future deaths averted"
-        }
-    }, this);
-
-    constructor() {
-
-        // initialise to pine countries selected
-        this.countryFilter().selectCountryGroup("pine");
-
-        this.render();
-
-    }
-
 }
 
-ko.applyBindings(new DataVisModel());
+const viewModel = new DataVisModel();
+
+ko.applyBindings(viewModel);
+
+$(document).ready(() => {
+    viewModel.render();
+});
 
