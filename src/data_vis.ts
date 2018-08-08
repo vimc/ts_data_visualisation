@@ -9,6 +9,7 @@ import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
 import {activityTypes, countries, diseases, vaccines} from "./Data";
+import 'bootstrap/dist/css/bootstrap.css';
 
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
@@ -21,8 +22,6 @@ require("./image/caret-up-dark.svg");
 require("./image/caret-up-secondary.svg");
 require("./image/caret-down-secondary.svg");
 require("./css/styles.css");
-
-import 'bootstrap/dist/css/bootstrap.css';
 
 const jsonexport = require('jsonexport');
 
