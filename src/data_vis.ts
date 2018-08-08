@@ -8,12 +8,12 @@ import {countryDict, vaccineDict, diseaseDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 
 require("./index.html");
-require("./logo-dark-drop.png");
-require("./caret-down.svg");
-require("./caret-up.svg");
-require("./caret-up-dark.svg");
-require("./caret-up-secondary.svg");
-require("./caret-down-secondary.svg");
+require("./image/logo-dark-drop.png");
+require("./image/caret-down.svg");
+require("./image/caret-up.svg");
+require("./image/caret-up-dark.svg");
+require("./image/caret-up-secondary.svg");
+require("./image/caret-down-secondary.svg");
 require("./css/styles.css");
 require("./css/bootstrap.css")
 

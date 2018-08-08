@@ -27,6 +27,23 @@ system("cat temporary.json >> impactData.js")
 file.remove("temporary.json")
 ```
 
+# Local development
+For running locally, you will need to create a top level sub-directory called `data` and
+populate it with a file called `impactData.js`, generated as described above, and another one
+called `reportInfo.js` containing a dictionary of 3 objects in the format:
+
+```
+const reportInfo =
+{"rep_id":["20180713-111821-4b65b50b"],
+"dep_id":["20180521-105151-275bd2ac"],
+"git_id":["c1b586e18beed4a3a2d4c27830ae3a40a072e59e"]}
+```
+
+These 2 files can be most easily obtained by downloading the compiled app and copying
+them in to your local `data` directory.
+
+Then run `npm run build` and open `out/index.html` in a browser to view the app locally.
+
 ## TODO list
 * Make the text in the UI more human readable
 * Add total labels to the top of each bar
