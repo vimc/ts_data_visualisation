@@ -5,7 +5,7 @@ export const countries = ["AFG", "AGO", "ALB", "ARM", "AZE", "BDI", "BEN", "BFA"
     "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL", "PAK", "PHL", "PNG",
     "PRK", "PRY", /*"PSE",*/ "RWA", "SDN", "SEN", "SLB", "SLE", "SLV", "SOM", /*"SSD",*/ "STP", "SWZ",
     "SYR", "TCD", "TGO", "TJK", "TKM", "TLS", "TON", "TUV", "TZA", "UGA", "UKR", "UZB", "VNM",
-    "VUT", "WSM", /*"XK",*/ "YEM", "ZMB", "ZWE"]
+    "VUT", "WSM", /*"XK",*/ "YEM", "ZMB", "ZWE"];
 
 export const pineCountries = ["IND", "PAK", "NGA", "ETH"];
 export const gavi69 = ["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "BOL", "BTN", "CAF",
@@ -19,13 +19,13 @@ export const gavi73 = ["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD", "
                     "GUY", "HND", "HTI", "IDN", "IND", "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA",
                     "MDG", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL", "PAK", "PNG", "PRK",
                     "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
-                    "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"]              
+                    "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"];
 
 export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA",
-    "PCV", "Rota", "Rubella", "YF"]
+    "PCV", "Rota", "Rubella", "YF"];
 
 export const vaccines = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1",
     "MCV2", "Measles", "MenA", "PCV3", "Rota",
-    "RCV2", "Rubella", "YF"]
+    "RCV2", "Rubella", "YF"];
 
-export const activityTypes = ["routine", "campaign"]
+export const activityTypes = ["routine", "campaign"];

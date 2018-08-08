@@ -127,3 +127,8 @@ export const diseaseDict: { [code: string] : string} = {
     Rubella: "Rubella",
     YF: "Yellow Fever"
 }
+
+export const activitiesDict = {
+    routine: "routine",
+    campaign: "campaign"
+}

@@ -30,10 +30,10 @@
 </nav>
 
 <div class="clearfix"></div>
-
-<div class="filter-bar sidebar" data-bind="css: { in: showSidebar}">
+<!-- ko with: sidebar -->
+<div class="filter-bar sidebar" data-bind="css: { in: show}">
     <div class="m-3">
-        <a href="#" data-bind="visible: !showSidebar(), click: () => showSidebar(true)"
+        <a href="#" data-bind="visible: !show(), click: () => show(true)"
            style="text-decoration: none !important;">
             <svg height="20" style="vertical-align: text-bottom;" viewBox="0 0 8 16" version="1.1" width="16"
                  aria-hidden="true">
@@ -44,7 +44,7 @@
                 <path fill-rule="evenodd" fill="#007bff" d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3l5 5z"></path>
             </svg>
         </a>
-        <a href="#" data-bind="visible: showSidebar, click: () => showSidebar(false)"
+        <a href="#" data-bind="visible: show, click: () => show(false)"
            style="text-decoration: none !important;">
             <svg height="20" style="vertical-align: text-bottom;" class="octicon octicon-chevron-left"
                  viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true">
@@ -60,7 +60,7 @@
         </a>
     </div>
 
-    <ul class="nav flex-column border-bottom border-top" data-bind="visible: showSidebar">
+    <ul class="nav flex-column border-bottom border-top" data-bind="visible: show">
         <li class="nav-item" data-bind="with: yearFilter">
             <a class="nav-link nav-parent"
                href="#"
@@ -138,10 +138,10 @@
                 <div data-bind="foreach: options">
                     <div class="nav-item nav-option">
                         <div class="nav-link">
-                            <label data-bind="attr: {for: $data}">
+                            <label data-bind="attr: {for: name}">
                                 <input type="checkbox"
-                                       data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
-                                <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                                       data-bind="attr: { value: name, id: name }, checked: $parent.selectedOptions">
+                                <span data-bind="text: humanReadableName"></span>
                             </label>
                         </div>
                     </div>
@@ -159,10 +159,10 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <label data-bind="attr: {for: $data}">
-                            <input type="checkbox" data-bind="attr: { value: $data, id: $data },
+                        <label data-bind="attr: {for: name}">
+                            <input type="checkbox" data-bind="attr: { value: name, id: name },
                                  checked: $parent.selectedOptions">
-                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                            <span data-bind="text: humanReadableName"></span>
                         </label>
                     </div>
                 </div>
@@ -179,10 +179,10 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <label data-bind="attr: {for: $data}">
+                        <label data-bind="attr: {for: name}">
                             <input type="checkbox"
-                                   data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
-                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                                   data-bind="attr: { value: name, id: name }, checked: $parent.selectedOptions">
+                            <span data-bind="text: humanReadableName"></span>
                         </label>
                     </div>
                 </div>
@@ -190,9 +190,9 @@
         </li>
     </ul>
 </div>
+<!-- /ko -->
 
-
-<div class="contents container-fluid">
+<div class="contents container-fluid" data-bind="with: plot">
     <div class="row">
         <div class="col-12 p-5">
             <form class="mb-5">
@@ -225,7 +225,9 @@
                                           title="How many values should we plot on the x-axis?">
                    </span></p>
                         <select type="number" class="form-control" style="width: 100px;"
-                                data-bind="options: maxPlotOptions, value: maxBars"></select>
+                                data-bind="value: numberOfBars, foreach: new Array(maxBars())">
+                            <option data-bind="text: $index()+1, value: $index()+1"></option>
+                        </select>
                     </div>
                 </div>
 
