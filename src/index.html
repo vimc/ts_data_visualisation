@@ -73,13 +73,16 @@
                     <div class="nav-link">
                         Year Low:
                         <select class=form-control data-bind="options: rangeValues, value: selectedLow"></select>
+                    </div>
+                </div>
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
                         Year High:
                         <select class=form-control data-bind="options: rangeValues, value: selectedHigh"></select>
                     </div>
                 </div>
             </div>
         </li>
-
 
         <li class="nav-item" data-bind="with: activityFilter">
             <a class="nav-link nav-parent"
@@ -88,13 +91,14 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: options">
-                            <input type="checkbox" data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
-                            <label data-bind="text: $data"></label>
-                        </div>
+                        <label data-bind="attr: {for: $data}">
+                            <input type="checkbox" data-bind="attr: {id: $data, value: $data},
+                                checked: $parent.selectedOptions"/>
+                            <span data-bind="text: $data"></span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -110,19 +114,35 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        Country Groups
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('all')">All</button>
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('none')">None</button>
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('gavi73')">Gavi73
+                        <button type="button" class="btn btn-primary mt-1" data-bind="click: selectCountryGroup('all')">
+                            All
                         </button>
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('gavi69')">Gavi69
+
+                        <button type="button" class="btn btn-primary mt-1"
+                                data-bind="click: selectCountryGroup('none')">None
                         </button>
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('pine')">PINE</button>
-                        <hr>
-                        Individual Countries
-                        <div data-bind="foreach: options">
-                            <input type="checkbox" data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
-                            <label data-bind="text: $parent.makeHumanreadable($data)"></label>
+                        <button type="button" class="btn btn-primary mt-1"
+                                data-bind="click: selectCountryGroup('gavi73')">
+                            Gavi73
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1"
+                                data-bind="click: selectCountryGroup('gavi69')">
+                            Gavi69
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1"
+                                data-bind="click: selectCountryGroup('pine')">PINE
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div data-bind="foreach: options">
+                    <div class="nav-item nav-option">
+                        <div class="nav-link">
+                            <label data-bind="attr: {for: $data}">
+                                <input type="checkbox"
+                                       data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
+                                <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -136,13 +156,14 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: options">
-                            <input type="checkbox" data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
-                            <label data-bind="text: $parent.makeHumanreadable($data)"></label>
-                        </div>
+                        <label data-bind="attr: {for: $data}">
+                            <input type="checkbox" data-bind="attr: { value: $data, id: $data },
+                                 checked: $parent.selectedOptions">
+                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -155,13 +176,14 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: options">
-                            <input type="checkbox" data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
-                            <label data-bind="text: $parent.makeHumanreadable($data)"></label>
-                        </div>
+                        <label data-bind="attr: {for: $data}">
+                            <input type="checkbox"
+                                   data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
+                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -227,31 +249,33 @@
             <div style="max-width: 1000px">
                 <canvas id="myChart"></canvas>
             </div>
-            <form>
+            <form class="mt-3">
                 <div class="form-group row">
-                    <div class="col-3">
-                        Title
+                    <div class="col-1">
+                        <label for="plot-title" class="col-form-label">Title</label>
                     </div>
-                    <div class="col-5">
-                        <input data-bind="value: plotTitle"/>
+                    <div class="col-12 col-sm-7">
+                        <input type="text" id="plot-title" class="form-control" data-bind="value: plotTitle"/>
                     </div>
-                    <div class="col-4">
-                        <button class="btn btn-success btn-sm" data-bind="click: applyTitle">Apply</button>
-                        <button class="btn btn-success btn-sm" data-bind="click: resetTitle">Reset</button>
+                    <div class="col-12 col-sm-4">
+                        <button class="btn btn-success" data-bind="click: applyTitle">Apply</button>
+                        <button class="btn btn-success" data-bind="click: resetTitle">Reset</button>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels"
-                               id="hideLabelsId">
-                        <label class="form-check-label" for="hideLabelsId">Hide Labels</label>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels"
+                                   id="hideLabelsId">
+                            <label class="form-check-label" for="hideLabelsId">Hide Labels</label>
+                        </div>
                     </div>
                 </div>
             </form>
 
-            <button class="btn btn-success btn-sm" data-bind="click: render">Redraw Plot</button>
-            <button class="btn btn-success btn-sm" data-bind="click: exportPlot">Export plot as png</button>
-            <button class="btn btn-success btn-sm" data-bind="click: exportData">Export data as csv</button>
+            <button class="btn btn-success" data-bind="click: render">Redraw Plot</button>
+            <button class="btn btn-success" data-bind="click: exportPlot">Export plot as png</button>
+            <button class="btn btn-success" data-bind="click: exportData">Export data as csv</button>
 
             <div data-bind='simpleGrid: filteredTable'></div>
         </div>

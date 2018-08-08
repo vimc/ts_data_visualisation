@@ -60,6 +60,11 @@ html, body {
     background: rgba(54, 162, 235, 0.2)
 }
 
+.nav-link label {
+    width: 100%;
+    margin: 0
+}
+
 .nav-parent, .nav-parent-country {
     text-decoration: none !important;
 }
@@ -106,12 +111,4 @@ ul.countries-list {
     -webkit-column-count: 5;
     column-count: 5;
     column-gap: 0px;
-}
-
-input[type='checkbox'], label {
-    float: left;   
-}
-
-input[type='checkbox'] {
-    clear: both;    
 }
