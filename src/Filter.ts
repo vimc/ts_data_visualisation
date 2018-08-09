@@ -3,24 +3,24 @@ import * as ko from "knockout";
 // for country filters
 import {countries, pineCountries, gavi69, gavi73} from "./Data";
 
-export interface FilterOptions {
+export interface FilterSettings {
     name: string;
 }
 
-export interface RangeFilterOptions extends FilterOptions {
+export interface RangeFilterSettings extends FilterSettings {
     min: number;
     max: number;
     selectedLow?: number;
     selectedHigh?: number;
 }
 
-export interface ListFilterOptions extends FilterOptions {
+export interface ListFilterSettings extends FilterSettings {
     options: Array<string>;
     selected?: Array<string>;
     humanNames?: { [code: string] : string }
 }
 
-export interface CountryFilterOptions extends ListFilterOptions {
+export interface CountryFilterSettings extends ListFilterSettings {
 
 }
 
@@ -32,8 +32,8 @@ export class Filter {
         this.isOpen(!this.isOpen());
     }
 
-    constructor(options: FilterOptions) {
-        this.name(options.name);
+    constructor(settings: FilterSettings) {
+        this.name(settings.name);
     }
 }
 
@@ -49,17 +49,18 @@ export class ListFilter extends Filter {
         return null;
     }
 
-    constructor(options: ListFilterOptions) {
-        super({name: options.name});
-        this.options(options.options);
-        this.selectedOptions(options.selected || options.options);
-        this.dictionary = (options.humanNames || options.humanNames);
+    constructor(settings: ListFilterSettings) {
+        super({name: settings.name});
+        this.options(settings.options);
+        this.selectedOptions(settings.selected || settings.options);
+        this.dictionary = (settings.humanNames || settings.humanNames);
     }
 }
 
 export class CountryFilter extends ListFilter {
-    selectCountryGroup(cntGrp: string) {
-        switch(cntGrp) {
+
+    selectCountryGroup(selectedGroup: string) {
+        switch(selectedGroup) {
             case "all":
                 this.selectedOptions(this.options());
                 break;
@@ -76,16 +77,17 @@ export class CountryFilter extends ListFilter {
                 this.selectedOptions(gavi69);
                 break;
             default:
-                console.debug(cntGrp);
                 this.selectedOptions([]);
                 break;
         }
     }
 
-    constructor(options: CountryFilterOptions) {
-        super(options);
-        this.options(options.options);
-        this.selectedOptions(options.selected || options.options);
+    constructor(settings: CountryFilterSettings) {
+        super(settings);
+        this.options(settings.options);
+        this.selectedOptions(settings.selected || settings.options);
+
+        this.selectCountryGroup("pine");
     }
 }
 
@@ -94,16 +96,16 @@ export class RangeFilter extends Filter {
     selectedLow = ko.observable<number>();
     selectedHigh = ko.observable<number>();
 
-    constructor(options: RangeFilterOptions) {
-        super({name: options.name});
+    constructor(settings: RangeFilterSettings) {
+        super({name: settings.name});
 
         const rangeArray = [];
-        for (let i = 0 ; i <= options.max - options.min; i++){
-            rangeArray.push(options.min + i);
+        for (let i = 0 ; i <= settings.max - settings.min; i++){
+            rangeArray.push(settings.min + i);
         }
 
         this.rangeValues(rangeArray);
-        this.selectedLow(options.selectedLow || options.min);
-        this.selectedHigh(options.selectedHigh || options.max);
+        this.selectedLow(settings.selectedLow || settings.min);
+        this.selectedHigh(settings.selectedHigh || settings.max);
     }
 }
