@@ -1,6 +1,5 @@
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
-import {TrackingInfo} from "./PlotOptions";
 
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
@@ -43,8 +42,6 @@ function rescaleLabel(value: number, scale: number): string {
 }
 
 class DataVisModel {
-    test = new TrackingInfo();
-
     // UI knockout variables
     hideLabels:     KnockoutObservable<boolean>;
     hideLegend:     KnockoutObservable<boolean>;
