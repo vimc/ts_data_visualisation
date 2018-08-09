@@ -3,14 +3,13 @@ import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
-import 'bootstrap/dist/css/bootstrap.css';
-
 import * as ko from "knockout";
 import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
 import {activityTypes, countries, diseases, vaccines} from "./Data";
+import 'bootstrap/dist/css/bootstrap.css';
 
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
