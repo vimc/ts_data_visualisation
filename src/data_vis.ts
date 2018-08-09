@@ -1,5 +1,6 @@
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
+import {TrackingInfo} from "./PlotOptions";
 
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
@@ -23,7 +24,7 @@ import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
 import {FilteredRow} from "./FilteredRow";
 import {Filter, ListFilter, RangeFilter, CountryFilter} from "./Filter";
-import {diseases, vaccines, countries, activityTypes} from "./Data";
+import {diseases, vaccines, countries, activityTypes, plottingVariables} from "./Data";
 const jsonexport = require('jsonexport');
 // const $  = require( 'jquery' );
 // const dt = require( 'datatables.net' )( window, $ );
@@ -42,6 +43,8 @@ function rescaleLabel(value: number, scale: number): string {
 }
 
 class DataVisModel {
+    test = new TrackingInfo();
+
     // UI knockout variables
     hideLabels:     KnockoutObservable<boolean>;
     hideLegend:     KnockoutObservable<boolean>;
@@ -245,17 +248,12 @@ class DataVisModel {
     }
 
     constructor() {
-        // the data for South Sudan (SSD), Palestinian Territories (PSE) and Kosovo (XK) are dodgy so I've omitted them
-
-
         this.repId = ko.observable("Report id: " + reportInfo.rep_id);
         this.depId = ko.observable("Data id: " + reportInfo.dep_id);
         this.AppId = ko.observable("App. id: " + reportInfo.git_id);
 
-        this.compareOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-                               "disease", "vaccine"];
-        this.disaggOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-                              "disease", "vaccine"];
+        this.compareOptions = plottingVariables;
+        this.disaggOptions = plottingVariables;
 
         this.maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
