@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <link type="text/css" rel="stylesheet" href="bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="styles.css"/>
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"/>
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css"/>
 </head>
 <body class="d-none" data-bind="css:{'d-none':false}">
 <!--TODO loading screen logic here-->
@@ -21,15 +23,18 @@
         VIMC Data Visualisation Tool
     </div>
     <div class="float-right small" style="color: #0056b3; white-space: pre-wrap;">
-    <span data-bind="text: repId" /></span>
-    <span data-bind="text: depId" /></span>
-    <span data-bind="text: AppId" /></span>
+        <span data-bind="text: reportId"/></span>
+        <span data-bind="text: dataId"/></span>
+        <span data-bind="text: appId"/></span>
     </div>
 </nav>
 
+<div class="clearfix"></div>
+
 <div class="filter-bar sidebar" data-bind="css: { in: showSidebar}">
     <div class="m-3">
-        <a href="#" data-bind="visible: !showSidebar(), click: () => showSidebar(true)" style="text-decoration: none !important;">
+        <a href="#" data-bind="visible: !showSidebar(), click: () => showSidebar(true)"
+           style="text-decoration: none !important;">
             <svg height="20" style="vertical-align: text-bottom;" viewBox="0 0 8 16" version="1.1" width="16"
                  aria-hidden="true">
                 <path fill-rule="evenodd" fill="#007bff" d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3l5 5z"></path>
@@ -39,7 +44,8 @@
                 <path fill-rule="evenodd" fill="#007bff" d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3l5 5z"></path>
             </svg>
         </a>
-        <a href="#" data-bind="visible: showSidebar, click: () => showSidebar(false)" style="text-decoration: none !important;">
+        <a href="#" data-bind="visible: showSidebar, click: () => showSidebar(false)"
+           style="text-decoration: none !important;">
             <svg height="20" style="vertical-align: text-bottom;" class="octicon octicon-chevron-left"
                  viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true">
                 <path fill-rule="evenodd"
@@ -67,13 +73,16 @@
                     <div class="nav-link">
                         Year Low:
                         <select class=form-control data-bind="options: rangeValues, value: selectedLow"></select>
+                    </div>
+                </div>
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
                         Year High:
                         <select class=form-control data-bind="options: rangeValues, value: selectedHigh"></select>
                     </div>
                 </div>
             </div>
         </li>
-
 
         <li class="nav-item" data-bind="with: activityFilter">
             <a class="nav-link nav-parent"
@@ -82,13 +91,14 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: options">
-                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
-                            <label data-bind="text: $data"></label>
-                        </div>
+                        <label data-bind="attr: {for: $data}">
+                            <input type="checkbox" data-bind="attr: {id: $data, value: $data},
+                                checked: $parent.selectedOptions"/>
+                            <span data-bind="text: $data"></span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -104,17 +114,35 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        Country Groups
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('all')">All</button>
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('none')">None</button>
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('gavi73')">Gavi73</button>
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('gavi69')">Gavi69</button>
-                        <button type="button" class="btn" data-bind="click: selectCountryGroup('pine')">PINE</button>
-                        <hr>
-                        Individual Countries
-                        <div data-bind="foreach: options">
-                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
-                            <label data-bind="text: $parent.makeHumanreadable($data)"></label>
+                        <button type="button" class="btn btn-primary mt-1" data-bind="click: selectCountryGroup('all')">
+                            All
+                        </button>
+
+                        <button type="button" class="btn btn-primary mt-1"
+                                data-bind="click: selectCountryGroup('none')">None
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1"
+                                data-bind="click: selectCountryGroup('gavi73')">
+                            Gavi73
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1"
+                                data-bind="click: selectCountryGroup('gavi69')">
+                            Gavi69
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1"
+                                data-bind="click: selectCountryGroup('pine')">PINE
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div data-bind="foreach: options">
+                    <div class="nav-item nav-option">
+                        <div class="nav-link">
+                            <label data-bind="attr: {for: $data}">
+                                <input type="checkbox"
+                                       data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
+                                <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -128,13 +156,14 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: options">
-                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
-                            <label data-bind="text: $parent.makeHumanreadable($data)"></label>
-                        </div>
+                        <label data-bind="attr: {for: $data}">
+                            <input type="checkbox" data-bind="attr: { value: $data, id: $data },
+                                 checked: $parent.selectedOptions">
+                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -147,20 +176,20 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <div data-bind="foreach: options">
-                            <input type="checkbox"  data-bind="attr: { value: $data }, checked: $parent.selectedOptions">
-                            <label data-bind="text: $parent.makeHumanreadable($data)"></label>
-                        </div>
+                        <label data-bind="attr: {for: $data}">
+                            <input type="checkbox"
+                                   data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
+                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                        </label>
                     </div>
                 </div>
             </div>
         </li>
     </ul>
 </div>
-
 
 
 <div class="contents container-fluid">
@@ -172,11 +201,12 @@
                         <p>Compare across <span class="info icon" data-toggle="tooltip" data-placement="top"
                                                 title="What should we use as the x-axis for the graph?">
                     </span></p>
-                        <select class="form-control" data-bind="options: compareOptions, value: compare"></select>
+                        <select class="form-control" data-bind="options: xAxisOptions, value: compare"></select>
                     </div>
                     <div class="col-4" style="margin-top: 46px;">
                         <div class="form-check" data-bind="visible: compare() == 'year'">
-                            <input class="form-check-input" type="checkbox" data-bind="checked: cumPlot" id="cumulativePlotId">
+                            <input class="form-check-input" type="checkbox" data-bind="checked: cumulativePlot"
+                                   id="cumulativePlotId">
                             <label class="form-check-label" for="cumulativePlotId">
                                 Cumulative
                             </label>
@@ -188,13 +218,14 @@
                         <p>Disaggregate by <span class="info icon" data-toggle="tooltip" data-placement="top"
                                                  title="What should we disaggregate by?">
                     </span></p>
-                        <select class="form-control" data-bind="options: disaggOptions, value: disagg"></select>
+                        <select class="form-control" data-bind="options: disaggregationOptions, value: disaggregateBy"></select>
                     </div>
                     <div class="col-4">
                         <p>Max bars <span class="info icon" data-toggle="tooltip" data-placement="top"
                                           title="How many values should we plot on the x-axis?">
                    </span></p>
-                        <select type="number" class="form-control" style="width: 100px;" data-bind="options: maxPlotOptions, value: maxBars"></select>
+                        <select type="number" class="form-control" style="width: 100px;"
+                                data-bind="options: maxPlotOptions, value: maxBars"></select>
                     </div>
                 </div>
 
@@ -218,20 +249,34 @@
             <div style="max-width: 1000px">
                 <canvas id="myChart"></canvas>
             </div>
-            <div>
-                Title: <input data-bind="value: plotTitle" size="80"/>
-                <button class="btn btn-success btn-sm" data-bind="click: applyTitle">Apply</button>
-                <button class="btn btn-success btn-sm" data-bind="click: resetTitle">Reset</button>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels" id="hideLabelsId">
-                <label class="form-check-label" for="hideLabelsId">Hide Labels</label>
-            </div>
-            <div class="row">
-                <button class="btn btn-success btn-sm" data-bind="click: render">Redraw Plot</button>
-                <button class="btn btn-success btn-sm" data-bind="click: exportPlot">Export plot as png</button>
-                <button class="btn btn-success btn-sm" data-bind="click: exportData">Export data as csv</button>
-            </div>
+            <form class="mt-3">
+                <div class="form-group row">
+                    <div class="col-1">
+                        <label for="plot-title" class="col-form-label">Title</label>
+                    </div>
+                    <div class="col-12 col-sm-7">
+                        <input type="text" id="plot-title" class="form-control" data-bind="value: plotTitle"/>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <button class="btn btn-success" data-bind="click: applyTitle">Apply</button>
+                        <button class="btn btn-success" data-bind="click: resetTitle">Reset</button>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" data-bind="checked: hideLabels"
+                                   id="hideLabelsId">
+                            <label class="form-check-label" for="hideLabelsId">Hide Labels</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <button class="btn btn-success" data-bind="click: render">Redraw Plot</button>
+            <button class="btn btn-success" data-bind="click: exportPlot">Export plot as png</button>
+            <button class="btn btn-success" data-bind="click: exportData">Export data as csv</button>
+
             <div data-bind='simpleGrid: filteredTable'></div>
         </div>
     </div>
