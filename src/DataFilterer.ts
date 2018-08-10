@@ -5,17 +5,18 @@ export type ImpactDataByCountry = { [country: string]: ImpactDataRow[] };
 export type ImpactDataByVaccineAndThenCountry = { [vaccine: string]: ImpactDataByCountry };
 
 export interface DataFiltererOptions {
-    metric:            string;
-    maxPlot:           number;
-    compare:           string;
-    disagg:            string;
-    yearLow:           number;
-    yearHigh:          number;
-    activityTypes:     Array<string>;
-    selectedCountries: Array<string>;
-    selectedDiseases:  Array<string>;
-    selectedVaccines:  Array<string>;
-    cumulative:        boolean;
+    metric:              string;
+    maxPlot:             number;
+    compare:             string;
+    disagg:              string;
+    yearLow:             number;
+    yearHigh:            number;
+    activityTypes:       Array<string>;
+    selectedCountries:   Array<string>;
+    selectedDiseases:    Array<string>;
+    selectedVaccines:    Array<string>;
+    selectedTouchstones: Array<string>;
+    cumulative:          boolean;
 }
 
 export class DataFilterer {
@@ -25,7 +26,7 @@ export class DataFilterer {
         let filtData = this.filterByFocality(impactData, true); // filter focal model
         filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
         filtData = this.filterBYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
-        filtData = this.filterByTouchstone(filtData, "201710gavi"); // filter by touchstone
+        filtData = this.filterByTouchstone(filtData, filterOptions.selectedTouchstones); // filter by touchstone
         filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type
         filtData = this.filterByCountrySet(filtData, filterOptions.selectedCountries); // filter by activity type
         filtData = this.filterByDisease(filtData, filterOptions.selectedDiseases); // filter by diseases
@@ -150,8 +151,8 @@ export class DataFilterer {
         return impactData.filter(function(row) {return row.support_type === supportType;})
     }
 
-    private filterByTouchstone(impactData: ImpactDataRow[], touchStone: string): ImpactDataRow[] {
-        return impactData.filter(function(row) {return row.touchstone === touchStone;})
+    private filterByTouchstone(impactData: ImpactDataRow[], touchStone: string[]): ImpactDataRow[] {
+        return impactData.filter(function(row) {return touchStone.indexOf(row.touchstone) > -1;})
     }
 
     private filterByDisease(impactData: ImpactDataRow[], diseaseSet: string[]): ImpactDataRow[] {
