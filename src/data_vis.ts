@@ -8,7 +8,7 @@ import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
-import {activityTypes, countries, diseases, vaccines} from "./Data";
+import {diseases, vaccines, countries, activityTypes, plottingVariables} from "./Data";
 import 'bootstrap/dist/css/bootstrap.css';
 
 declare const impactData: ImpactDataRow[];
@@ -55,11 +55,9 @@ class DataVisModel {
     diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases, humanNames: diseaseDict}));
     vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines, humanNames: vaccineDict}));
     
-    xAxisOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-        "disease", "vaccine"];
+    xAxisOptions = plottingVariables;
 
-    disaggregationOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-        "disease", "vaccine"];
+    disaggregationOptions = plottingVariables;
 
     maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
@@ -265,6 +263,7 @@ class DataVisModel {
         });
     }
 
+
 }
 
 const viewModel = new DataVisModel();
@@ -274,4 +273,3 @@ ko.applyBindings(viewModel);
 $(document).ready(() => {
     viewModel.render();
 });
-

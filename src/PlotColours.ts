@@ -50,6 +50,7 @@ export const plotColours: { [vaccine: string]: string } = {
     // activity
     routine: "#2cac2d",
     campaign:"#AC1A68",
+    combined:"#002366",
     // continents
     Africa:  "#006633",
     Americas:"#8B0000",

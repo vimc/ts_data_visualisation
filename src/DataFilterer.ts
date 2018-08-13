@@ -25,7 +25,7 @@ export class DataFilterer {
         let filtData = this.filterByFocality(impactData, true); // filter focal model
         filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
         filtData = this.filterBYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
-        filtData = this.filterByTouchstone(filtData, "201710gavi"); // filter by touchstone
+        filtData = this.filterByTouchstone(filtData, "201710gavi-201807wue"); // filter by touchstone
         filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type
         filtData = this.filterByCountrySet(filtData, filterOptions.selectedCountries); // filter by activity type
         filtData = this.filterByDisease(filtData, filterOptions.selectedDiseases); // filter by diseases
