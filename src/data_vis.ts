@@ -56,11 +56,9 @@ class DataVisModel {
     vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines, humanNames: vaccineDict}));
     touchstoneFilter = ko.observable(new ListFilter({name: "Touchstone", options: touchstones, selected: ["201710gavi-201807wue"]}));
     
-    xAxisOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-        "disease", "vaccine"];
+    xAxisOptions = plottingVariables;
 
-    disaggregationOptions = ["year", "country", "continent", "region", "gavi_cofin_status", "activity_type",
-        "disease", "vaccine"];
+    disaggregationOptions = plottingVariables;
 
     maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
