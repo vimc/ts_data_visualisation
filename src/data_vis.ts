@@ -265,6 +265,7 @@ class DataVisModel {
         });
     }
 
+
 }
 
 const viewModel = new DataVisModel();
@@ -274,4 +275,3 @@ ko.applyBindings(viewModel);
 $(document).ready(() => {
     viewModel.render();
 });
-
