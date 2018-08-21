@@ -198,7 +198,7 @@ class DataVisModel {
 
         const hideLabel: boolean = this.hideLabels();
         const maxTotal = Math.max(...totals);
-        this.filteredTable = new TableMaker().createTable(datasets, compareNames);
+        this.filteredTable = new TableMaker().createWideTable(datasets, compareNames);
         this.chartObject = new Chart(this.ctx, {
             type: 'bar',
             data: {
@@ -262,8 +262,6 @@ class DataVisModel {
             }
         });
     }
-
-
 }
 
 const viewModel = new DataVisModel();
