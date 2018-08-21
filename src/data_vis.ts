@@ -8,7 +8,7 @@ import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
-import {diseases, vaccines, countries, activityTypes, plottingVariables} from "./Data";
+import {diseases, vaccines, countries, activityTypes, plottingVariables, touchstones} from "./Data";
 import 'bootstrap/dist/css/bootstrap.css';
 
 declare const impactData: ImpactDataRow[];
@@ -54,6 +54,7 @@ class DataVisModel {
     countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries, humanNames: countryDict}));
     diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases, humanNames: diseaseDict}));
     vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines, humanNames: vaccineDict}));
+    touchstoneFilter = ko.observable(new ListFilter({name: "Touchstone", options: touchstones, selected: ["201710gavi-201807wue"]}));
     
     xAxisOptions = plottingVariables;
 
@@ -183,6 +184,7 @@ class DataVisModel {
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
             selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
             selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
             cumulative: (this.compare() == "year" && this.cumulativePlot()) // are we creating a cumulative plot
         };
 

@@ -177,9 +177,16 @@ export const plotColours: { [vaccine: string]: string } = {
     "XK": "#32abda",
     "YEM": "#123365",
     "ZMB": "#7cfde5",
-    "ZWE": "#5ef54b"
+    "ZWE": "#5ef54b",
+    "201710gavi":            "#00ffff",
+    "201710gavi-201807wue":  "#00008b",
+    "201510gavi":            "#ff8c00",
+    "201310gavi-201807wue":  "#008000",
+    "201310gavi":            "#ffb6c1",
+    "201510gavi-201807wue":  "#800000",
+    "201210gavi-201807wue":  "#ff0000",
+    "201210gavi-201303gavi": "#9400d3"
 };
-
 
 export const niceColours = {
     aqua:           "#00ffff",
