@@ -248,8 +248,11 @@
                                 data-bind="options: maxPlotOptions, value: maxBars"></select>
                     </div>
                 </div>
-
             </form>
+
+            <p style="font-weight:bold;color:red"
+               data-bind="text: warningMessage, visible: showWarning">
+            </p>
 
             <div class="btn-group mt-1 mb-5" role="group">
                 <button type="button" class="btn btn-primary active" data-bind="click: () => changeBurden('deaths'),
