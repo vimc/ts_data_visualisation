@@ -1,20 +1,20 @@
 export const plotColours: { [vaccine: string]: string } = {
     // disease / vaccine colours
-    HepB:    "#053061",
-    HepB_BD: "#2cac2d",
-    Hib3:    "#2166ac",
-    HPV:     "#4393c3",
-    JE:      "#92c5de",
-    MCV1:    "#d9fdc9",
-    MCV2:    "#fddbc7",
-    MenA:    "#f4a582",
-    PCV3:    "#d6604d",
+    HepB:    "#8DD3C7",
+    HepB_BD: "#466963",
+    Hib3:    "#FB8072",
+    HPV:     "#BEBADA",
+    JE:      "#FFFFB3",
+    MCV1:    "#80B1D3",
+    MCV2:    "#597b93",
+    MenA:    "#FDB462",
+    PCV3:    "#B3DE69",
     PCV:     "#d6604d",
-    RCV2:     "#a051d6",
-    Rota:    "#b2182b",
-    Rubella: "#d73027",
-    YF:      "#67001f",
-    Measles: "#1b7837",
+    RCV2:    "#a051d6",
+    Rota:    "#FCCDE5",
+    Rubella: "#D9D9D9",
+    YF:      "#BC80BD",
+    Measles: "#0B588E",
     Hib:     "#bdb76b",
     // years
     2011:    "#0022E5",
@@ -56,7 +56,7 @@ export const plotColours: { [vaccine: string]: string } = {
     Americas:"#8B0000",
     Asia:    "#FF8C00",
     Europe:  "#003399",
-    Oceania: "#E0FFFF",
+    Oceania: "#a267ff",
     // gavi cofin status
     Graduating: "#90ee90",
     Intermediate: "#ffd700",
@@ -81,103 +81,104 @@ export const plotColours: { [vaccine: string]: string } = {
     Polynesia:           "#bfdcdc",
     "Southern Europe":   "#0047d8",
     // countries
-    "AFG": "#783381",
-    "AGO": "#dcd2ed",
-    "ALB": "#9bb325",
-    "ARM": "#4d2cfc",
-    "AZE": "#cef644",
-    "BDI": "#3e239f",
-    "BEN": "#40a613",
-    "BFA": "#e97a2f",
-    "BGD": "#01d9ea",
-    "BIH": "#3a42b4",
-    "BLZ": "#54ccc1",
-    "BOL": "#42828b",
-    "BTN": "#1a531b",
-    "CAF": "#0044b3",
-    "CHN": "#636db1",
-    "CIV": "#6cdfd7",
-    "CMR": "#72c3d6",
-    "COD": "#dba8d8",
-    "COG": "#a6870f",
-    "COM": "#ebf2c3",
-    "CPV": "#60e268",
-    "CUB": "#66d325",
-    "DJI": "#c51e95",
-    "EGY": "#5868b7",
-    "ERI": "#1302e8",
-    "ETH": "#1302e8",
-    "FJI": "#b1eecb",
-    "FSM": "#d8b79c",
-    "GEO": "#4549c4",
-    "GHA": "#00c2e1",
-    "GIN": "#d1b71a",
-    "GMB": "#09d68b",
-    "GNB": "#3df87e",
-    "GTM": "#00a7db",
-    "GUY": "#35b6a6",
-    "HND": "#6f5107",
-    "HTI": "#cdf9b4",
-    "IDN": "#a78799",
-    "IND": "#d91f53",
-    "IRQ": "#297476",
-    "KEN": "#6a8d21",
-    "KGZ": "#f9f702",
-    "KHM": "#360707",
-    "KIR": "#c1fb20",
-    "LAO": "#7741a8",
-    "LBR": "#f42dec",
-    "LKA": "#676eb8",
-    "LSO": "#f954a5",
-    "MAR": "#0ce9af",
-    "MDA": "#f4a07e",
-    "MDG": "#4c6810",
-    "MHL": "#dbfd4f",
-    "MLI": "#2a59e2",
-    "MMR": "#45ad29",
-    "MNG": "#971203",
-    "MOZ": "#8f66c8",
-    "MRT": "#129a43",
-    "MWI": "#71189c",
-    "NER": "#e979ff",
-    "NGA": "#371f94",
-    "NIC": "#9e510e",
-    "NPL": "#796324",
-    "PAK": "#185d19",
-    "PHL": "#b1939d",
-    "PNG": "#2be5b8",
-    "PRK": "#a0b5d9",
-    "PRY": "#99144d",
-    "PSE": "#145f43",
-    "RWA": "#4f1ded",
-    "SDN": "#9367aa",
-    "SEN": "#ffe0de",
-    "SLB": "#19c7bf",
-    "SLE": "#2d40d0",
-    "SLV": "#1c2973",
-    "SOM": "#5aba2c",
-    "SSD": "#ab3904",
-    "STP": "#bd26a2",
-    "SWZ": "#2c27e0",
-    "SYR": "#d9a425",
-    "TCD": "#4f7000",
-    "TGO": "#400a2c",
-    "TJK": "#d448bc",
-    "TKM": "#a47e3a",
-    "TLS": "#59beaf",
-    "TON": "#96167b",
-    "TUV": "#b95690",
-    "TZA": "#9bf93e",
-    "UGA": "#654f11",
-    "UKR": "#00969e",
-    "UZB": "#cb7145",
-    "VNM": "#b07d16",
-    "VUT": "#b03eb3",
-    "WSM": "#73736d",
-    "XK": "#32abda",
-    "YEM": "#123365",
-    "ZMB": "#7cfde5",
-    "ZWE": "#5ef54b",
+    "AFG": "#cc7000", // ASIA
+    "AGO": "#005128", // AFRICA
+    "ALB": "#325bad", // EUROPE
+    "ARM": "#ffa332", // ASIA
+    "AZE": "#995400", // ASIA
+    "BDI": "#32845b", // AFRICA
+    "BEN": "#003d1e", // AFRICA
+    "BFA": "#66a384", // AFRICA
+    "BGD": "#ffba66", // ASIA
+    "BIH": "#00287a", // EUROPE
+    "BLZ": "#6f0000", // AMERICAS
+    "BOL": "#a23232", // AMERICAS
+    "BTN": "#cc7000", // ASIA
+    "CAF": "#005128", // AFRICA
+    "CHN": "#636db1", // CHINA
+    "CIV": "#32845b", // AFRICA
+    "CMR": "#003d1e", // AFRICA
+    "COD": "#66a384", // AFRICA
+    "COG": "#005128", // AFRICA
+    "COM": "#32845b", // AFRICA
+    "CPV": "#003d1e", // AFRICA
+    "CUB": "#530000", // AMERICAS
+    "DJI": "#66a384", // AFRICA
+    "EGY": "#005128", // AFRICA
+    "ERI": "#32845b", // AFRICA
+    "ETH": "#003d1e", // AFRICA
+    "FJI": "#8152cc", // OCEANIA
+    "FSM": "#b485ff", // OCEANIA
+    "GEO": "#ffa332", // ASIA
+    "GHA": "#66a384", // AFRICA
+    "GIN": "#005128", // AFRICA
+    "GMB": "#32845b", // AFRICA
+    "GNB": "#003d1e", // AFRICA
+    "GTM": "#b96666", // AMERICAS
+    "GUY": "#66a384", // AFRICA
+    "HND": "#6f0000", // AMERICAS
+    "HTI": "#a23232", // AMERICAS
+    "IDN": "#995400", // ASIA
+    "IND": "#ffba66", // ASIA
+    "IRQ": "#cc7000", // ASIA
+    "KEN": "#005128", // AFRICA
+    "KGZ": "#ffa332", // ASIA
+    "KHM": "#995400", // ASIA
+    "KIR": "#613d99", // OCEANIA
+    "LAO": "#ffba66", // ASIA
+    "LBR": "#32845b", // AFRICA
+    "LKA": "#cc7000", // ASIA
+    "LSO": "#003d1e", // AFRICA
+    "MAR": "#66a384", // AFRICA
+    "MDA": "#6684c1", // EUROPE
+    "MDG": "#005128", // AFRICA
+    "MHL": "#c7a3ff", // OCEANIA
+    "MLI": "#32845b", // AFRICA
+    "MMR": "#ffa332", // ASIA
+    "MNG": "#995400", // ASIA
+    "MOZ": "#003d1e", // AFRICA
+    "MRT": "#66a384", // AFRICA
+    "MWI": "#005128", // AFRICA
+    "NER": "#32845b", // AFRICA
+    "NGA": "#003d1e", // AFRICA
+    "NIC": "#530000", // AMERICAS
+    "NPL": "#ffba66", // ASIA
+    "PAK": "#cc7000", // ASIA
+    "PHL": "#ffa332", // ASIA
+    "PNG": "#8152cc", // OCEANIA
+    "PRK": "#995400", // ASIA
+    "PRY": "#b96666", // AMERICAS
+    "PSE": "#ffba66", // ASIA
+    "RWA": "#66a384", // AFRICA
+    "SDN": "#005128", // AFRICA
+    "SEN": "#32845b", // AFRICA
+    "SLB": "#b485ff", // OCEANIA
+    "SLE": "#003d1e", // AFRICA
+    "SLV": "#6f0000", // AMERICAS
+    "SOM": "#66a384", // AFRICA
+    "SSD": "#005128", // AFRICA
+    "STP": "#32845b", // AFRICA
+    "SWZ": "#003d1e", // AFRICA
+    "SYR": "#cc7000", // ASIA
+    "TCD": "#66a384", // AFRICA
+    "TGO": "#005128", // AFRICA
+    "TJK": "#ffa332", // ASIA
+    "TKM": "#995400", // ASIA
+    "TLS": "#ffba66", // ASIA
+    "TON": "#613d99", // OCEANIA
+    "TUV": "#613d99", // OCEANIA
+    "TZA": "#32845b", // AFRICA
+    "UGA": "#003d1e", // AFRICA
+    "UKR": "#001e5b", // EUROPE
+    "UZB": "#cc7000", // ASIA
+    "VNM": "#ffa332", // ASIA
+    "VUT": "#8152cc", // OCEANIA
+    "WSM": "#b485ff", // OCEANIA
+    "XK":  "#325bad", // EUROPE
+    "YEM": "#995400", // ASIA
+    "ZMB": "#66a384", // AFRICA
+    "ZWE": "#005128", // AFRICA
+    //touchstones
     "201710gavi":            "#00ffff",
     "201710gavi-201807wue":  "#00008b",
     "201510gavi":            "#ff8c00",
