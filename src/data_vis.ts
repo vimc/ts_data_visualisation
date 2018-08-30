@@ -73,6 +73,7 @@ class DataVisModel {
 
     hideLabels = ko.observable<boolean>(false);
     hideLegend = ko.observable<boolean>(false);
+    hideTitleOpts = ko.observable<boolean>(false);
 
     humanReadableBurdenOutcome = ko.observable("deaths");
 
