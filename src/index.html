@@ -8,12 +8,18 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"/>
     <link type="text/css" rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(window).load(function() {
+            // Animate loader off screen
+        $(".loader").fadeOut("fast");
+    });
+    </script>
 </head>
-<body class="d-none" data-bind="css:{'d-none':false}">
-<!--TODO loading screen logic here-->
-
+<body>
 <div class="loader"></div>
 
+<div class="d-none" data-bind="css:{'d-none':false}">
 <nav class="navbar navbar-light d-block">
     <a class="navbar-brand" href="#">
         <img src="./logo-dark-drop.png"/>
@@ -300,6 +306,8 @@
             <div data-bind='simpleGrid: filteredTable'></div>
         </div>
     </div>
+</div>
+
 </div>
 
 <script src="impactData.js"></script>
