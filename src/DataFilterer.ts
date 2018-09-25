@@ -17,6 +17,7 @@ export interface DataFiltererOptions {
     selectedVaccines:    Array<string>;
     selectedTouchstones: Array<string>;
     cumulative:          boolean;
+    timeSeries:          boolean;
 }
 
 export class DataFilterer {
@@ -43,7 +44,6 @@ export class DataFilterer {
         const aggVars: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, filterOptions.metric, filteredData)];
         const dataByAggregate = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars, filteredData);
 
-
         let datasets: FilteredRow[] = [];
         for (let aggVar of aggVars) {
             const dataByCompare = dataByAggregate[aggVar];
@@ -65,10 +65,25 @@ export class DataFilterer {
                 summedMetricForDisagg = summedMetricForDisagg
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i-1] || 0)], [])
             }
-            const fRow: FilteredRow = { label: aggVar,
-                                        data: summedMetricForDisagg,
-                                        backgroundColor: plotColours[aggVar] };
-            datasets.push(fRow);
+            if (!filterOptions.timeSeries) {
+                const fRow: FilteredRow = { label: aggVar,
+                                            data: summedMetricForDisagg,
+                                            backgroundColor: plotColours[aggVar] };
+                datasets.push(fRow);
+            } else {
+                const fRow: FilteredRow = { label: aggVar,
+                                            data: summedMetricForDisagg,
+                                            borderColor: plotColours[aggVar],
+                                            lineTension: 0.1,
+                                            backgroundColor: 'transparent',
+                                            pointBackgroundColor: 'black',
+                                            pointRadius: 2.5,
+                                            pointHoverRadius: 7.5,
+                                            pointHitRadius: 15,
+                                            pointStyle: 'circle' };
+                datasets.push(fRow);                
+            }
+            
         }
         // while we're here we might as well calculate the sum for each compare variable as we need them later
         let totals: number[] = [];

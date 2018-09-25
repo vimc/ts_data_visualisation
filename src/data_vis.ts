@@ -81,6 +81,10 @@ class DataVisModel {
     ctx: any;
     chartObject: Chart;
 
+    canvasTS: any;
+    ctxTS: any;
+    chartObjectTS: Chart;
+
     filteredTable: KnockoutObservableArray<any>;
     gridViewModel: any;
 
@@ -130,7 +134,7 @@ class DataVisModel {
     }
 
     applyTitle() {
-        this.render();
+        this.renderImpact();
     }
 
     burdenOutcome = ko.computed(function () {
@@ -143,6 +147,8 @@ class DataVisModel {
                 return "dalys_averted"
             case "fvps":
                 return "fvps"
+            case "coverage":
+                return "coverage"
             default:
                 return "deaths_averted"
         }
@@ -160,13 +166,14 @@ class DataVisModel {
                 return "Future DALYS averted";
             case "fvps":
                 return "fvps";
+            case "coverage":
+                return "Coverage"
             default:
                 return "Future deaths averted"
         }
     }, this);
 
-
-    render() {
+    renderImpact() {
         this.canvas = document.getElementById('myChart');
         this.ctx = this.canvas.getContext('2d');
 
@@ -186,10 +193,11 @@ class DataVisModel {
             selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
             selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-            cumulative: (this.compare() == "year" && this.cumulativePlot()) // are we creating a cumulative plot
+            cumulative: (this.compare() == "year" && this.cumulativePlot()), // are we creating a cumulative plot
+            timeSeries: false
         };
 
-        const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours)
+        const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
 
         const datasets = filterData[0];
         let compareNames: string[] = [...filterData[1]];
@@ -265,6 +273,54 @@ class DataVisModel {
             }
         });
     }
+
+    renderTimeSeries () {
+        this.canvasTS = document.getElementById('timeSeriesChart');
+        this.ctxTS = this.canvasTS.getContext('2d');
+
+        if (this.chartObjectTS) {
+            this.chartObjectTS.destroy();
+        }
+
+        const filterOptions = {
+            metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
+            maxPlot: -1, // How many bars on the plot
+            compare: "year",
+            disagg: this.disaggregateBy(), // variable we are disaggregating by
+            yearLow: this.yearFilter().selectedLow(), // lower bound on year
+            yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
+            activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
+            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
+            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
+            cumulative: (this.cumulativePlot()), // are we creating a cumulative plot
+            timeSeries: true
+        };
+
+        const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
+        const datasets = filterData[0];
+        let compareNames: string[] = [...filterData[1]];
+
+        this.chartObjectTS = new Chart(this.ctxTS, {
+            type: 'line',
+            data: {
+                labels: compareNames,
+                datasets: datasets,
+            },
+            options: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                plugins: {
+                    datalabels: {
+                        display: false
+                    }
+                },
+            }
+        });
+    }
 }
 
 const viewModel = new DataVisModel();
@@ -272,5 +328,6 @@ const viewModel = new DataVisModel();
 ko.applyBindings(viewModel);
 
 $(document).ready(() => {
-    viewModel.render();
+    viewModel.renderImpact();
+    viewModel.renderTimeSeries();
 });
