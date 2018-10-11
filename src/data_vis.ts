@@ -5,6 +5,7 @@ import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
 import {Chart} from "chart.js";
+import * as L from "leaflet";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
@@ -85,6 +86,8 @@ class DataVisModel {
     ctxTS: any;
     chartObjectTS: Chart;
 
+/*    mymap: any;*/
+
     filteredTable: KnockoutObservableArray<any>;
     gridViewModel: any;
 
@@ -149,6 +152,10 @@ class DataVisModel {
                 return "fvps"
             case "coverage":
                 return "coverage"
+            case "casesRate":
+                return "cases_averted_rate"
+            case "deathsRate":
+                return "deaths_averted_rate"
             default:
                 return "deaths_averted"
         }
@@ -168,6 +175,10 @@ class DataVisModel {
                 return "fvps";
             case "coverage":
                 return "Coverage"
+            case "casesRate":
+                return "Future cases averted (rate)"
+            case "deathsRate":
+                return "Future deaths averted (rate)"
             default:
                 return "Future deaths averted"
         }
@@ -298,7 +309,10 @@ class DataVisModel {
             timeSeries: true
         };
 
-        const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
+        //const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
+
+        const filterData = new DataFilterer().calculateMean(filterOptions, impactData, plotColours);
+
         const datasets = filterData[0];
         let compareNames: string[] = [...filterData[1]];
 
@@ -321,6 +335,17 @@ class DataVisModel {
             }
         });
     }
+
+/*    renderMap() {
+       this.mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+        L.tileLayer('http://tiles.mapc.org/basemap/{z}/{x}/{y}.png',
+            {
+                attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
+                  maxZoom: 17,
+                  minZoom: 9
+            }).addTo(this.mymap);
+        }*/
 }
 
 const viewModel = new DataVisModel();
@@ -330,4 +355,5 @@ ko.applyBindings(viewModel);
 $(document).ready(() => {
     viewModel.renderImpact();
     viewModel.renderTimeSeries();
+  //  viewModel.renderMap();
 });
