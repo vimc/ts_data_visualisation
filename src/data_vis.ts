@@ -5,6 +5,7 @@ import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
 import {Chart} from "chart.js";
+import * as L from "leaflet";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
@@ -72,8 +73,6 @@ class DataVisModel {
 
     warningMessage = ko.observable<string>("Multiple touchstones have been selected, Compare across should be set to touchstone otherwise the data shown will be meaningless")
     showWarning = ko.computed<boolean>(function() {
-        console.log(this.touchstoneFilter().selectedOptions().length > 1)
-        console.log(this.compare() != "touchstone")
         return (this.touchstoneFilter().selectedOptions().length > 1) && 
                (this.compare() != "touchstone");
     }, this);
@@ -88,8 +87,15 @@ class DataVisModel {
     ctx: any;
     chartObject: Chart;
 
+    canvasTS: any;
+    ctxTS: any;
+    chartObjectTS: Chart;
+
+/*    mymap: any;*/
+
     filteredTable: KnockoutObservableArray<any>;
     gridViewModel: any;
+    filteredTSTable: KnockoutObservableArray<any>;
 
     countryCodeToName(countryCode: string) {
         return countryDict[countryCode];
@@ -127,6 +133,12 @@ class DataVisModel {
                 return "Future DALYS averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             case "fvps":
                 return "fvps between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "coverage":
+                return "Mean coverage between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "casesRate":
+                return "Mean rate of cases averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "deathsRate":
+                return "Mean rate of death averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             default:
                 return "Future deaths averted"
         }
@@ -137,7 +149,7 @@ class DataVisModel {
     }
 
     applyTitle() {
-        this.render();
+        this.renderImpact();
     }
 
     burdenOutcome = ko.computed(function () {
@@ -150,6 +162,12 @@ class DataVisModel {
                 return "dalys_averted"
             case "fvps":
                 return "fvps"
+            case "coverage":
+                return "coverage"
+            case "casesRate":
+                return "cases_averted_rate"
+            case "deathsRate":
+                return "deaths_averted_rate"
             default:
                 return "deaths_averted"
         }
@@ -167,13 +185,18 @@ class DataVisModel {
                 return "Future DALYS averted";
             case "fvps":
                 return "fvps";
+            case "coverage":
+                return "Coverage"
+            case "casesRate":
+                return "Future cases averted (rate)"
+            case "deathsRate":
+                return "Future deaths averted (rate)"
             default:
                 return "Future deaths averted"
         }
     }, this);
 
-
-    render() {
+    renderImpact() {
         this.canvas = document.getElementById('myChart');
         this.ctx = this.canvas.getContext('2d');
 
@@ -193,10 +216,11 @@ class DataVisModel {
             selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
             selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-            cumulative: (this.compare() == "year" && this.cumulativePlot()) // are we creating a cumulative plot
+            cumulative: (this.compare() == "year" && this.cumulativePlot()), // are we creating a cumulative plot
+            timeSeries: false
         };
 
-        const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours)
+        const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
 
         const datasets = filterData[0];
         let compareNames: string[] = [...filterData[1]];
@@ -272,6 +296,91 @@ class DataVisModel {
             }
         });
     }
+
+    renderTimeSeries () {
+        this.canvasTS = document.getElementById('timeSeriesChart');
+        this.ctxTS = this.canvasTS.getContext('2d');
+
+        if (this.chartObjectTS) {
+            this.chartObjectTS.destroy();
+        }
+
+        const filterOptions = {
+            metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
+            maxPlot: -1, // How many bars on the plot
+            compare: "year",
+            disagg: this.disaggregateBy(), // variable we are disaggregating by
+            yearLow: this.yearFilter().selectedLow(), // lower bound on year
+            yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
+            activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
+            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
+            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
+            cumulative: (this.cumulativePlot()), // are we creating a cumulative plot
+            timeSeries: true
+        };
+
+        //const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
+
+        const filterData = new DataFilterer().calculateMean(filterOptions, impactData, plotColours);
+
+        const datasets = filterData[0];
+        let compareNames: string[] = [...filterData[1]];
+
+        this.filteredTSTable = new TableMaker().createWideTable(datasets, compareNames);
+
+        this.chartObjectTS = new Chart(this.ctxTS, {
+            type: 'line',
+            data: {
+                labels: compareNames,
+                datasets: datasets,
+            },
+            options: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: this.plotTitle(),
+                },
+                plugins: {
+                    datalabels: {
+                        display: false
+                    }
+                },
+            }
+        });
+    }
+
+    exportTSPlot() {
+        this.canvas = document.getElementById('timeSeriesChart');
+        this.canvas.toBlob(function (blob: Blob) {
+            saveAs(blob, "untitled.png");
+        });
+    }
+
+    exportTSData() {
+        jsonexport(this.filteredTSTable(), function (err: any, csv: any) {
+            if (err) {
+                return; // probably do something else here
+            }
+            var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "data.csv");
+        });
+    }
+
+/*    renderMap() {
+       this.mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+        L.tileLayer('http://tiles.mapc.org/basemap/{z}/{x}/{y}.png',
+            {
+                attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
+                  maxZoom: 17,
+                  minZoom: 9
+            }).addTo(this.mymap);
+        }*/
 }
 
 const viewModel = new DataVisModel();
@@ -279,5 +388,7 @@ const viewModel = new DataVisModel();
 ko.applyBindings(viewModel);
 
 $(document).ready(() => {
-    viewModel.render();
+    viewModel.renderImpact();
+    viewModel.renderTimeSeries();
+  //  viewModel.renderMap();
 });
