@@ -128,6 +128,12 @@ class DataVisModel {
                 return "Future DALYS averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             case "fvps":
                 return "fvps between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "coverage":
+                return "Mean coverage between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "casesRate":
+                return "Mean rate of cases averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
+            case "deathsRate":
+                return "Mean rate of death averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
             default:
                 return "Future deaths averted"
         }
@@ -329,6 +335,10 @@ class DataVisModel {
                 legend: {
                     display: true,
                     position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: this.plotTitle(),
                 },
                 plugins: {
                     datalabels: {
