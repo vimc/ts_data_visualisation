@@ -90,6 +90,7 @@ class DataVisModel {
 
     filteredTable: KnockoutObservableArray<any>;
     gridViewModel: any;
+    filteredTSTable: KnockoutObservableArray<any>;
 
     countryCodeToName(countryCode: string) {
         return countryDict[countryCode];
@@ -316,6 +317,8 @@ class DataVisModel {
         const datasets = filterData[0];
         let compareNames: string[] = [...filterData[1]];
 
+        this.filteredTSTable = new TableMaker().createWideTable(datasets, compareNames);
+
         this.chartObjectTS = new Chart(this.ctxTS, {
             type: 'line',
             data: {
@@ -333,6 +336,23 @@ class DataVisModel {
                     }
                 },
             }
+        });
+    }
+
+    exportTSPlot() {
+        this.canvas = document.getElementById('timeSeriesChart');
+        this.canvas.toBlob(function (blob: Blob) {
+            saveAs(blob, "untitled.png");
+        });
+    }
+
+    exportTSData() {
+        jsonexport(this.filteredTSTable(), function (err: any, csv: any) {
+            if (err) {
+                return; // probably do something else here
+            }
+            var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "data.csv");
         });
     }
 

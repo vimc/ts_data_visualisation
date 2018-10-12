@@ -41,20 +41,6 @@ export class DataFilterer {
                                                                      aggVar,
                                                                      compVars,
                                                                      filterOptions.metric);
-/*            const dataByCompare = dataByAggregate[aggVar];
-            // this is not const in case we need to convert it to a cumulative plot later
-            let summedMetricForDisagg: number[] = compVars.map(function (country: string) {
-                const data: ImpactDataRow[] = dataByCompare[country];
-                if (typeof data !== 'undefined') { // this is necessary to prevent errors when this compare / aggregate combo is empty
-                    return data.map(x => x[filterOptions.metric])
-                        .filter(x => !isNaN(x))
-                        .reduce((acc, x) => acc + x, 0)
-                        .toPrecision(3); // this should possibly be an argument or calculated at run time
-                } else {
-                    return 0;
-                }
-            });*/
-
             // we're doing a cumulative plot
             if (filterOptions.cumulative) {
                 summedMetricForDisagg = summedMetricForDisagg
