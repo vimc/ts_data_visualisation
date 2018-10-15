@@ -46,12 +46,35 @@ Then run `npm run build` and open `out/index.html` in a browser to view the app 
 
 ## TODO list
 * Make the text in the UI more human readable
-* Add total labels to the top of each bar
-* Add a loading screen
 * Sort out missing colours
 * Add functionality to compare across touchstones
-* Implement the cumulative plot
 * Better automated titles
-* When comparing years allow line plots
 * Redraw after every UI input
 * Make the country checkbox interface nicer
+### Added after meeting with funders
+* Redesign the filter options for disease/vaccine/activity
+    * Diease
+        * vaccine 1
+            * campaign
+            * routine
+        * vaccine 2
+            * campaign
+        * vaccine 3
+            * routine
+* OPTIONAL Do the same thing for continents/countries/regions
+* The max bars option should default to the maximum number from filters
+* Y axis should always start at 0
+* On time series add labels next to curves (instead of legend)
+* Redraw after every UI input
+* Allow user to set their own colours
+* Replace Gavi69 (Gavi73 - PINE) with gavi68
+* BUG Title doesn't change on click
+* Organise legend order to reflect groupngs
+* Hover label show counties and rounded numbers
+* Make sure rounding is done correctly, i.e. round down to three significant figures
+* More warning messages
+* Put meta-data on plot / on screen (only list first N when manhy options are chosen)
+* Add meta-data when saving plot/csv
+* Provide a warning message when there is no data
+* Turn off cumulative plot for rate metrics
+* Hover over explaining metrics
