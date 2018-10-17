@@ -283,14 +283,27 @@ export class DataFilterer {
         let summedMetricForDisagg: number[] = compVars.map(function (compare: string) {
             const data: ImpactDataRow[] = dataByCompare[compare];
             if (typeof data !== 'undefined') { // this is necessary to prevent errors when this compare / aggregate combo is empty
-                return data.map(x => x[metric])
-                           .filter(x => !isNaN(x))
-                           .reduce((acc, x) => acc + x, 0)
-                           .toPrecision(3); // this should possibly be an argument or calculated at run time
+                const summedData =  data.map(x => x[metric])
+                                        .filter(x => !isNaN(x))
+                                        .reduce((acc, x) => acc + x, 0);
+                //return summedData;
+                console.log([summedData, this.roundDown(summedData, 3)]);
+                return this.roundDown(summedData, 3);
             } else {
                 return 0;
             }
-        });
+        }, this);
         return summedMetricForDisagg;
+    }
+
+    // this function rounds DOWN to n significant figures
+    private roundDown(value: number, sigFigs: number): number {
+        const n: number = Math.ceil(Math.log(value + 1) / Math.log(10)); // log10 is not a standard Math function!
+        if (n <= sigFigs)
+            return value;
+
+        const m: number = n - sigFigs; // this number is definitely positive
+
+        return Math.floor(value / (Math.pow(10, m))) * (Math.pow(10, m));
     }
 }

@@ -281,8 +281,8 @@ class DataVisModel {
                         // this is a lot of nonsense to grab the plot meta data
                         // for the final (topmost) data set
                         lastMeta.data.forEach(function (bar: any, index: number) {
-                            const data = rescaleLabel(totals[index].toPrecision(3),
-                                totals[index].toPrecision(3));
+                            const data = rescaleLabel(totals[index],
+                                totals[index]);
                             // magic numbers to the labels look reasonable
                             context.fillText(data, bar._model.x - 12, bar._model.y - 5);
                         });
@@ -345,7 +345,14 @@ class DataVisModel {
                         display: false
                     }
                 },
-            }
+                scales: {
+                    yAxes: [{
+                        ticks : {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+            },
         });
     }
 
