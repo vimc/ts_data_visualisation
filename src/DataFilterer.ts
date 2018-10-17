@@ -100,12 +100,7 @@ export class DataFilterer {
         const aggVars_top: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, top, filteredData_top)];
         const dataByAggregate_top = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars_top, filteredData_top);
 
-        const temp_bottom = this.filterByCompare(-1, filterOptions.compare, bottom, filtData);
-        const compVars_bottom: any[] = temp_bottom[1];
-        const filteredData_bottom: ImpactDataRow[] = temp_bottom[0];
-        // get an array of all the remaining disagg values
-        const aggVars_bottom: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, bottom, filteredData_bottom)];
-        const dataByAggregate_bottom = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars_bottom, filteredData_bottom);
+
         
 
         let datasets: FilteredRow[] = [];
@@ -115,6 +110,12 @@ export class DataFilterer {
                                                                      compVars_top,
                                                                      top);
             if (bottom != null) {
+                const temp_bottom = this.filterByCompare(-1, filterOptions.compare, bottom, filtData);
+                const compVars_bottom: any[] = temp_bottom[1];
+                const filteredData_bottom: ImpactDataRow[] = temp_bottom[0];
+                // get an array of all the remaining disagg values
+                const aggVars_bottom: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, bottom, filteredData_bottom)];
+                const dataByAggregate_bottom = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars_bottom, filteredData_bottom);
                 let summedMetricForDisagg_bottom: number[] = this.reduceSummary(dataByAggregate_bottom,
                                                                                 aggVar,
                                                                                 compVars_bottom,
