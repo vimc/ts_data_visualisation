@@ -229,7 +229,6 @@ class DataVisModel {
         const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
 
         const datasets = filterData[0];
-        console.log(datasets)
         let compareNames: string[] = [...filterData[1]];
         const totals = filterData[2];
         // when we put countries along convert the names to human readable
