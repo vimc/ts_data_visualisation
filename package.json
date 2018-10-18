@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "mkdir -p out && cp data/impactData.js out/impactData.js && cp data/reportInfo.js out/reportInfo.js && webpack",
-    "watch": "mkdir -p out && cp data/impactData.js out/impactData.js && cp data/reportInfo.js out/reportInfo.js && webpack --watch",
+    "build": "mkdir -p out && cp data/production/impactData.js out/impactData.js && cp data/reportInfo.js out/reportInfo.js && webpack",
+    "watch": "mkdir -p out && cp data/test/impactData.js out/impactData.js && cp data/reportInfo.js out/reportInfo.js && webpack --watch",
+    "build-dev": "mkdir -p out && cp data/test/impactData.js out/impactData.js && cp data/reportInfo.js out/reportInfo.js && webpack",
+    "webpack": "webpack",
     "test": "mocha-webpack --webpack-config webpack-test.config.js tests/**/*Tests.ts"
   },
   "author": "",

@@ -1,4 +1,4 @@
-html, body {
+html, body , .page-wrapper {
     height: 100%;
 }
 
@@ -16,8 +16,7 @@ html, body {
     width: 0;
     border: 0;
     bottom: 0;
-    min-height: calc(100% - 102px);
-    height: auto;
+    min-height: 100%;
 }
 
 .sidebar.filter-bar {
