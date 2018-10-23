@@ -43,6 +43,13 @@ function rescaleLabel(value: number, scale: number): string {
 
 class DataVisModel {
 
+    plots = ko.observableArray(["Impact", "Time series"]);
+    currentPlot = ko.observable("Impact");
+
+    selectPlot(plotName: string) {
+        this.currentPlot(plotName)
+    };
+
     showSidebar = ko.observable(true);
     yearFilter = ko.observable(new RangeFilter({
         name: "Years",
@@ -55,8 +62,12 @@ class DataVisModel {
     countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries, humanNames: countryDict}));
     diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases, humanNames: diseaseDict}));
     vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines, humanNames: vaccineDict}));
-    touchstoneFilter = ko.observable(new ListFilter({name: "Touchstone", options: touchstones, selected: ["201710gavi-201807wue"]}));
-    
+    touchstoneFilter = ko.observable(new ListFilter({
+        name: "Touchstone",
+        options: touchstones,
+        selected: ["201710gavi-201807wue"]
+    }));
+
     xAxisOptions = plottingVariables;
 
     disaggregationOptions = plottingVariables;
@@ -86,7 +97,7 @@ class DataVisModel {
     ctxTS: any;
     chartObjectTS: Chart;
 
-/*    mymap: any;*/
+    /*    mymap: any;*/
 
     filteredTable: KnockoutObservableArray<any>;
     gridViewModel: any;
@@ -277,22 +288,24 @@ class DataVisModel {
                         const chart = this.chart;
                         const context = chart.ctx;
                         const lastDataSet: number = datasets.length - 1
-                        const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
-                        // this is a lot of nonsense to grab the plot meta data
-                        // for the final (topmost) data set
-                        lastMeta.data.forEach(function (bar: any, index: number) {
-                            const data = rescaleLabel(totals[index],
-                                totals[index]);
-                            // magic numbers to the labels look reasonable
-                            context.fillText(data, bar._model.x - 12, bar._model.y - 5);
-                        });
+                        if (lastDataSet > -1) {
+                            const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
+                            // this is a lot of nonsense to grab the plot meta data
+                            // for the final (topmost) data set
+                            lastMeta.data.forEach(function (bar: any, index: number) {
+                                const data = rescaleLabel(totals[index],
+                                    totals[index]);
+                                // magic numbers to the labels look reasonable
+                                context.fillText(data, bar._model.x - 12, bar._model.y - 5);
+                            });
+                        }
                     }
                 }
             }
         });
     }
 
-    renderTimeSeries () {
+    renderTimeSeries() {
         this.canvasTS = document.getElementById('timeSeriesChart');
         this.ctxTS = this.canvasTS.getContext('2d');
 
@@ -347,7 +360,7 @@ class DataVisModel {
                 },
                 scales: {
                     yAxes: [{
-                        ticks : {
+                        ticks: {
                             beginAtZero: true
                         }
                     }]
@@ -373,16 +386,16 @@ class DataVisModel {
         });
     }
 
-/*    renderMap() {
-       this.mymap = L.map('mapid').setView([51.505, -0.09], 13);
+    /*    renderMap() {
+           this.mymap = L.map('mapid').setView([51.505, -0.09], 13);
 
-        L.tileLayer('http://tiles.mapc.org/basemap/{z}/{x}/{y}.png',
-            {
-                attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
-                  maxZoom: 17,
-                  minZoom: 9
-            }).addTo(this.mymap);
-        }*/
+            L.tileLayer('http://tiles.mapc.org/basemap/{z}/{x}/{y}.png',
+                {
+                    attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
+                      maxZoom: 17,
+                      minZoom: 9
+                }).addTo(this.mymap);
+            }*/
 }
 
 const viewModel = new DataVisModel();
@@ -392,5 +405,5 @@ ko.applyBindings(viewModel);
 $(document).ready(() => {
     viewModel.renderImpact();
     viewModel.renderTimeSeries();
-  //  viewModel.renderMap();
+    //  viewModel.renderMap();
 });
