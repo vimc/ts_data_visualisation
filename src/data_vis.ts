@@ -72,8 +72,6 @@ class DataVisModel {
 
     warningMessage = ko.observable<string>("Multiple touchstones have been selected, Compare across should be set to touchstone otherwise the data shown will be meaningless")
     showWarning = ko.computed<boolean>(function() {
-        console.log(this.touchstoneFilter().selectedOptions().length > 1)
-        console.log(this.compare() != "touchstone")
         return (this.touchstoneFilter().selectedOptions().length > 1) && 
                (this.compare() != "touchstone");
     }, this);
