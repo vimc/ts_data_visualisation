@@ -311,9 +311,14 @@
                         </button>
                     </div>
 
+                    <p style="font-weight:bold;color:red"
+                        data-bind="text: warningMessage, visible: showWarning">
+                    </p>
+
                     <div style="max-width: 1000px">
                         <canvas id="myChart"></canvas>
                     </div>
+
                     <form class="mt-3">
                         <div class="form-group row">
                             <div class="col-1">
@@ -341,8 +346,6 @@
                     <button class="btn btn-success" data-bind="click: renderImpact">Redraw Plot</button>
                     <button class="btn btn-success" data-bind="click: exportPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportData">Export data as csv</button>
-
-                    <div data-bind='simpleGrid: filteredTable'></div>
                 </div>
             </div>
         </div>

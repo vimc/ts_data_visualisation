@@ -1,15 +1,15 @@
 // the data for South Sudan (SSD), Palestinian Territories (PSE) and Kosovo (XK)
 // are dodgy so I've omitted them
-export const countries = ["AFG", "AGO", "ALB", "ARM", "AZE", "BDI", "BEN",
-    "BFA", "BGD", "BIH", "BLZ", "BOL", "BTN", "CAF", "CHN", "CIV", "CMR", "COD",
-    "COG", "COM", "CPV", "CUB", "DJI", "EGY", "ERI", "ETH", "FJI", "FSM", "GEO",
-    "GHA", "GIN", "GMB", "GNB", "GTM", "GUY", "HND", "HTI", "IDN", "IND", "IRQ",
-    "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MAR", "MDA", "MDG",
-    "MHL", "MLI", "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL",
-    "PAK", "PHL", "PNG", "PRK", "PRY", /*"PSE",*/ "RWA", "SDN", "SEN", "SLB",
-    "SLE", "SLV", "SOM", /*"SSD",*/ "STP", "SWZ", "SYR", "TCD", "TGO", "TJK",
-    "TKM", "TLS", "TON", "TUV", "TZA", "UGA", "UKR", "UZB", "VNM", "VUT", "WSM",
-    /*"XK",*/ "YEM", "ZMB", "ZWE"];
+export const countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
+    "BEN", "BTN", "BOL", "BIH", "BFA", "BDI", "KHM", "CMR", "CPV", "CAF", "TCD",
+    "CHN", "COM", "CIV", "CUB", "DJI", "PRK", "COD", "EGY", "SLV", "ERI", "ETH",
+    "FJI", "GMB", "GEO", "GHA", "GTM", "GIN", "GNB", "GUY", "HTI", "HND", "IND",
+    "IDN", "IRQ", "KEN", "KIR", /*"XK",*/ "KGZ", "LSO", "LBR", "MDG", "MWI",
+    "MLI", "MHL", "MRT", "FSM", "MDA", "MNG", "MAR", "MOZ", "MMR", "NPL", "NIC",
+    "NER", "NGA", "PAK", /*"PSE",*/ "PNG", "PRY", "LAO", "PHL", "COG", "RWA",
+    "WSM", "STP", "SEN", "SLE", "SLB", "SOM", /*"SSD",*/ "LKA", "SDN", "SWZ",
+    "SYR", "TJK", "TZA", "TLS", "TGO", "TON", "TKM", "TUV", "UGA", "UKR", "UZB",
+    "VUT", "VNM", "YEM", "ZMB", "ZWE"];
 
 export const pineCountries = ["IND", "PAK", "NGA", "ETH"];
 

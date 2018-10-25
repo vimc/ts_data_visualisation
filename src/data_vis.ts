@@ -69,7 +69,6 @@ class DataVisModel {
     }));
 
     xAxisOptions = plottingVariables;
-
     disaggregationOptions = plottingVariables;
 
     maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
@@ -79,9 +78,15 @@ class DataVisModel {
     maxBars = ko.observable<number>(5);
     cumulativePlot = ko.observable<boolean>(false);
 
-    reportId = ko.observable("Report id: " + reportInfo.rep_id);
-    dataId = ko.observable("Data id: " + reportInfo.dep_id);
-    appId = ko.observable("App. id: " + reportInfo.git_id);
+    reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
+    dataId = ko.observable<string>("Data id: " + reportInfo.dep_id);
+    appId = ko.observable<string>("App. id: " + reportInfo.git_id);
+
+    warningMessage = ko.observable<string>("Multiple touchstones have been selected, Compare across should be set to touchstone otherwise the data shown will be meaningless")
+    showWarning = ko.computed<boolean>(function() {
+        return (this.touchstoneFilter().selectedOptions().length > 1) && 
+               (this.compare() != "touchstone");
+    }, this);
 
     hideLabels = ko.observable<boolean>(false);
     hideLegend = ko.observable<boolean>(false);
