@@ -124,58 +124,50 @@ class DataVisModel {
     filteredTSTable: KnockoutObservableArray<any>;
 
     constructor() {
+        this.currentPlot.subscribe(function() {
+            if (this.currentPlot() == "Impact") {
+                this.renderImpact();
+            } else if (this.currentPlot() == "Time series") {
+                this.renderTimeSeries();
+            }
+        }, this)
         this.compare.subscribe(function() {
-            console.log("compare");
             this.onUIChange(true, true);
         }, this)
         this.disaggregateBy.subscribe(function() {
-            console.log("disaggregateBy");
             this.onUIChange(true, true);
         }, this)
         this.cumulativePlot.subscribe(function() {
-            console.log("cumulativePlot");
             this.onUIChange(true, true);
         }, this)
         this.maxBars.subscribe(function() {
-            console.log("maxBars");
-            this.onUIChange(true, false);
+            this.onUIChange(true, false); // this has to be false to prevent infinite regression
         }, this)
         this.yearFilter().selectedLow.subscribe(function() {
-            console.log("yearFilter");
             this.onUIChange(true, true);
         }, this)
         this.yearFilter().selectedHigh.subscribe(function() {
-            console.log("yearFilter");
             this.onUIChange(true, true);
         }, this)
         this.activityFilter().selectedOptions.subscribe(function() {
-            console.log("activityFilter");
             this.onUIChange(true, true);
         }, this)
-        this.countryFilter().selectedOptions.subscribe(function() {
-            console.log("countryFilter");
+        this.countryFilter().selectedOptions.subscribe(function() {;
             this.onUIChange(true, true);
         }, this)
         this.diseaseFilter().selectedOptions.subscribe(function() {
-            console.log("diseaseFilter");
             this.onUIChange(true, true);
         }, this)
         this.vaccineFilter().selectedOptions.subscribe(function() {
-            console.log("vaccineFilter");
             this.onUIChange(true, true);
         }, this)
         this.touchstoneFilter().selectedOptions.subscribe(function() {
-            console.log("touchstoneFilter");
             this.onUIChange(true, true);
         }, this)
 
         this.compareNames.subscribe(function() {
-            console.log(["A", this.compareNames(), this.maxPlotOptions(), this.maxBars()]);
-
             this.maxPlotOptions(createRangeArray(1, this.compareNames().length));
             this.maxBars(this.compareNames().length);
-
-            console.log(["B", this.compareNames(), this.maxPlotOptions(), this.maxBars()]);
         }, this)
     }
 
@@ -209,8 +201,6 @@ class DataVisModel {
     onUIChange(redraw: boolean, updateUI: boolean) {
         const isTimeSeries: boolean = (this.currentPlot() == "Time series");
         if (updateUI) {
-            console.log(["C", this.compareNames(), this.maxPlotOptions(), this.maxBars()]);
-
             // refilter the data
             const filterOptions = {
                 metric: this.burdenOutcome(),
@@ -230,12 +220,7 @@ class DataVisModel {
 
             const filteredData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
             this.compareNames([...filteredData[1]]);
-            console.log(["D", this.compareNames(), this.maxPlotOptions(), this.maxBars()]);
         }
-/*        if (updateUI) {
-            this.maxPlotOptions = ko.observableArray(createRangeArray(1, compareNames.length));
-            this.maxBars = ko.observable<number>(compareNames.length);
-        }*/
 
         if (redraw) {
             if (isTimeSeries) {
