@@ -41,8 +41,15 @@ function rescaleLabel(value: number, scale: number): string {
     return value.toString();
 }
 
-class DataVisModel {
+function createRangeArray(min: number = 1, max: number): number[] {
+    let a: number[] = [];
+    for (let i: number = min; i <= max; ++i) {
+        a.push(i);
+    }
+    return a;
+}
 
+class DataVisModel {
     plots = ko.observableArray(["Impact", "Time series"]);
     currentPlot = ko.observable("Impact");
 
@@ -58,10 +65,21 @@ class DataVisModel {
         selectedLow: 2016,
         selectedHigh: 2020
     }));
-    activityFilter = ko.observable(new ListFilter({name: "Activity", options: activityTypes}));
-    countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries, humanNames: countryDict}));
-    diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases, humanNames: diseaseDict}));
-    vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines, humanNames: vaccineDict}));
+    activityFilter = ko.observable(new ListFilter({
+        name: "Activity",
+        options: activityTypes}));
+    countryFilter = ko.observable(new CountryFilter({
+        name: "Country",
+        options: countries,
+        humanNames: countryDict}));
+    diseaseFilter = ko.observable(new ListFilter({
+        name: "Disease",
+        options: diseases,
+        humanNames: diseaseDict}));
+    vaccineFilter = ko.observable(new ListFilter({
+        name: "Vaccine",
+        options: vaccines,
+        humanNames: vaccineDict}));
     touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
         options: touchstones,
@@ -72,11 +90,11 @@ class DataVisModel {
 
     disaggregationOptions = plottingVariables;
 
-    maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+    maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
+    maxBars = ko.observable<number>(5);
 
     compare = ko.observable<string>(this.xAxisOptions[1]);
-    disaggregateBy = ko.observable<string>(this.disaggregationOptions[7]);
-    maxBars = ko.observable<number>(5);
+    disaggregateBy = ko.observable<string>("disease");
     cumulativePlot = ko.observable<boolean>(false);
 
     reportId = ko.observable("Report id: " + reportInfo.rep_id);
@@ -88,6 +106,8 @@ class DataVisModel {
     hideTitleOpts = ko.observable<boolean>(false);
 
     humanReadableBurdenOutcome = ko.observable("deaths");
+
+    compareNames = ko.observableArray<string>([]);
 
     canvas: any;
     ctx: any;
@@ -103,16 +123,72 @@ class DataVisModel {
     gridViewModel: any;
     filteredTSTable: KnockoutObservableArray<any>;
 
+    constructor() {
+        this.compare.subscribe(function() {
+            console.log("compare");
+            this.onUIChange(true, true);
+        }, this)
+        this.disaggregateBy.subscribe(function() {
+            console.log("disaggregateBy");
+            this.onUIChange(true, true);
+        }, this)
+        this.cumulativePlot.subscribe(function() {
+            console.log("cumulativePlot");
+            this.onUIChange(true, true);
+        }, this)
+        this.maxBars.subscribe(function() {
+            console.log("maxBars");
+            this.onUIChange(true, false);
+        }, this)
+        this.yearFilter().selectedLow.subscribe(function() {
+            console.log("yearFilter");
+            this.onUIChange(true, true);
+        }, this)
+        this.yearFilter().selectedHigh.subscribe(function() {
+            console.log("yearFilter");
+            this.onUIChange(true, true);
+        }, this)
+        this.activityFilter().selectedOptions.subscribe(function() {
+            console.log("activityFilter");
+            this.onUIChange(true, true);
+        }, this)
+        this.countryFilter().selectedOptions.subscribe(function() {
+            console.log("countryFilter");
+            this.onUIChange(true, true);
+        }, this)
+        this.diseaseFilter().selectedOptions.subscribe(function() {
+            console.log("diseaseFilter");
+            this.onUIChange(true, true);
+        }, this)
+        this.vaccineFilter().selectedOptions.subscribe(function() {
+            console.log("vaccineFilter");
+            this.onUIChange(true, true);
+        }, this)
+        this.touchstoneFilter().selectedOptions.subscribe(function() {
+            console.log("touchstoneFilter");
+            this.onUIChange(true, true);
+        }, this)
+
+        this.compareNames.subscribe(function() {
+            console.log(["A", this.compareNames(), this.maxPlotOptions(), this.maxBars()]);
+
+            this.maxPlotOptions(createRangeArray(1, this.compareNames().length));
+            this.maxBars(this.compareNames().length);
+
+            console.log(["B", this.compareNames(), this.maxPlotOptions(), this.maxBars()]);
+        }, this)
+    }
+
     countryCodeToName(countryCode: string) {
         return countryDict[countryCode];
-    }
+    };
 
     exportPlot() {
         this.canvas = document.getElementById('myChart');
         this.canvas.toBlob(function (blob: Blob) {
             saveAs(blob, "untitled.png");
         });
-    }
+    };
 
     exportData() {
         jsonexport(this.filteredTable(), function (err: any, csv: any) {
@@ -122,12 +198,54 @@ class DataVisModel {
             var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
             saveAs(blob, "data.csv");
         });
-    }
+    };
 
     changeBurden(burden: string) {
         this.humanReadableBurdenOutcome(burden)
         this.plotTitle(this.defaultTitle());
-    }
+        this.onUIChange(true, true);
+    };
+
+    onUIChange(redraw: boolean, updateUI: boolean) {
+        const isTimeSeries: boolean = (this.currentPlot() == "Time series");
+        if (updateUI) {
+            console.log(["C", this.compareNames(), this.maxPlotOptions(), this.maxBars()]);
+
+            // refilter the data
+            const filterOptions = {
+                metric: this.burdenOutcome(),
+                maxPlot: -1,
+                compare: this.compare(),
+                disagg: this.disaggregateBy(),
+                yearLow: this.yearFilter().selectedLow(),
+                yearHigh: this.yearFilter().selectedHigh(),
+                activityTypes: this.activityFilter().selectedOptions(),
+                selectedCountries: this.countryFilter().selectedOptions(),
+                selectedDiseases: this.diseaseFilter().selectedOptions(),
+                selectedVaccines: this.vaccineFilter().selectedOptions(),
+                selectedTouchstones: this.touchstoneFilter().selectedOptions(),
+                cumulative: (this.compare() == "year" && this.cumulativePlot()),
+                timeSeries: isTimeSeries
+            };
+
+            const filteredData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
+            this.compareNames([...filteredData[1]]);
+            console.log(["D", this.compareNames(), this.maxPlotOptions(), this.maxBars()]);
+        }
+/*        if (updateUI) {
+            this.maxPlotOptions = ko.observableArray(createRangeArray(1, compareNames.length));
+            this.maxBars = ko.observable<number>(compareNames.length);
+        }*/
+
+        if (redraw) {
+            if (isTimeSeries) {
+                this.renderTimeSeries();
+            } else {
+                this.renderImpact();
+            }
+        }
+    };
+
 
     defaultTitle() {
         switch (this.humanReadableBurdenOutcome()) {

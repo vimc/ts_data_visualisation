@@ -286,8 +286,6 @@ export class DataFilterer {
                 const summedData =  data.map(x => x[metric])
                                         .filter(x => !isNaN(x))
                                         .reduce((acc, x) => acc + x, 0);
-                //return summedData;
-                console.log([summedData, this.roundDown(summedData, 3)]);
                 return this.roundDown(summedData, 3);
             } else {
                 return 0;
