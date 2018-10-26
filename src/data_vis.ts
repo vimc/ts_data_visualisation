@@ -29,14 +29,16 @@ const $ = require("jquery");
 const jsonexport = require('jsonexport');
 
 function rescaleLabel(value: number, scale: number): string {
+    // we need to round down to three significant figures
+    const df = new DataFilterer();
     if (scale > 1000000000) {
-        return value / 1000000000 + "B";
+        return df.roundDown(value, 3) / 1000000000 + "B";
     }
     if (scale > 1000000) {
-        return value / 1000000 + "M";
+        return df.roundDown(value, 3) / 1000000 + "M";
     }
     if (scale > 1000) {
-        return value / 1000 + "K";
+        return df.roundDown(value, 3) / 1000 + "K";
     }
     return value.toString();
 }
