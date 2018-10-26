@@ -40,6 +40,9 @@ function rescaleLabel(value: number, scale: number): string {
     if (scale > 1000) {
         return df.roundDown(value, 3) / 1000 + "K";
     }
+    if (scale > 1) { // round values in [1, 1000] down to nearest integer
+        return Math.floor(value) + "";
+    } // i don't think rounding x in (0,1) is a good idea need to think about this
     return value.toString();
 }
 
@@ -275,6 +278,16 @@ class DataVisModel {
                         }
                     }]
                 },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            const label: string = data.datasets[tooltipItem.datasetIndex].label;
+                            return label + ": " + 
+                                   rescaleLabel(Number(tooltipItem.yLabel), 
+                                                Number(tooltipItem.yLabel));
+                        }
+                    }
+                },
                 plugins: {
                     datalabels: {
                         color: "white",
@@ -359,6 +372,16 @@ class DataVisModel {
                 title: {
                     display: true,
                     text: this.plotTitle(),
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            const label: string = data.datasets[tooltipItem.datasetIndex].label;
+                            return label + ": " + 
+                                   rescaleLabel(Number(tooltipItem.yLabel), 
+                                                Number(tooltipItem.yLabel));
+                        }
+                    }
                 },
                 plugins: {
                     datalabels: {
