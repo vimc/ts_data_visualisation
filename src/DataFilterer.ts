@@ -17,22 +17,14 @@ export interface DataFiltererOptions {
     selectedVaccines:    Array<string>;
     selectedTouchstones: Array<string>;
     cumulative:          boolean;
+    timeSeries:          boolean;
 }
 
 export class DataFilterer {
-     filterData(filterOptions: DataFiltererOptions,
-                impactData:    ImpactDataRow[],
-                plotColours:   { [p: string] : string }): any[] {
-        let filtData = this.filterByFocality(impactData, true); // filter focal model
-        filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
-        filtData = this.filterBYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
-        filtData = this.filterByTouchstone(filtData, filterOptions.selectedTouchstones); // filter by touchstone
-        filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type
-        filtData = this.filterByCountrySet(filtData, filterOptions.selectedCountries); // filter by activity type
-        filtData = this.filterByDisease(filtData, filterOptions.selectedDiseases); // filter by diseases
-        filtData = this.filterByVaccine(filtData, filterOptions.selectedVaccines); // filter by vaccine
-        // TODO there might efficiencies to be had here by filtering in the right order...
-        // TODO There is a more functional way to do this is we define a wrapper class for ImpactDataRow[]
+    filterData(filterOptions: DataFiltererOptions,
+               impactData:    ImpactDataRow[],
+               plotColours:   { [p: string] : string }): any[] {
+        const filtData = this.filterByAll(filterOptions, impactData);
 
         // now we filter by the compare variable
         const temp = this.filterByCompare(filterOptions.maxPlot, filterOptions.compare, filterOptions.metric, filtData);
@@ -43,32 +35,39 @@ export class DataFilterer {
         const aggVars: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, filterOptions.metric, filteredData)];
         const dataByAggregate = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars, filteredData);
 
-
         let datasets: FilteredRow[] = [];
         for (let aggVar of aggVars) {
-            const dataByCompare = dataByAggregate[aggVar];
-            // this is not const in case we need to convert it to a cumulative plot later
-            let summedMetricForDisagg: number[] = compVars.map(function (country: string) {
-                const data: ImpactDataRow[] = dataByCompare[country];
-                if (typeof data !== 'undefined') { // this is necessary to prevent errors when this compare / aggregate combo is empty
-                    return data.map(x => x[filterOptions.metric])
-                        .filter(x => !isNaN(x))
-                        .reduce((acc, x) => acc + x, 0)
-                        .toPrecision(3); // this should possibly be an argument or calculated at run time
-                } else {
-                    return 0;
-                }
-            });
-
+            let summedMetricForDisagg: number[] = this.reduceSummary(dataByAggregate,
+                                                                     aggVar,
+                                                                     compVars,
+                                                                     filterOptions.metric);
             // we're doing a cumulative plot
             if (filterOptions.cumulative) {
                 summedMetricForDisagg = summedMetricForDisagg
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i-1] || 0)], [])
             }
-            const fRow: FilteredRow = { label: aggVar,
-                                        data: summedMetricForDisagg,
-                                        backgroundColor: plotColours[aggVar] };
-            datasets.push(fRow);
+            // code here to convert sum to average
+
+            if (filterOptions.timeSeries) {
+                const fRow: FilteredRow = { label: aggVar,
+                                            data: summedMetricForDisagg,
+                                            borderColor: plotColours[aggVar],
+                                            lineTension: 0.1,
+                                            backgroundColor: 'transparent',
+                                            pointBackgroundColor: 'plotColours[aggVar]',
+                                            pointRadius: 2.5,
+                                            pointHoverRadius: 7.5,
+                                            pointHitRadius: 15,
+                                            pointStyle: 'circle' };
+
+                datasets.push(fRow);
+            } else {
+                const fRow: FilteredRow = { label: aggVar,
+                                            data: summedMetricForDisagg,
+                                            backgroundColor: plotColours[aggVar] };
+                datasets.push(fRow);                
+            }
+            
         }
         // while we're here we might as well calculate the sum for each compare variable as we need them later
         let totals: number[] = [];
@@ -81,6 +80,73 @@ export class DataFilterer {
         }
 
         return [datasets, compVars, totals];
+    }
+
+    calculateMean(filterOptions: DataFiltererOptions,
+                  impactData:    ImpactDataRow[],
+                  plotColours:   { [p: string] : string }): any[] {
+        // compare will always be year!
+
+        const filtData = this.filterByAll(filterOptions, impactData);
+
+        let meanVars = this.meanVariables(filterOptions.metric);
+        const top = meanVars.top;
+        const bottom = meanVars.bottom;
+        
+        const temp_top = this.filterByCompare(-1, filterOptions.compare, top, filtData);
+        const compVars_top: any[] = temp_top[1];
+        const filteredData_top: ImpactDataRow[] = temp_top[0];
+        // get an array of all the remaining disagg values
+        const aggVars_top: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, top, filteredData_top)];
+        const dataByAggregate_top = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars_top, filteredData_top);
+
+
+        
+
+        let datasets: FilteredRow[] = [];
+        for (let aggVar of aggVars_top) {
+            let summedMetricForDisagg: number[] = this.reduceSummary(dataByAggregate_top,
+                                                                     aggVar,
+                                                                     compVars_top,
+                                                                     top);
+            if (bottom != null) {
+                const temp_bottom = this.filterByCompare(-1, filterOptions.compare, bottom, filtData);
+                const compVars_bottom: any[] = temp_bottom[1];
+                const filteredData_bottom: ImpactDataRow[] = temp_bottom[0];
+                // get an array of all the remaining disagg values
+                const aggVars_bottom: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, bottom, filteredData_bottom)];
+                const dataByAggregate_bottom = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars_bottom, filteredData_bottom);
+                let summedMetricForDisagg_bottom: number[] = this.reduceSummary(dataByAggregate_bottom,
+                                                                                aggVar,
+                                                                                compVars_bottom,
+                                                                                bottom);               
+                summedMetricForDisagg = summedMetricForDisagg.map( function(x, i) {
+                    if (summedMetricForDisagg_bottom[i] != 0)
+                        return (x / summedMetricForDisagg_bottom[i]);
+                    else
+                        return 0;
+                });
+            }
+            // we're doing a cumulative plot
+            if (filterOptions.cumulative) {
+                summedMetricForDisagg = summedMetricForDisagg
+                    .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i-1] || 0)], [])
+            }
+
+            const fRow: FilteredRow = { label: aggVar,
+                                        data: summedMetricForDisagg,
+                                        borderColor: plotColours[aggVar],
+                                        lineTension: 0.1,
+                                        backgroundColor: 'transparent',
+                                        pointBackgroundColor: 'plotColours[aggVar]',
+                                        pointRadius: 2.5,
+                                        pointHoverRadius: 7.5,
+                                        pointHitRadius: 15,
+                                        pointStyle: 'circle' };
+
+            datasets.push(fRow);
+        }
+        return [datasets, compVars_top];
     }
 
     private groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],
@@ -171,8 +237,73 @@ export class DataFilterer {
         return impactData.filter(function(row) {return selectedActivityType.indexOf(row.activity_type) > -1;})
     }
 
-    private filterBYear(impactData: ImpactDataRow[], yearLow: number, yearHigh:  number) {
+    private filterByYear(impactData: ImpactDataRow[], yearLow: number, yearHigh:  number) {
         return impactData.filter(function(row) {return row.year >= yearLow;})
                          .filter(function(row) {return row.year <= yearHigh;})
+    }
+
+    private filterByAll(filterOptions: DataFiltererOptions,
+                        impactData:    ImpactDataRow[],): ImpactDataRow[]  {
+        let filtData = this.filterByFocality(impactData, true); // filter focal model
+        filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
+        filtData = this.filterByYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
+        filtData = this.filterByTouchstone(filtData, filterOptions.selectedTouchstones); // filter by touchstone
+        filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type
+        filtData = this.filterByCountrySet(filtData, filterOptions.selectedCountries); // filter by activity type
+        filtData = this.filterByDisease(filtData, filterOptions.selectedDiseases); // filter by diseases
+        filtData = this.filterByVaccine(filtData, filterOptions.selectedVaccines); // filter by vaccine
+
+        return filtData;
+    }
+
+    private meanVariables(CompareVariable: string): { [fracPart: string]: string } {
+        switch (CompareVariable) {
+            case "coverage":
+                return {top: "fvps", bottom: "target_population"};
+                break;
+
+            case "deaths_averted_rate":
+                return {top: "deaths_averted", bottom: "fvps"};
+                break;
+
+            case "cases_averted_rate":
+                return {top: "cases_averted", bottom: "fvps"};
+                break;
+            
+            default:
+                return {top: CompareVariable};
+                break;
+        }
+    }
+
+    private reduceSummary(aggregatedData: ImpactDataByVaccineAndThenCountry,
+                          aggVar:string, compVars: any[],
+                          metric: string): number[] {
+        const dataByCompare = aggregatedData[aggVar];
+        let summedMetricForDisagg: number[] = compVars.map(function (compare: string) {
+            const data: ImpactDataRow[] = dataByCompare[compare];
+            if (typeof data !== 'undefined') { // this is necessary to prevent errors when this compare / aggregate combo is empty
+                const summedData =  data.map(x => x[metric])
+                                        .filter(x => !isNaN(x))
+                                        .reduce((acc, x) => acc + x, 0);
+                //return summedData;
+                console.log([summedData, this.roundDown(summedData, 3)]);
+                return this.roundDown(summedData, 3);
+            } else {
+                return 0;
+            }
+        }, this);
+        return summedMetricForDisagg;
+    }
+
+    // this function rounds DOWN to n significant figures
+    private roundDown(value: number, sigFigs: number): number {
+        const n: number = Math.ceil(Math.log(value + 1) / Math.log(10)); // log10 is not a standard Math function!
+        if (n <= sigFigs)
+            return value;
+
+        const m: number = n - sigFigs; // this number is definitely positive
+
+        return Math.floor(value / (Math.pow(10, m))) * (Math.pow(10, m));
     }
 }
