@@ -366,6 +366,7 @@ class DataVisModel {
                 scales: {
                     yAxes: [{
                         ticks: {
+                            callback: (value, index, values) => rescaleLabel(value, value),
                             beginAtZero: true
                         }
                     }]
