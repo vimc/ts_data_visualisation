@@ -1,6 +1,7 @@
-import {DataFilterer} from "./DataFilterer";
+import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
+import {WarningMessageManager} from "./WarningMessage"
 import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
@@ -81,12 +82,6 @@ class DataVisModel {
     reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
     dataId = ko.observable<string>("Data id: " + reportInfo.dep_id);
     appId = ko.observable<string>("App. id: " + reportInfo.git_id);
-
-    warningMessage = ko.observable<string>("Multiple touchstones have been selected, Compare across should be set to touchstone otherwise the data shown will be meaningless")
-    showWarning = ko.computed<boolean>(function() {
-        return (this.touchstoneFilter().selectedOptions().length > 1) && 
-               (this.compare() != "touchstone");
-    }, this);
 
     hideLabels = ko.observable<boolean>(false);
     hideLegend = ko.observable<boolean>(false);
@@ -205,6 +200,48 @@ class DataVisModel {
             default:
                 return "Future deaths averted"
         }
+    }, this);
+
+    filterOptionsAlt = ko.computed<DataFiltererOptions>(function() {
+        return {
+            metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
+            maxPlot: this.maxBars(), // How many bars on the plot
+            compare: this.compare(), // variable we are comparing across
+            disagg: this.disaggregateBy(), // variable we are disaggregating by
+            yearLow: this.yearFilter().selectedLow(), // lower bound on year
+            yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
+            activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
+            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
+            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
+            cumulative: (this.compare() == "year" && this.cumulativePlot()), // are we creating a cumulative plot
+            timeSeries: this.currentPlot() == "TimeSeries"
+        }
+    }, this);
+
+    warningMessage = ko.computed<string>(function() {
+        const filterOptions = {
+            metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
+            maxPlot: this.maxBars(), // How many bars on the plot
+            compare: this.compare(), // variable we are comparing across
+            disagg: this.disaggregateBy(), // variable we are disaggregating by
+            yearLow: this.yearFilter().selectedLow(), // lower bound on year
+            yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
+            activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
+            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
+            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
+            cumulative: this.cumulativePlot(), // are we creating a cumulative plot
+            timeSeries: false
+        };
+        const message = new WarningMessageManager().getError(this.filterOptionsAlt());
+        return message;
+    }, this);
+
+    showWarning = ko.computed<boolean>(function() {
+        return this.warningMessage().length > 1;
     }, this);
 
     renderImpact() {
@@ -333,8 +370,6 @@ class DataVisModel {
             cumulative: (this.cumulativePlot()), // are we creating a cumulative plot
             timeSeries: true
         };
-
-        //const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
 
         const filterData = new DataFilterer().calculateMean(filterOptions, impactData, plotColours);
 
