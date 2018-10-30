@@ -124,28 +124,28 @@ class DataVisModel {
         this.ctxTS = this.canvasTS.getContext('2d');
 
         this.compare.subscribe(() => {
-            this.updatePlotOptions();
+            this.updateXAxisOptions();
         });
         this.yearFilter().selectedLow.subscribe(() => {
-            this.updatePlotOptions();
+            this.updateXAxisOptions();
         });
         this.yearFilter().selectedHigh.subscribe(() => {
-            this.updatePlotOptions();
+            this.updateXAxisOptions();
         });
         this.activityFilter().selectedOptions.subscribe(() => {
-            this.updatePlotOptions();
+            this.updateXAxisOptions();
         });
         this.countryFilter().selectedOptions.subscribe(() => {
-            this.updatePlotOptions();
+            this.updateXAxisOptions();
         });
         this.diseaseFilter().selectedOptions.subscribe(() => {
-            this.updatePlotOptions();
+            this.updateXAxisOptions();
         });
         this.vaccineFilter().selectedOptions.subscribe(() => {
-            this.updatePlotOptions();
+            this.updateXAxisOptions();
         });
         this.touchstoneFilter().selectedOptions.subscribe(() => {
-            this.updatePlotOptions();
+            this.updateXAxisOptions();
         });
 
         this.chartOptions.subscribe(() => {
@@ -181,7 +181,7 @@ class DataVisModel {
         this.plotTitle(this.defaultTitle());
     };
 
-    updatePlotOptions() {
+    updateXAxisOptions() {
         // refilter the data
         let chartOptions = this.chartOptions();
         chartOptions.maxPlot = -1;
