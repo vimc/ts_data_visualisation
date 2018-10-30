@@ -12,8 +12,6 @@ import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
 import {diseases, vaccines, countries, activityTypes, plottingVariables, touchstones} from "./Data";
 import 'bootstrap/dist/css/bootstrap.css';
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
-import {Browser} from "leaflet";
-import chrome = Browser.chrome;
 
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
@@ -177,7 +175,7 @@ class DataVisModel {
     changeBurden(burden: string) {
         this.humanReadableBurdenOutcome(burden)
         this.plotTitle(this.defaultTitle());
-      //  this.onUIChange(true, true);
+        //  this.onUIChange(true, true);
     };
 
     updatePlotOptions() {
