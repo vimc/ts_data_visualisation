@@ -114,7 +114,6 @@ class DataVisModel {
     filteredTable: KnockoutObservableArray<any>;
     gridViewModel: any;
     filteredTSTable: KnockoutObservableArray<any>;
-    onUIChange: (redraw: boolean, updateUI: boolean) => void;
 
     constructor() {
 
@@ -126,28 +125,33 @@ class DataVisModel {
 
         this.compare.subscribe(() => {
             this.updatePlotOptions();
-        }, this);
+        });
         this.yearFilter().selectedLow.subscribe(() => {
             this.updatePlotOptions();
-        }, this)
+        });
         this.yearFilter().selectedHigh.subscribe(() => {
             this.updatePlotOptions();
-        }, this)
+        });
         this.activityFilter().selectedOptions.subscribe(() => {
             this.updatePlotOptions();
-        }, this)
+        });
         this.countryFilter().selectedOptions.subscribe(() => {
             this.updatePlotOptions();
-        }, this)
+        });
         this.diseaseFilter().selectedOptions.subscribe(() => {
             this.updatePlotOptions();
-        }, this)
+        });
         this.vaccineFilter().selectedOptions.subscribe(() => {
             this.updatePlotOptions();
-        }, this)
+        });
         this.touchstoneFilter().selectedOptions.subscribe(() => {
             this.updatePlotOptions();
-        }, this)
+        });
+
+        this.chartOptions.subscribe(() => {
+            this.renderImpact();
+            this.renderTimeSeries();
+        })
 
     }
 
@@ -173,9 +177,8 @@ class DataVisModel {
     };
 
     changeBurden(burden: string) {
-        this.humanReadableBurdenOutcome(burden)
+        this.humanReadableBurdenOutcome(burden);
         this.plotTitle(this.defaultTitle());
-        //  this.onUIChange(true, true);
     };
 
     updatePlotOptions() {
@@ -285,7 +288,7 @@ class DataVisModel {
 
     }, this).extend({rateLimit: 250});
 
-    renderImpact = ko.computed(() => {
+    renderImpact() {
 
         const chartOptions: CustomChartOptions = this.chartOptions();
 
@@ -309,9 +312,9 @@ class DataVisModel {
         this.filteredTable = new TableMaker().createWideTable(datasets, compareNames);
         this.chartObject = new Chart(this.ctx, impactChartConfig(filterData, compareNames, chartOptions));
 
-    }, this);
+    };
 
-    renderTimeSeries = ko.computed(() => {
+    renderTimeSeries() {
 
         const chartOptions: CustomChartOptions = this.chartOptions();
 
@@ -329,7 +332,7 @@ class DataVisModel {
         this.filteredTSTable = new TableMaker().createWideTable(datasets, compVars_top);
         this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, compVars_top, chartOptions));
 
-    }, this);
+    };
 
     exportTSPlot() {
         this.canvasTS.toBlob(function (blob: Blob) {
