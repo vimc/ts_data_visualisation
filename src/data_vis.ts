@@ -237,12 +237,16 @@ class DataVisModel {
             case "fvps":
                 return "fvps"
             case "coverage":
-                return "coverage"
-            case "casesRate":
+                this.cumulativePlot(false); // this might not be prefered
+                return "coverage"           // behaviour, if a user goes deaths
+            case "casesRate":               // -> coverage -> death it will set
+                this.cumulativePlot(false); // cumulative to false
                 return "cases_averted_rate"
             case "deathsRate":
+                this.cumulativePlot(false);
                 return "deaths_averted_rate"
             default:
+                this.cumulativePlot(false);
                 return "deaths_averted"
         }
     }, this);
