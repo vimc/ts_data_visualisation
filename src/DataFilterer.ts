@@ -20,10 +20,21 @@ export interface DataFiltererOptions {
     timeSeries:          boolean;
 }
 
+export interface FilteredData {
+    datasets: FilteredRow[];
+    compVars: any[];
+    totals: number[];
+}
+
+export interface MeanData {
+    datasets: FilteredRow[];
+    compVars_top: any[];
+}
+
 export class DataFilterer {
     filterData(filterOptions: DataFiltererOptions,
                impactData:    ImpactDataRow[],
-               plotColours:   { [p: string] : string }): any[] {
+               plotColours:   { [p: string] : string }): FilteredData {
         const filtData = this.filterByAll(filterOptions, impactData);
 
         // now we filter by the compare variable
@@ -79,12 +90,12 @@ export class DataFilterer {
             totals.push(total);
         }
 
-        return [datasets, compVars, totals];
+        return {datasets, compVars, totals};
     }
 
     calculateMean(filterOptions: DataFiltererOptions,
                   impactData:    ImpactDataRow[],
-                  plotColours:   { [p: string] : string }): any[] {
+                  plotColours:   { [p: string] : string }): MeanData {
         // compare will always be year!
 
         const filtData = this.filterByAll(filterOptions, impactData);
@@ -146,7 +157,7 @@ export class DataFilterer {
 
             datasets.push(fRow);
         }
-        return [datasets, compVars_top];
+        return {datasets, compVars_top};
     }
 
     private groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],
@@ -286,8 +297,6 @@ export class DataFilterer {
                 const summedData =  data.map(x => x[metric])
                                         .filter(x => !isNaN(x))
                                         .reduce((acc, x) => acc + x, 0);
-                //return summedData;
-                console.log([summedData, this.roundDown(summedData, 3)]);
                 return this.roundDown(summedData, 3);
             } else {
                 return 0;
