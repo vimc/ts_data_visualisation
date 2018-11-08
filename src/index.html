@@ -25,20 +25,7 @@
         $(".loader").fadeOut("fast");
     });
     </script>
-    <!-- Makes tabs work -->
-    <script type="text/javascript">
-    $(document).ready(function () {
 
-            $('#myTab a').click(function (e) {
-                e.preventDefault()
-                $(this).tab('show')
-            })
-
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                e.relatedTarget // previous tab
-            });
-        });
-    </script>
 </head>
 
 <body>
@@ -338,7 +325,6 @@
                         </div>
                     </form>
 
-                    <button class="btn btn-success" data-bind="click: renderImpact">Redraw Plot</button>
                     <button class="btn btn-success" data-bind="click: exportPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportData">Export data as csv</button>
 
@@ -396,7 +382,6 @@
                     <div style="max-width: 1000px">
                         <canvas id="timeSeriesChart"></canvas>
                     </div>
-                    <button class="btn btn-success" data-bind="click: renderTimeSeries">Redraw Plot</button>
                     <button class="btn btn-success" data-bind="click: exportTSPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportTSData">Export data as csv</button>
 
@@ -415,6 +400,8 @@
             </div>
         </div> -->
     </div>
+</div>
+
 </div>
 
 <script src="impactData.js"></script>
