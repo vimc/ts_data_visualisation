@@ -1,4 +1,4 @@
-import {DataFilterer} from "./DataFilterer";
+import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
@@ -11,6 +11,7 @@ import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
 import {diseases, vaccines, countries, activityTypes, plottingVariables, touchstones} from "./Data";
 import 'bootstrap/dist/css/bootstrap.css';
+import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
@@ -28,26 +29,15 @@ const $ = require("jquery");
 
 const jsonexport = require('jsonexport');
 
-function rescaleLabel(value: number, scale: number): string {
-    // we need to round down to three significant figures
-    const df = new DataFilterer();
-    if (scale > 1000000000) {
-        return df.roundDown(value, 3) / 1000000000 + "B";
+function createRangeArray(min: number = 1, max: number): number[] {
+    let a: number[] = [];
+    for (let i: number = min; i <= max; ++i) {
+        a.push(i);
     }
-    if (scale > 1000000) {
-        return df.roundDown(value, 3) / 1000000 + "M";
-    }
-    if (scale > 1000) {
-        return df.roundDown(value, 3) / 1000 + "K";
-    }
-    if (scale > 1) { // round values in [1, 1000] down to nearest integer
-        return Math.floor(value) + "";
-    } // i don't think rounding x in (0,1) is a good idea need to think about this
-    return value.toString();
+    return a;
 }
 
 class DataVisModel {
-
     plots = ko.observableArray(["Impact", "Time series"]);
     currentPlot = ko.observable("Impact");
 
@@ -63,10 +53,25 @@ class DataVisModel {
         selectedLow: 2016,
         selectedHigh: 2020
     }));
-    activityFilter = ko.observable(new ListFilter({name: "Activity", options: activityTypes}));
-    countryFilter = ko.observable(new CountryFilter({name: "Country", options: countries, humanNames: countryDict}));
-    diseaseFilter = ko.observable(new ListFilter({name: "Disease", options: diseases, humanNames: diseaseDict}));
-    vaccineFilter = ko.observable(new ListFilter({name: "Vaccine", options: vaccines, humanNames: vaccineDict}));
+    activityFilter = ko.observable(new ListFilter({
+        name: "Activity",
+        options: activityTypes
+    }));
+    countryFilter = ko.observable(new CountryFilter({
+        name: "Country",
+        options: countries,
+        humanNames: countryDict
+    }));
+    diseaseFilter = ko.observable(new ListFilter({
+        name: "Disease",
+        options: diseases,
+        humanNames: diseaseDict
+    }));
+    vaccineFilter = ko.observable(new ListFilter({
+        name: "Vaccine",
+        options: vaccines,
+        humanNames: vaccineDict
+    }));
     touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
         options: touchstones,
@@ -76,11 +81,11 @@ class DataVisModel {
     xAxisOptions = plottingVariables;
     disaggregationOptions = plottingVariables;
 
-    maxPlotOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+    maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
+    maxBars = ko.observable<number>(5);
 
     compare = ko.observable<string>(this.xAxisOptions[1]);
-    disaggregateBy = ko.observable<string>(this.disaggregationOptions[7]);
-    maxBars = ko.observable<number>(5);
+    disaggregateBy = ko.observable<string>("disease");
     cumulativePlot = ko.observable<boolean>(false);
 
     reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
@@ -99,6 +104,8 @@ class DataVisModel {
 
     humanReadableBurdenOutcome = ko.observable("deaths");
 
+    compareNames = ko.observableArray<string>([]);
+
     canvas: any;
     ctx: any;
     chartObject: Chart;
@@ -113,16 +120,56 @@ class DataVisModel {
     gridViewModel: any;
     filteredTSTable: KnockoutObservableArray<any>;
 
+    constructor() {
+
+        this.canvas = document.getElementById('myChart');
+        this.canvasTS = document.getElementById('timeSeriesChart');
+
+        this.ctx = this.canvas.getContext('2d');
+        this.ctxTS = this.canvasTS.getContext('2d');
+
+        this.compare.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+        this.yearFilter().selectedLow.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+        this.yearFilter().selectedHigh.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+        this.activityFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+        this.countryFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+        this.diseaseFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+        this.vaccineFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+        this.touchstoneFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+
+        this.chartOptions.subscribe(() => {
+            this.renderImpact();
+            this.renderTimeSeries();
+        })
+
+    }
+
     countryCodeToName(countryCode: string) {
         return countryDict[countryCode];
-    }
+    };
 
     exportPlot() {
         this.canvas = document.getElementById('myChart');
         this.canvas.toBlob(function (blob: Blob) {
             saveAs(blob, "untitled.png");
         });
-    }
+    };
 
     exportData() {
         jsonexport(this.filteredTable(), function (err: any, csv: any) {
@@ -132,11 +179,22 @@ class DataVisModel {
             var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
             saveAs(blob, "data.csv");
         });
-    }
+    };
 
     changeBurden(burden: string) {
-        this.humanReadableBurdenOutcome(burden)
+        this.humanReadableBurdenOutcome(burden);
         this.plotTitle(this.defaultTitle());
+    };
+
+    updateXAxisOptions() {
+        // refilter the data
+        let chartOptions = this.chartOptions();
+        chartOptions.maxPlot = -1;
+
+        const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
+        this.compareNames(filteredData.compVars);
+        this.maxPlotOptions(createRangeArray(1, this.compareNames().length));
+        this.maxBars(this.compareNames().length);
     }
 
     defaultTitle() {
@@ -168,7 +226,7 @@ class DataVisModel {
         this.renderImpact();
     }
 
-    burdenOutcome = ko.computed(function () {
+    burdenOutcome = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
                 return "deaths_averted"
@@ -179,19 +237,23 @@ class DataVisModel {
             case "fvps":
                 return "fvps"
             case "coverage":
-                return "coverage"
-            case "casesRate":
+                this.cumulativePlot(false); // this might not be prefered
+                return "coverage"           // behaviour, if a user goes deaths
+            case "casesRate":               // -> coverage -> death it will set
+                this.cumulativePlot(false); // cumulative to false
                 return "cases_averted_rate"
             case "deathsRate":
+                this.cumulativePlot(false);
                 return "deaths_averted_rate"
             default:
+                this.cumulativePlot(false);
                 return "deaths_averted"
         }
     }, this);
 
     plotTitle = ko.observable(this.defaultTitle());
 
-    yAxisTitle = ko.computed(function () {
+    yAxisTitle = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
                 return "Future deaths averted";
@@ -212,15 +274,9 @@ class DataVisModel {
         }
     }, this);
 
-    renderImpact() {
-        this.canvas = document.getElementById('myChart');
-        this.ctx = this.canvas.getContext('2d');
-
-        if (this.chartObject) {
-            this.chartObject.destroy();
-        }
-
-        const filterOptions = {
+    chartOptions = ko.computed<CustomChartOptions>(() => {
+        return {
+            currentPlot: this.currentPlot(),
             metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
             maxPlot: this.maxBars(), // How many bars on the plot
             compare: this.compare(), // variable we are comparing across
@@ -233,175 +289,62 @@ class DataVisModel {
             selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
             cumulative: (this.compare() == "year" && this.cumulativePlot()), // are we creating a cumulative plot
-            timeSeries: false
-        };
+            timeSeries: this.currentPlot() == "Time series",
+            yAxisTitle: this.yAxisTitle(),
+            plotTitle: this.plotTitle(),
+            hideLabels: this.hideLabels()
+        }
 
-        const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
+    }, this).extend({rateLimit: 250});
 
-        const datasets = filterData[0];
-        let compareNames: string[] = [...filterData[1]];
-        const totals = filterData[2];
+    renderImpact() {
+
+        const chartOptions: CustomChartOptions = this.chartOptions();
+
+        if (chartOptions.currentPlot != "Impact" || !this.ctx) {
+            return;
+        }
+
+        if (this.chartObject) {
+            this.chartObject.destroy();
+        }
+
+        const filterData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
+        const {datasets, compVars} = filterData;
+
+        let compareNames: string[] = [...compVars];
         // when we put countries along convert the names to human readable
-        if (this.compare() == "country") {
+        if (chartOptions.compare == "country") {
             compareNames = compareNames.map(this.countryCodeToName)
         }
 
-        const hideLabel: boolean = this.hideLabels();
-        const maxTotal = Math.max(...totals);
         this.filteredTable = new TableMaker().createWideTable(datasets, compareNames);
-        this.chartObject = new Chart(this.ctx, {
-            type: 'bar',
-            data: {
-                labels: compareNames,
-                datasets: datasets,
-            },
-            options: {
-                legend: {
-                    display: true
-                },
-                title: {
-                    display: true,
-                    text: this.plotTitle(),
-                },
-                scales: {
-                    xAxes: [{
-                        stacked: true
-                    }],
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: this.yAxisTitle(),
-                        },
-                        stacked: true,
-                        ticks: {
-                            callback: (value, index, values) => rescaleLabel(value, value)
-                        }
-                    }]
-                },
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem, data) {
-                            const label: string = data.datasets[tooltipItem.datasetIndex].label;
-                            return label + ": " + 
-                                   rescaleLabel(Number(tooltipItem.yLabel), 
-                                                Number(tooltipItem.yLabel));
-                        }
-                    }
-                },
-                plugins: {
-                    datalabels: {
-                        color: "white",
-                        display: function (context: any) {
-                            if (!hideLabel)
-                                return context.dataset.data[context.dataIndex] > maxTotal / 10;
-                            else
-                                return false;
-                        },
-                        font: {
-                            weight: "bold"
-                        },
-                        formatter: (value: number, ctx: any) => rescaleLabel(value, maxTotal)
-                    }
-                },
-                animation: {
-                    onComplete: function () {
-                        const chart = this.chart;
-                        const context = chart.ctx;
-                        const lastDataSet: number = datasets.length - 1
-                        if (lastDataSet > -1) {
-                            const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
-                            // this is a lot of nonsense to grab the plot meta data
-                            // for the final (topmost) data set
-                            lastMeta.data.forEach(function (bar: any, index: number) {
-                                const data = rescaleLabel(totals[index],
-                                    totals[index]);
-                                // magic numbers to the labels look reasonable
-                                context.fillText(data, bar._model.x - 12, bar._model.y - 5);
-                            });
-                        }
-                    }
-                }
-            }
-        });
-    }
+        this.chartObject = new Chart(this.ctx, impactChartConfig(filterData, compareNames, chartOptions));
+
+    };
 
     renderTimeSeries() {
-        this.canvasTS = document.getElementById('timeSeriesChart');
-        this.ctxTS = this.canvasTS.getContext('2d');
+
+        const chartOptions: CustomChartOptions = this.chartOptions();
+
+        if (chartOptions.currentPlot != "Time series" || !this.ctxTS) {
+            return;
+        }
 
         if (this.chartObjectTS) {
             this.chartObjectTS.destroy();
         }
 
-        const filterOptions = {
-            metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
-            maxPlot: -1, // How many bars on the plot
-            compare: "year",
-            disagg: this.disaggregateBy(), // variable we are disaggregating by
-            yearLow: this.yearFilter().selectedLow(), // lower bound on year
-            yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
-            activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
-            selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
-            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
-            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
-            selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-            cumulative: (this.cumulativePlot()), // are we creating a cumulative plot
-            timeSeries: true
-        };
+        const filterData = new DataFilterer().calculateMean(chartOptions, impactData, plotColours);
+        const {datasets, compVars_top} = filterData;
 
-        //const filterData = new DataFilterer().filterData(filterOptions, impactData, plotColours);
+        this.filteredTSTable = new TableMaker().createWideTable(datasets, compVars_top);
+        this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, compVars_top, chartOptions));
 
-        const filterData = new DataFilterer().calculateMean(filterOptions, impactData, plotColours);
-
-        const datasets = filterData[0];
-        let compareNames: string[] = [...filterData[1]];
-
-        this.filteredTSTable = new TableMaker().createWideTable(datasets, compareNames);
-
-        this.chartObjectTS = new Chart(this.ctxTS, {
-            type: 'line',
-            data: {
-                labels: compareNames,
-                datasets: datasets,
-            },
-            options: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: this.plotTitle(),
-                },
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem, data) {
-                            const label: string = data.datasets[tooltipItem.datasetIndex].label;
-                            return label + ": " + 
-                                   rescaleLabel(Number(tooltipItem.yLabel), 
-                                                Number(tooltipItem.yLabel));
-                        }
-                    }
-                },
-                plugins: {
-                    datalabels: {
-                        display: false
-                    }
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                },
-            },
-        });
-    }
+    };
 
     exportTSPlot() {
-        this.canvas = document.getElementById('timeSeriesChart');
-        this.canvas.toBlob(function (blob: Blob) {
+        this.canvasTS.toBlob(function (blob: Blob) {
             saveAs(blob, "untitled.png");
         });
     }
@@ -428,11 +371,11 @@ class DataVisModel {
             }*/
 }
 
-const viewModel = new DataVisModel();
-
-ko.applyBindings(viewModel);
-
 $(document).ready(() => {
+    const viewModel = new DataVisModel();
+
+    ko.applyBindings(viewModel);
+
     viewModel.renderImpact();
     viewModel.renderTimeSeries();
     //  viewModel.renderMap();
