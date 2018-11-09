@@ -306,11 +306,14 @@ export class DataFilterer {
     }
 
     // this function rounds DOWN to n significant figures
-    private roundDown(value: number, sigFigs: number): number {
-        const n: number = Math.ceil(Math.log(value + 1) / Math.log(10)); // log10 is not a standard Math function!
-        if (n <= sigFigs)
+    public roundDown(value: number, sigFigs: number): number {
+        // this should never be hit (negative deaths shouldn't happen)
+        // so we're not going to try anything clever
+        if (value < 0) {
             return value;
+        }
 
+        const n: number = Math.ceil(Math.log(value+1) / Math.log(10)); // log10 is not a standard Math function!
         const m: number = n - sigFigs; // this number is definitely positive
 
         return Math.floor(value / (Math.pow(10, m))) * (Math.pow(10, m));

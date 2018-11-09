@@ -1,4 +1,4 @@
-import {DataFiltererOptions, FilteredData, MeanData} from "./DataFilterer";
+import {DataFiltererOptions, FilteredData, MeanData, DataFilterer} from "./DataFilterer";
 import {Chart, ChartConfiguration} from "chart.js";
 
 export interface CustomChartOptions extends DataFiltererOptions {
@@ -8,18 +8,23 @@ export interface CustomChartOptions extends DataFiltererOptions {
     hideLabels: boolean;
 }
 
-function rescaleLabel(value: number, scale: number): string {
+export function rescaleLabel(value: number, scale: number): string {
+    // we need to round down to three significant figures
+    const df = new DataFilterer();
     if (scale > 1000000000) {
-        return value / 1000000000 + "B";
+        return df.roundDown(value, 3) / 1000000000 + "B";
     }
     if (scale > 1000000) {
-        return value / 1000000 + "M";
+        return df.roundDown(value, 3) / 1000000 + "M";
     }
     if (scale > 1000) {
-        return value / 1000 + "K";
+        return df.roundDown(value, 3) / 1000 + "K";
     }
+    if (scale > 1) { // round values in [1, 1000] down to nearest integer
+        return Math.floor(value) + "";
+    } // i don't think rounding x in (0,1) is a good idea need to think about this
     return value.toString();
-}
+};
 
 export function impactChartConfig(filterData: FilteredData,
                                   compareNames: string[],
@@ -121,6 +126,7 @@ export function timeSeriesChartConfig(filterData: MeanData,
             scales: {
                 yAxes: [{
                     ticks: {
+                        callback: (value, index, values) => rescaleLabel(value, value),
                         beginAtZero: true
                     }
                 }]
