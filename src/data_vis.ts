@@ -1,6 +1,7 @@
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
+import {WarningMessageManager} from "./WarningMessage"
 import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
@@ -91,12 +92,6 @@ class DataVisModel {
     reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
     dataId = ko.observable<string>("Data id: " + reportInfo.dep_id);
     appId = ko.observable<string>("App. id: " + reportInfo.git_id);
-
-    warningMessage = ko.observable<string>("Multiple touchstones have been selected, Compare across should be set to touchstone otherwise the data shown will be meaningless")
-    showWarning = ko.computed<boolean>(function() {
-        return (this.touchstoneFilter().selectedOptions().length > 1) && 
-               (this.compare() != "touchstone");
-    }, this);
 
     hideLabels = ko.observable<boolean>(false);
     hideLegend = ko.observable<boolean>(false);
@@ -296,6 +291,15 @@ class DataVisModel {
         }
 
     }, this).extend({rateLimit: 250});
+
+    warningMessage = ko.computed<string>(function() {
+        const message = new WarningMessageManager().getError(this.chartOptions());
+        return message;
+    }, this);
+
+    showWarning = ko.computed<boolean>(function() {
+        return this.warningMessage().length > 1;
+    }, this);
 
     renderImpact() {
 

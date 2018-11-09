@@ -38,7 +38,8 @@ export class DataFilterer {
         const filtData = this.filterByAll(filterOptions, impactData);
 
         // now we filter by the compare variable
-        const temp = this.filterByCompare(filterOptions.maxPlot, filterOptions.compare, filterOptions.metric, filtData);
+        const maxCompare = filterOptions.timeSeries ? -1 : filterOptions.maxPlot;
+        const temp = this.filterByCompare(maxCompare, filterOptions.compare, filterOptions.metric, filtData);
         const compVars: any[] = temp[1];
         const filteredData: ImpactDataRow[] = temp[0];
 
