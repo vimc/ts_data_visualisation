@@ -322,7 +322,6 @@
                         </div>
                     </form>
 
-                    <button class="btn btn-success" data-bind="click: renderImpact">Redraw Plot</button>
                     <button class="btn btn-success" data-bind="click: exportPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportData">Export data as csv</button>
                 </div>
@@ -340,7 +339,8 @@
                                 <select class="form-control" data-bind="options: disaggregationOptions, value: disaggregateBy"></select>
                             </div>
                             <div class="col-4" style="margin-top: 46px;">
-                                <div class="form-check">
+                                <div class="form-check"
+                                     data-bind="visible: ['deaths_averted', 'cases_averted', 'dalys_averted', 'fvps'].includes(burdenOutcome())">
                                     <input class="form-check-input" type="checkbox" data-bind="checked: cumulativePlot"
                                            id="cumulativePlotId">
                                     <label class="form-check-label" for="cumulativePlotId">
@@ -382,7 +382,6 @@
                     <div style="max-width: 1000px">
                         <canvas id="timeSeriesChart"></canvas>
                     </div>
-                    <button class="btn btn-success" data-bind="click: renderTimeSeries">Redraw Plot</button>
                     <button class="btn btn-success" data-bind="click: exportTSPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportTSData">Export data as csv</button>
 
@@ -401,6 +400,8 @@
             </div>
         </div> -->
     </div>
+</div>
+
 </div>
 
 <script src="impactData.js"></script>
