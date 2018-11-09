@@ -72,19 +72,13 @@ of the app in production.
         * vaccine 3
             * routine
 * OPTIONAL Do the same thing for continents/countries/regions
-* The max bars option should default to the maximum number from filters
-* Y axis should always start at 0
 * On time series add labels next to curves (instead of legend)
-* Redraw after every UI input
 * Allow user to set their own colours
 * Replace Gavi69 (Gavi73 - PINE) with gavi68
 * BUG Title doesn't change on click
 * Organise legend order to reflect groupngs
 * Hover label show counties and rounded numbers
-* Make sure rounding is done correctly, i.e. round down to three significant figures
-* More warning messages
 * Put meta-data on plot / on screen (only list first N when manhy options are chosen)
 * Add meta-data when saving plot/csv
 * Provide a warning message when there is no data
-* Turn off cumulative plot for rate metrics
 * Hover over explaining metrics
