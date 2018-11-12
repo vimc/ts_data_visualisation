@@ -125,6 +125,10 @@ export function timeSeriesChartConfig(filterData: MeanData,
             },
             scales: {
                 yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: chartOptions.yAxisTitle,
+                    },
                     ticks: {
                         callback: (value, index, values) => rescaleLabel(value, value),
                         beginAtZero: true
