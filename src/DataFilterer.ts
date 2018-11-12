@@ -54,7 +54,7 @@ export class DataFilterer {
                                                                      compVars,
                                                                      filterOptions.metric);
             // we're doing a cumulative plot
-            if (filterOptions.cumulative) {
+            if (filterOptions.compare == "year" && filterOptions.cumulative) {
                 summedMetricForDisagg = summedMetricForDisagg
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i-1] || 0)], [])
             }
@@ -105,12 +105,12 @@ export class DataFilterer {
         const top = meanVars.top;
         const bottom = meanVars.bottom;
         
-        const temp_top = this.filterByCompare(-1, filterOptions.compare, top, filtData);
+        const temp_top = this.filterByCompare(-1, "year", top, filtData);
         const compVars_top: any[] = temp_top[1];
         const filteredData_top: ImpactDataRow[] = temp_top[0];
         // get an array of all the remaining disagg values
         const aggVars_top: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, top, filteredData_top)];
-        const dataByAggregate_top = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars_top, filteredData_top);
+        const dataByAggregate_top = this.groupDataByDisaggAndThenCompare("year", filterOptions.disagg, aggVars_top, filteredData_top);
 
 
         
@@ -122,12 +122,12 @@ export class DataFilterer {
                                                                      compVars_top,
                                                                      top);
             if (bottom != null) {
-                const temp_bottom = this.filterByCompare(-1, filterOptions.compare, bottom, filtData);
+                const temp_bottom = this.filterByCompare(-1, "year", bottom, filtData);
                 const compVars_bottom: any[] = temp_bottom[1];
                 const filteredData_bottom: ImpactDataRow[] = temp_bottom[0];
                 // get an array of all the remaining disagg values
                 const aggVars_bottom: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, bottom, filteredData_bottom)];
-                const dataByAggregate_bottom = this.groupDataByDisaggAndThenCompare(filterOptions.compare, filterOptions.disagg, aggVars_bottom, filteredData_bottom);
+                const dataByAggregate_bottom = this.groupDataByDisaggAndThenCompare("year", filterOptions.disagg, aggVars_bottom, filteredData_bottom);
                 let summedMetricForDisagg_bottom: number[] = this.reduceSummary(dataByAggregate_bottom,
                                                                                 aggVar,
                                                                                 compVars_bottom,

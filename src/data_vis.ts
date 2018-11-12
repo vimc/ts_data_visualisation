@@ -283,7 +283,7 @@ class DataVisModel {
             selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
             selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-            cumulative: (this.compare() == "year" && this.cumulativePlot()), // are we creating a cumulative plot
+            cumulative: this.cumulativePlot(), // are we creating a cumulative plot
             timeSeries: this.currentPlot() == "Time series",
             yAxisTitle: this.yAxisTitle(),
             plotTitle: this.plotTitle(),
