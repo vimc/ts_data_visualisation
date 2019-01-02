@@ -1,5 +1,6 @@
 import {DataFiltererOptions, FilteredData, MeanData, DataFilterer} from "./DataFilterer";
 import {Chart, ChartConfiguration} from "chart.js";
+import {touchstoneYears} from "./Dictionaries"
 
 export interface CustomChartOptions extends DataFiltererOptions {
     plotTitle: string;
@@ -25,6 +26,32 @@ export function rescaleLabel(value: number, scale: number): string {
     } // i don't think rounding x in (0,1) is a good idea need to think about this
     return value.toString();
 };
+
+// This is ugly as sin. I'll come back and do this in a more functional way at
+// some point
+function dateToAnnotation(touchstones: string[]): any[] {
+    let anno = [];
+
+    for (let ts of touchstones) {
+        let p = {
+                        drawTime: "afterDatasetsDraw",
+                        type: "line",
+                        mode: "vertical",
+                        scaleID: "x-axis-0",
+                        value: touchstoneYears[ts],
+                        borderWidth: 0,
+                        borderColor: "red",
+                        label: {
+                            content: ts,
+                            enabled: true,
+                            position: "top"
+                        }
+                };
+        anno.push(p);
+    }
+
+    return anno;
+}
 
 export function impactChartConfig(filterData: FilteredData,
                                   compareNames: string[],
@@ -99,10 +126,15 @@ export function impactChartConfig(filterData: FilteredData,
         }
     };
 }
-
+// this should return a ChartConfiguration object but that doesn't have the
+// annotation entry. So I've set it to any until I work out how to modify
+// ChartConfiguration in a way that doesn't break everything!
 export function timeSeriesChartConfig(filterData: MeanData,
                                       compareNames: string[],
-                                      chartOptions: CustomChartOptions): ChartConfiguration {
+                                      chartOptions: CustomChartOptions): any {
+    const anno: any[] = dateToAnnotation(chartOptions.selectedTouchstones);
+    console.log(anno)
+
     return {
         type: 'line',
         data: {
@@ -130,11 +162,30 @@ export function timeSeriesChartConfig(filterData: MeanData,
                         labelString: chartOptions.yAxisTitle,
                     },
                     ticks: {
-                        callback: (value, index, values) => rescaleLabel(value, value),
+                        callback: (value: number, index: number, values: number[]) => rescaleLabel(value, value),
                         beginAtZero: true
                     }
                 }]
             },
+            annotation: {
+                annotations: anno
+/*                annotations: [
+                    {
+                        drawTime: "afterDatasetsDraw",
+                        type: "line",
+                        mode: "vertical",
+                        scaleID: "x-axis-0",
+                        value: 2020,
+                        borderWidth: 0,
+                        borderColor: "red",
+                        label: {
+                            content: "TODAY",
+                            enabled: true,
+                            position: "top"
+                        }
+                    }
+                ]*/
+            }
         },
     };
 }

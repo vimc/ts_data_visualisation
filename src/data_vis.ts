@@ -2,12 +2,13 @@ import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {WarningMessageManager} from "./WarningMessage"
-import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
+import {countryDict, diseaseDict, vaccineDict, touchstoneYears} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
 import {Chart} from "chart.js";
 import * as L from "leaflet";
 import "chartjs-plugin-datalabels"
+import 'chartjs-plugin-annotation';
 import {saveAs} from "file-saver"
 import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
 import {diseases, vaccines, countries, activityTypes, plottingVariables, touchstones} from "./Data";
