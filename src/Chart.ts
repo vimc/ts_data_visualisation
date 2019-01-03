@@ -1,6 +1,7 @@
 import {DataFiltererOptions, FilteredData, MeanData, DataFilterer} from "./DataFilterer";
 import {Chart, ChartConfiguration} from "chart.js";
 import {touchstoneYears} from "./Dictionaries"
+import {plotColours} from "./PlotColours"
 
 export interface CustomChartOptions extends DataFiltererOptions {
     plotTitle: string;
@@ -9,7 +10,7 @@ export interface CustomChartOptions extends DataFiltererOptions {
     hideLabels: boolean;
 }
 
-export function rescaleLabel(value: number, scale: number): string {
+function rescaleLabel(value: number, scale: number): string {
     // we need to round down to three significant figures
     const df = new DataFilterer();
     if (scale > 1000000000) {
@@ -27,28 +28,30 @@ export function rescaleLabel(value: number, scale: number): string {
     return value.toString();
 };
 
-// This is ugly as sin. I'll come back and do this in a more functional way at
-// some point
-function dateToAnnotation(touchstones: string[]): any[] {
-    let anno = [];
-
-    for (let ts of touchstones) {
-        let p = {
-                        drawTime: "afterDatasetsDraw",
-                        type: "line",
-                        mode: "vertical",
-                        scaleID: "x-axis-0",
-                        value: touchstoneYears[ts],
-                        borderWidth: 0,
-                        borderColor: "red",
-                        label: {
-                            content: ts,
-                            enabled: true,
-                            position: "top"
-                        }
+// At some point need to write a typedef for the return class
+function annotationHelper(touchstone: string, year: number, colour: string): any {
+    const a =   {
+                    drawTime: "afterDatasetsDraw",
+                    type: "line",
+                    mode: "vertical",
+                    scaleID: "x-axis-0",
+                    value: year,
+                    borderWidth: 2,
+                    borderColor: colour,
+                    label: {
+                        content: touchstone,
+                        enabled: true,
+                        position: "top"
+                            }
                 };
-        anno.push(p);
-    }
+    return a;
+}
+
+function dateToAnnotation(touchstones: string[]): any[] {
+    const anno = touchstones.map( function(tch: string) :any {
+                    return annotationHelper(tch, touchstoneYears[tch],
+                                            plotColours[tch]);
+                });
 
     return anno;
 }
@@ -169,22 +172,6 @@ export function timeSeriesChartConfig(filterData: MeanData,
             },
             annotation: {
                 annotations: anno
-/*                annotations: [
-                    {
-                        drawTime: "afterDatasetsDraw",
-                        type: "line",
-                        mode: "vertical",
-                        scaleID: "x-axis-0",
-                        value: 2020,
-                        borderWidth: 0,
-                        borderColor: "red",
-                        label: {
-                            content: "TODAY",
-                            enabled: true,
-                            position: "top"
-                        }
-                    }
-                ]*/
             }
         },
     };
