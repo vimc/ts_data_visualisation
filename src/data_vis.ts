@@ -14,7 +14,17 @@ import {diseases, vaccines, countries, activityTypes, plottingVariables, touchst
 import 'bootstrap/dist/css/bootstrap.css';
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 
-declare const impactData: ImpactDataRow[];
+// stuff to handle the data set being split into multiple files
+const initTouchstone: string = "201710gavi-201807wue";
+import {dataSetUpdate, appendToDataSet} from "./AppendDataSets"
+export let addedDataSets: string[] = [];
+const update = appendToDataSet([initTouchstone], addedDataSets, []);
+addedDataSets = update.newSeenList;
+//export let splitData = update.newDataSet;
+export let impactData = update.newDataSet;
+
+
+//declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
 
 require("./index.html");
@@ -76,7 +86,7 @@ class DataVisModel {
     touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
         options: touchstones,
-        selected: ["201710gavi-201807wue"]
+        selected: [initTouchstone]
     }));
 
     xAxisOptions = plottingVariables;
@@ -145,6 +155,12 @@ class DataVisModel {
             this.updateXAxisOptions();
         });
         this.touchstoneFilter().selectedOptions.subscribe(() => {
+            const update: dataSetUpdate =
+                appendToDataSet(this.touchstoneFilter().selectedOptions(),
+                                addedDataSets, impactData);
+            addedDataSets = update.newSeenList;
+            impactData = update.newDataSet;
+            console.log(addedDataSets);
             this.updateXAxisOptions();
         });
 
