@@ -40,5 +40,6 @@ export const plottingVariables = ["year", "country", "continent", "region",
     "cofinance_status_2018", "activity_type", "disease", "vaccine", "touchstone"];
 
 export const touchstones = ["201710gavi", "201710gavi-201807wue", "201510gavi",
-    "201310gavi-201807wue", "201310gavi", "201510gavi-201807wue",
-    "201210gavi-201807wue", "201210gavi-201303gavi"];
+                            "201310gavi-201807wue", "201310gavi",
+                            "201310gavi-201403gavi", "201510gavi-201807wue",
+                            "201210gavi-201807wue", "201210gavi-201303gavi"];
