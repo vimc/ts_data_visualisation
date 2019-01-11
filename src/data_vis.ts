@@ -14,7 +14,16 @@ import {diseases, vaccines, countries, activityTypes, plottingVariables, touchst
 import 'bootstrap/dist/css/bootstrap.css';
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 
-declare const impactData: ImpactDataRow[];
+// stuff to handle the data set being split into multiple files
+const initTouchstone: string = "201710gavi-201807wue";
+import {dataSetUpdate, appendToDataSet} from "./AppendDataSets"
+export let addedDataSets: string[] = [];
+const update = appendToDataSet([initTouchstone], addedDataSets, []);
+addedDataSets = update.newSeenList;
+//export let splitData = update.newDataSet;
+export let impactData = update.newDataSet;
+
+//declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
 
 require("./index.html");
@@ -145,6 +154,11 @@ class DataVisModel {
             this.updateXAxisOptions();
         });
         this.touchstoneFilter().selectedOptions.subscribe(() => {
+            const update: dataSetUpdate =
+                appendToDataSet(this.touchstoneFilter().selectedOptions(),
+                                addedDataSets, impactData);
+            addedDataSets = update.newSeenList;
+            impactData = update.newDataSet;
             this.updateXAxisOptions();
         });
 
@@ -182,10 +196,11 @@ class DataVisModel {
     };
 
     updateXAxisOptions() {
-        // refilter the data
-        let chartOptions = this.chartOptions();
+        // we have to it this way because javascript doesn't copy object on
+        // assignmnet!
+        let chartOptions = $.extend(true,{},this.chartOptions());
         chartOptions.maxPlot = -1;
-
+        // refilter the data
         const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
         this.compareNames(filteredData.compVars);
         this.maxPlotOptions(createRangeArray(1, this.compareNames().length));
@@ -302,7 +317,6 @@ class DataVisModel {
     }, this);
 
     renderImpact() {
-
         const chartOptions: CustomChartOptions = this.chartOptions();
 
         if (chartOptions.currentPlot != "Impact" || !this.ctx) {
@@ -328,7 +342,6 @@ class DataVisModel {
     };
 
     renderTimeSeries() {
-
         const chartOptions: CustomChartOptions = this.chartOptions();
 
         if (chartOptions.currentPlot != "Time series" || !this.ctxTS) {
