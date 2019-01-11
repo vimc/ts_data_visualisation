@@ -1,44 +1,34 @@
+import * as $ from "jquery";
 import {ImpactDataRow} from "./ImpactDataRow";
-const $ = require("jquery");
 
-export interface dataSetUpdate {
-    newSeenList: string[];
+export interface DataSetUpdate {
     newDataSet: ImpactDataRow[];
+    newSeenList: string[];
 }
-
-function loadjs(file: string) {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src = file;
-    script.onload = function() {
-        console.log("Script is ready!"); 
-    };
-    document.body.appendChild(script);
- }
 
 export function appendToDataSet(touchstones: string[],
                                 seenDataSets: string[],
-                                curDataset: ImpactDataRow[]): dataSetUpdate {
+                                curDataset: ImpactDataRow[]): DataSetUpdate {
     // for each selected touchstone...
-    for (let touchstone of touchstones) {
+    for (const touchstone of touchstones) {
         // ...check if we've already added this data set...
         if (seenDataSets.indexOf(touchstone) == -1) {
             // ...if not add it
-            const filename = "./data/impactData_" + touchstone + ".js"
+            const filename = "./data/impactData_" + touchstone + ".js";
 
             let newData: ImpactDataRow[] = []; // fail safe in case the file can't be read
             $.ajax({
-                'async': false,
-                'type': "GET",
-                'global': false,
-                'contentType': "text/plain",
-                'dataType': "text",
-                'url': filename,
-                'data': { 'request': "", 'target': 'arrange_url', 'method': 'method_target' },
-                'success': function (data: string): void {
+                async: false,
+                contentType: "text/plain",
+                data: { request: "", target: "arrange_url", method: "method_target" },
+                dataType: "text",
+                global: false,
+                success: (data: string) => {
                     newData = eval(data);
                     return;
-                }
+                },
+                type: "GET",
+                url: filename,
             });
 
             curDataset = curDataset.concat(newData);
@@ -46,8 +36,8 @@ export function appendToDataSet(touchstones: string[],
         }
     }
     const update = {
+        newDataSet: curDataset,
         newSeenList: seenDataSets,
-        newDataSet: curDataset
-    }
+    };
     return update;
 }

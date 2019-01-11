@@ -16,7 +16,7 @@ import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Ch
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201807wue";
-import {dataSetUpdate, appendToDataSet} from "./AppendDataSets"
+import {DataSetUpdate, appendToDataSet} from "./AppendDataSets"
 export let addedDataSets: string[] = [];
 const update = appendToDataSet([initTouchstone], addedDataSets, []);
 addedDataSets = update.newSeenList;
@@ -154,7 +154,7 @@ class DataVisModel {
             this.updateXAxisOptions();
         });
         this.touchstoneFilter().selectedOptions.subscribe(() => {
-            const update: dataSetUpdate =
+            const update: DataSetUpdate =
                 appendToDataSet(this.touchstoneFilter().selectedOptions(),
                                 addedDataSets, impactData);
             addedDataSets = update.newSeenList;
