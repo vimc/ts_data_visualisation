@@ -1,5 +1,5 @@
-import {DataFiltererOptions, FilteredData, MeanData, DataFilterer} from "./DataFilterer";
 import {Chart, ChartConfiguration} from "chart.js";
+import {DataFilterer, DataFiltererOptions, FilteredData, MeanData} from "./DataFilterer";
 
 export interface CustomChartOptions extends DataFiltererOptions {
     plotTitle: string;
@@ -24,7 +24,7 @@ export function rescaleLabel(value: number, scale: number): string {
         return Math.floor(value) + "";
     } // i don't think rounding x in (0,1) is a good idea need to think about this
     return value.toString();
-};
+}
 
 export function impactChartConfig(filterData: FilteredData,
                                   compareNames: string[],
@@ -35,14 +35,14 @@ export function impactChartConfig(filterData: FilteredData,
     const maxTotal = Math.max(...totals);
 
     return  {
-        type: 'bar',
+        type: "bar",
         data: {
             labels: compareNames,
             datasets: datasets,
         },
         options: {
             legend: {
-                display: true
+                display: true,
             },
             title: {
                 display: true,
@@ -50,7 +50,7 @@ export function impactChartConfig(filterData: FilteredData,
             },
             scales: {
                 xAxes: [{
-                    stacked: true
+                    stacked: true,
                 }],
                 yAxes: [{
                     scaleLabel: {
@@ -59,27 +59,28 @@ export function impactChartConfig(filterData: FilteredData,
                     },
                     stacked: true,
                     ticks: {
-                        callback: (value, index, values) => rescaleLabel(value, value)
-                    }
-                }]
+                        callback: (value, index, values) => rescaleLabel(value, value),
+                    },
+                }],
             },
             plugins: {
                 datalabels: {
                     color: "white",
-                    display: function (context: any) {
-                        if (!chartOptions.hideLabels)
+                    display: (context: any) => {
+                        if (!chartOptions.hideLabels) {
                             return context.dataset.data[context.dataIndex] > maxTotal / 10;
-                        else
+                        } else {
                             return false;
+                        }
                     },
                     font: {
-                        weight: "bold"
+                        weight: "bold",
                     },
-                    formatter: (value: number, ctx: any) => rescaleLabel(value, maxTotal)
-                }
+                    formatter: (value: number, ctx: any) => rescaleLabel(value, maxTotal),
+                },
             },
             animation: {
-                onComplete: function () {
+                onComplete: function() {
                     const chart = this.chart;
                     const context = chart.ctx;
                     const lastDataSet: number = datasets.length - 1;
@@ -87,16 +88,16 @@ export function impactChartConfig(filterData: FilteredData,
                         const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
                         // this is a lot of nonsense to grab the plot meta data
                         // for the final (topmost) data set
-                        lastMeta.data.forEach(function (bar: any, index: number) {
+                        lastMeta.data.forEach( (bar: any, index: number) => {
                             const data = rescaleLabel(totals[index],
                                 totals[index]);
                             // magic numbers to the labels look reasonable
                             context.fillText(data, bar._model.x - 12, bar._model.y - 5);
                         });
                     }
-                }
-            }
-        }
+                },
+            },
+        },
     };
 }
 
@@ -104,7 +105,7 @@ export function timeSeriesChartConfig(filterData: MeanData,
                                       compareNames: string[],
                                       chartOptions: CustomChartOptions): ChartConfiguration {
     return {
-        type: 'line',
+        type: "line",
         data: {
             labels: compareNames,
             datasets: filterData.datasets,
@@ -112,7 +113,7 @@ export function timeSeriesChartConfig(filterData: MeanData,
         options: {
             legend: {
                 display: true,
-                position: 'top',
+                position: "top",
             },
             title: {
                 display: true,
@@ -120,8 +121,8 @@ export function timeSeriesChartConfig(filterData: MeanData,
             },
             plugins: {
                 datalabels: {
-                    display: false
-                }
+                    display: false,
+                },
             },
             scales: {
                 yAxes: [{
@@ -131,9 +132,9 @@ export function timeSeriesChartConfig(filterData: MeanData,
                     },
                     ticks: {
                         callback: (value, index, values) => rescaleLabel(value, value),
-                        beginAtZero: true
-                    }
-                }]
+                        beginAtZero: true,
+                    },
+                }],
             },
         },
     };
