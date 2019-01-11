@@ -1,8 +1,13 @@
 import {FilteredRow} from "./FilteredRow";
 import {ImpactDataRow} from "./ImpactDataRow";
 
-export type ImpactDataByCountry = { [country: string]: ImpactDataRow[] };
-export type ImpactDataByVaccineAndThenCountry = { [vaccine: string]: ImpactDataByCountry };
+interface ImpactDataByCountry {
+    [country: string]: ImpactDataRow[];
+}
+
+interface ImpactDataByVaccineAndThenCountry {
+    [vaccine: string]: ImpactDataByCountry;
+}
 
 export interface DataFiltererOptions {
     metric: string;
@@ -189,9 +194,8 @@ export class DataFilterer {
     private groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],
                                             filteredData: ImpactDataRow[]): ImpactDataByVaccineAndThenCountry {
         const dataByDisagg: ImpactDataByVaccineAndThenCountry = {};
-        for (const disagg in disaggVars) {
-            dataByDisagg[disagg] = {};
-        }
+        disaggVars.map((disagg: string) => { dataByDisagg[disagg] = {}; } );
+
         for (const row of filteredData) {
             let dataByCompare = dataByDisagg[row[disaggName]];
             if (!dataByCompare) {

@@ -1,3 +1,10 @@
+import "bootstrap/dist/css/bootstrap.css";
+import {Chart} from "chart.js";
+import "chartjs-plugin-datalabels";
+import {saveAs} from "file-saver";
+import * as $ from "jquery";
+import * as ko from "knockout";
+import * as L from "leaflet";
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker} from "./CreateDataTable";
@@ -8,23 +15,14 @@ import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {plotColours} from "./PlotColours";
 import {WarningMessageManager} from "./WarningMessage";
-import * as ko from "knockout";
-import {Chart} from "chart.js";
-import * as L from "leaflet";
-import "chartjs-plugin-datalabels";
-import {saveAs} from "file-saver";
-import "bootstrap/dist/css/bootstrap.css";
-import * as $ from "jquery";
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201807wue";
 export let addedDataSets: string[] = [];
 const update = appendToDataSet([initTouchstone], addedDataSets, []);
 addedDataSets = update.newSeenList;
-// export let splitData = update.newDataSet;
 export let impactData = update.newDataSet;
 
-// declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
 
 require("./index.html");

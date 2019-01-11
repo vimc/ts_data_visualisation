@@ -1,5 +1,5 @@
-import {countries, gavi69, gavi73, pineCountries} from "./Data"; // for country filters
 import * as ko from "knockout";
+import {countries, gavi69, gavi73, pineCountries} from "./Data"; // for country filters
 
 export interface FilterSettings {
     name: string;

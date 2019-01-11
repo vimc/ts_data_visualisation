@@ -187,7 +187,7 @@ export const plotColours: { [vaccine: string]: string } = {
     "201510gavi-201807wue":  "#800000",
     "201210gavi-201807wue":  "#ff0000",
     "201210gavi-201303gavi": "#9400d3",
-    "201310gavi-201403gavi": "#808000"
+    "201310gavi-201403gavi": "#808000",
 };
 
 export const niceColours = {
