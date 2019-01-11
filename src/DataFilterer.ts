@@ -40,7 +40,7 @@ export class DataFilterer {
         // now we filter by the compare variable
         const maxCompare = filterOptions.timeSeries ? -1 : filterOptions.maxPlot;
         const temp = this.filterByCompare(maxCompare, filterOptions.compare, filterOptions.metric, filtData);
-        const compVars: any[] = temp[1];
+        const compVars: any[] = temp[1]; // these are the values that go along the x-axis
         const filteredData: ImpactDataRow[] = temp[0];
 
         // get an array of all the remaining disagg values
@@ -98,7 +98,6 @@ export class DataFilterer {
                   impactData:    ImpactDataRow[],
                   plotColours:   { [p: string] : string }): MeanData {
         // compare will always be year!
-
         const filtData = this.filterByAll(filterOptions, impactData);
 
         let meanVars = this.meanVariables(filterOptions.metric);

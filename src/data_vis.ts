@@ -23,7 +23,6 @@ addedDataSets = update.newSeenList;
 //export let splitData = update.newDataSet;
 export let impactData = update.newDataSet;
 
-
 //declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
 
@@ -160,7 +159,6 @@ class DataVisModel {
                                 addedDataSets, impactData);
             addedDataSets = update.newSeenList;
             impactData = update.newDataSet;
-            console.log(addedDataSets);
             this.updateXAxisOptions();
         });
 
@@ -198,10 +196,11 @@ class DataVisModel {
     };
 
     updateXAxisOptions() {
-        // refilter the data
-        let chartOptions = this.chartOptions();
+        // we have to it this way because javascript doesn't copy object on
+        // assignmnet!
+        let chartOptions = $.extend(true,{},this.chartOptions());
         chartOptions.maxPlot = -1;
-
+        // refilter the data
         const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
         this.compareNames(filteredData.compVars);
         this.maxPlotOptions(createRangeArray(1, this.compareNames().length));
@@ -318,7 +317,6 @@ class DataVisModel {
     }, this);
 
     renderImpact() {
-
         const chartOptions: CustomChartOptions = this.chartOptions();
 
         if (chartOptions.currentPlot != "Impact" || !this.ctx) {
@@ -344,7 +342,6 @@ class DataVisModel {
     };
 
     renderTimeSeries() {
-
         const chartOptions: CustomChartOptions = this.chartOptions();
 
         if (chartOptions.currentPlot != "Time series" || !this.ctxTS) {

@@ -25,7 +25,8 @@ export function appendToDataSet(touchstones: string[],
         if (seenDataSets.indexOf(touchstone) == -1) {
             // ...if not add it
             const filename = "./data/impactData_" + touchstone + ".js"
-            let newData: ImpactDataRow[] = curDataset; // fail safe in case the file can't be read
+
+            let newData: ImpactDataRow[] = []; // fail safe in case the file can't be read
             $.ajax({
                 'async': false,
                 'type': "GET",
