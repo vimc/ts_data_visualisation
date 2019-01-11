@@ -40,7 +40,7 @@ export class DataFilterer {
             return value;
         }
 
-        const n: number = Math.ceil(Math.log(value+1) / Math.log(10)); // log10 is not a standard Math function!
+        const n: number = Math.ceil(Math.log(value + 1) / Math.log(10)); // log10 is not a standard Math function!
         const m: number = n - sigFigs; // this number is definitely positive
 
         return Math.floor(value / (Math.pow(10, m))) * (Math.pow(10, m));
@@ -72,7 +72,7 @@ export class DataFilterer {
                                                                      compVars,
                                                                      filterOptions.metric);
             // we're doing a cumulative plot
-            if (filterOptions.compare == "year" && filterOptions.cumulative) {
+            if (filterOptions.compare === "year" && filterOptions.cumulative) {
                 summedMetricForDisagg = summedMetricForDisagg
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i - 1] || 0)], []);
             }
@@ -156,7 +156,7 @@ export class DataFilterer {
                                                                                  compVarsBottom,
                                                                                  bottom);
                 summedMetricForDisagg = summedMetricForDisagg.map( (x, i) => {
-                    if (summedMetricForDisaggBottom[i] != 0) {
+                    if (summedMetricForDisaggBottom[i] !== 0) {
                         return (x / summedMetricForDisaggBottom[i]);
                     } else {
                         return 0;

@@ -12,7 +12,7 @@ export function appendToDataSet(touchstones: string[],
     // for each selected touchstone...
     for (const touchstone of touchstones) {
         // ...check if we've already added this data set...
-        if (seenDataSets.indexOf(touchstone) == -1) {
+        if (seenDataSets.indexOf(touchstone) === -1) {
             // ...if not add it
             const filename = "./data/impactData_" + touchstone + ".js";
 
