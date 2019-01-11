@@ -353,10 +353,10 @@ class DataVisModel {
         }
 
         const filterData = new DataFilterer().calculateMean(chartOptions, impactData, plotColours);
-        const {datasets, compVars_top} = filterData;
+        const {datasets, compVarsTop} = filterData;
 
-        this.filteredTSTable = new TableMaker().createWideTable(datasets, compVars_top);
-        this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, compVars_top, chartOptions));
+        this.filteredTSTable = new TableMaker().createWideTable(datasets, compVarsTop);
+        this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, compVarsTop, chartOptions));
 
     };
 
