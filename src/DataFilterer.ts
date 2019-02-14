@@ -112,9 +112,6 @@ export class DataFilterer {
         const aggVars_top: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, top, filteredData_top)];
         const dataByAggregate_top = this.groupDataByDisaggAndThenCompare("year", filterOptions.disagg, aggVars_top, filteredData_top);
 
-
-        
-
         let datasets: FilteredRow[] = [];
         for (let aggVar of aggVars_top) {
             let summedMetricForDisagg: number[] = this.reduceSummary(dataByAggregate_top,
