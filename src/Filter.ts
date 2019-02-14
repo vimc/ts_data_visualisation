@@ -59,7 +59,6 @@ export class ListFilter extends Filter {
 
 export class CountryFilter extends ListFilter {
     selectCountryGroup(selectedGroup: string) {
-console.log(pineCountries)
         switch(selectedGroup) {
             case "all":
                 this.selectedOptions(this.options());
