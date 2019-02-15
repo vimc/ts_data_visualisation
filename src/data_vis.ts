@@ -362,17 +362,6 @@ class DataVisModel {
             saveAs(blob, "data.csv");
         });
     }
-
-    /*    renderMap() {
-           this.mymap = L.map('mapid').setView([51.505, -0.09], 13);
-
-            L.tileLayer('http://tiles.mapc.org/basemap/{z}/{x}/{y}.png',
-                {
-                    attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
-                      maxZoom: 17,
-                      minZoom: 9
-                }).addTo(this.mymap);
-            }*/
 }
 
 $(document).ready(() => {
