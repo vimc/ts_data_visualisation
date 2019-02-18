@@ -6,8 +6,8 @@
   "scripts": {
     "generate-fake-data": "babel-node scripts/generateTestData  --presets es2015",
     "build": "mkdir -p out && cp -R data/ out/ && webpack",
-    "build-dev-watch": "mkdir -p out && cp -R data/test/ out/data &&  webpack --watch",
-    "build-dev": "mkdir -p out && cp -R data/test/ out/data && webpack",
+    "build-dev-watch": "mkdir -p out && cp -R data/test/. out/data &&  webpack --watch",
+    "build-dev": "mkdir -p out && cp -R data/test/. out/data && webpack",
     "webpack": "webpack",
     "test": "mocha-webpack --webpack-config webpack-test.config.js tests/**/*Tests.ts",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
@@ -51,7 +51,6 @@
     "raw-loader": "^0.5.1",
     "tslint": "^5.12.1",
     "typescript": "^2.9.2",
-    "webpack-cli": "^3.0.4",
     "webpack-command": "^0.4.1",
     "webpack-node-externals": "^1.7.2"
   }

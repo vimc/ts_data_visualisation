@@ -61,7 +61,7 @@ function generateData() {
             )
         );
 
-    return "const impactData=" + JSON.stringify(fakeImpactData);
+    return JSON.stringify(fakeImpactData);
 }
 
 function randomNumber(floor, ceiling) {
