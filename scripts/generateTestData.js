@@ -10,6 +10,16 @@ fs.writeFile("data/test/impactData.js", generateData(), function (err) {
     console.log("Fake data saved to data/test/impactData.js")
 });
 
+for (let i in touchstones) {
+    var fileName = "data/test/impactData_" + touchstones[i] + ".js";
+    fs.writeFile(fileName, generateData(), function (err) {
+    if (err) {
+        return console.log(err);
+    }
+
+    console.log("Fake data saved to " + fileName)
+});
+}
 
 function generateData() {
 
