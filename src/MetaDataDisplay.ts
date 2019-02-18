@@ -45,9 +45,25 @@ function prettyVaccines(vaccineArr: string[], maxShow: number): string {
 	}	
 }
 
+function prettyTouchstones(touchstoneArr: string[], maxShow: number): string {
+	const touchstoneCount: number = touchstoneArr.length;
+	if (touchstoneCount > maxShow) {
+		const retStr = touchstoneCount.toString() + " touchstones including " +
+		               touchstoneArr.slice(0, maxShow).join(", ");
+		return retStr;
+	} else {
+		const retStr = touchstoneArr.join(", ");
+		return retStr;
+	}	
+}
+
 function prettyYears(yearLo: number, yearHi: number): string {
 	const retStr = "the years " + yearLo.toString() + "-" + yearHi.toString();
 	return retStr;
+}
+
+function prettyActivities(activityTypes: string[]) {
+	return activityTypes.join(", ");
 }
 
 export function MetaDataDisplay(chartOptions: CustomChartOptions,
@@ -60,11 +76,11 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
 	const xdisAgg: string = chartOptions.compare;
 	const ydisAgg: string = chartOptions.disagg;
 
-	const actType: string[] = chartOptions.activityTypes;
+	const actType: string[] = chartOptions.activityTypes;		//
 	const selCtry: string[] = chartOptions.selectedCountries;	//
 	const selDise: string[] = chartOptions.selectedDiseases;	//
-	const selVacc: string[] = chartOptions.selectedVaccines;
-	const selTchs: string[] = chartOptions.selectedTouchstones;
+	const selVacc: string[] = chartOptions.selectedVaccines;	//
+	const selTchs: string[] = chartOptions.selectedTouchstones;	//
 
 	const pltType: string = "Impact / Time series";
 	const cumul: string = "cum:TRUE / cum:FALSE"
@@ -73,9 +89,13 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
 		const metaStr : string = "This plot show the " +
 								 metr.replace("_", " ") + " data for " +
 		                         prettyCountries(selCtry, 4) + ", " +
+		                         prettyActivities(actType) + ", " + 
 		                         prettyDiseases(selDise, 4) + ", " +
 		                         prettyVaccines(selVacc, 4) + ", " +
-		                         prettyYears(yrLo, yrHi) +
+		                         prettyTouchstones(selTchs, 2) + ", " +
+		                         prettyYears(yrLo, yrHi) + ". " +
+		                         " The data is divide up by " +
+		                         xdisAgg + " and " + ydisAgg +
 		                         ". Plot produced at " + prettyDataAndTime();
 		return metaStr;
 	} else {
