@@ -2,7 +2,7 @@ import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {WarningMessageManager} from "./WarningMessage"
-import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
+import {countryDict, diseaseDict, vaccineDict, countryCodeToName} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
 import {Chart} from "chart.js";
@@ -13,6 +13,7 @@ import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
 import {diseases, vaccines, countries, activityTypes, plottingVariables, touchstones} from "./Data";
 import 'bootstrap/dist/css/bootstrap.css';
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
+import {MetaDataDisplay} from "./MetaDataDisplay"
 
 declare const impactData: ImpactDataRow[];
 declare const reportInfo: any;
@@ -155,10 +156,6 @@ class DataVisModel {
 
     }
 
-    countryCodeToName(countryCode: string) {
-        return countryDict[countryCode];
-    };
-
     exportPlot() {
         this.canvas = document.getElementById('myChart');
         this.canvas.toBlob(function (blob: Blob) {
@@ -292,6 +289,10 @@ class DataVisModel {
 
     }, this).extend({rateLimit: 250});
 
+    metaData = ko.computed<string>(() => {
+        return MetaDataDisplay(this.chartOptions(), true);
+    }, this);
+
     warningMessage = ko.computed<string>(function() {
         const message = new WarningMessageManager().getError(this.chartOptions());
         return message;
@@ -319,7 +320,7 @@ class DataVisModel {
         let compareNames: string[] = [...compVars];
         // when we put countries along convert the names to human readable
         if (chartOptions.compare == "country") {
-            compareNames = compareNames.map(this.countryCodeToName)
+            compareNames = compareNames.map(countryCodeToName)
         }
 
         this.filteredTable = new TableMaker().createWideTable(datasets, compareNames);

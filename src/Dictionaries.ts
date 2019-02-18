@@ -98,6 +98,10 @@ export const countryDict: { [code: string] : string} = {
     "ZWE": "Zimbabwe"
 }
 
+export function countryCodeToName(countryCode: string) {
+    return countryDict[countryCode];
+};
+
 export const vaccineDict: { [code: string] : string} = {
     HepB: "Hepatitis B",
     HepB_BD: "HepB_BD",
@@ -115,6 +119,10 @@ export const vaccineDict: { [code: string] : string} = {
     YF: "Yellow Fever"
 }
 
+export function vaccineCodeToName(vaccCode: string) {
+    return vaccineDict[vaccCode];
+};
+
 export const diseaseDict: { [code: string] : string} = {
     HepB: "Hepatitis B", 
     Hib: "Hib", 
@@ -127,3 +135,7 @@ export const diseaseDict: { [code: string] : string} = {
     Rubella: "Rubella",
     YF: "Yellow Fever"
 }
+
+export function diseaseCodeToName(disCode: string) {
+    return diseaseDict[disCode];
+};
