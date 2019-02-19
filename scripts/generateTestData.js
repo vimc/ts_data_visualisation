@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-import {countries, touchstones, activityTypes, diseaseVaccineLookup, diseases} from "../src/Data.ts"
+import {countries, touchstones, activityTypes, diseases} from "../src/Data.ts"
 
 fs.writeFile("data/test/impactData.js", generateData(), function (err) {
     if (err) {
@@ -10,10 +10,23 @@ fs.writeFile("data/test/impactData.js", generateData(), function (err) {
     console.log("Fake data saved to data/test/impactData.js")
 });
 
-
 function generateData() {
 
     const touchstoneSubset = touchstones.slice(0, 3);
+
+    // can't import typescript object, so just redefining this here
+    const diseaseVaccineLookup = {
+        HepB: ["HepB", "HepB_BD"],
+        Hib: ["Hib3"],
+        HPV: ["HPV"],
+        JE: ["JE"],
+        Measles: ["MCV1", "MCV2", "Measles"],
+        MenA: ["MenA"],
+        PCV: ["PCV3"],
+        Rota: ["Rotavirus"],
+        Rubella: ["RCV2", "Rubella"],
+        YF: ["Yellow Fever"]
+    }
 
     const fakeImpactData =
         countries.flatMap((c) =>
