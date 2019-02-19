@@ -201,7 +201,6 @@ export class DataFilterer {
                                compare: string,
                                metric: string,
                                impactData: ImpactDataRow[]): any[] {
-        console.log(compare)
         if (maxPlot > 0) {
             // this is taken from https://stackoverflow.com/a/49717936
             let groupedSummed = new Map<string, number>();

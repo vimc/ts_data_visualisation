@@ -185,7 +185,7 @@
                 <div class="nav-item nav-option">
                     <div class="nav-link">
                         <label data-bind="attr: {for: name}">
-                            <span data-bind="text: makeHumanreadable(name)"></span>
+                            <span data-bind="text: makeHumanreadable(name())"></span>
                             <select multiple="multiple" class="form-control"
                                     data-bind="options: options, selectedOptions: selectedOptions,
                                       select2: { placeholder: 'Select vaccines', closeOnSelect: true }">

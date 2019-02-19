@@ -42,3 +42,17 @@ export const plottingVariables = ["year", "country", "continent", "region",
 export const touchstones = ["201710gavi", "201710gavi-201807wue", "201510gavi",
     "201310gavi-201807wue", "201310gavi", "201510gavi-201807wue",
     "201210gavi-201807wue", "201210gavi-201303gavi"];
+
+
+export const diseaseVaccineLookup = {
+    HepB: ["HepB", "HepB_BD"],
+    Hib: ["Hib3"],
+    HPV: ["HPV"],
+    JE: ["JE"],
+    Measles: ["MCV1", "MCV2", "Measles"],
+    MenA: ["MenA"],
+    PCV: ["PCV3"],
+    Rota: ["Rotavirus"],
+    Rubella: ["RCV2", "Rubella"],
+    YF: ["Yellow Fever"]
+}
