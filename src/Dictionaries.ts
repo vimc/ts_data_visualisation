@@ -127,3 +127,16 @@ export const diseaseDict: { [code: string] : string} = {
     Rubella: "Rubella",
     YF: "Yellow Fever"
 }
+
+export const diseaseVaccineLookup: { [code: string] : string[]} = {
+    HepB: ["HepB", "HepB_BD"],
+    Hib: ["Hib3"],
+    HPV: ["HPV"],
+    JE: ["JE"],
+    Measles: ["MCV1", "MCV2", "Measles"],
+    MenA: ["MenA"],
+    PCV: ["PCV3"],
+    Rota: ["Rotavirus"],
+    Rubella: ["RCV2", "Rubella"],
+    YF: ["Yellow Fever"]
+}

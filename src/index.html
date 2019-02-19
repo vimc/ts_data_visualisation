@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <link type="text/css" rel="stylesheet" href="bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="styles.css"/>
+    <link type="text/css" rel="stylesheet" href="select2.min.css" />
     <link type="text/css" rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"/>
     <link type="text/css" rel="stylesheet"
@@ -180,39 +181,20 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: vaccineFilters">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <label data-bind="attr: {for: $data}">
-                            <input type="checkbox" data-bind="attr: { value: $data, id: $data },
-                                 checked: $parent.selectedOptions">
-                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
+                        <label data-bind="attr: {for: name}">
+                            <span data-bind="text: makeHumanreadable(name)"></span>
+                            <select multiple="multiple" class="form-control"
+                                    data-bind="options: options, selectedOptions: selectedOptions,
+                                      select2: { placeholder: 'Select vaccines', closeOnSelect: true }">
+                            </select>
                         </label>
                     </div>
                 </div>
             </div>
         </li>
-
-        <li class="nav-item" data-bind="with: vaccineFilter">
-            <a class="nav-link nav-parent"
-               href="#"
-               data-bind="text: name,
-                              css: { active: isOpen },
-                              click: toggleOpen"></a>
-
-            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
-                <div class="nav-item nav-option">
-                    <div class="nav-link">
-                        <label data-bind="attr: {for: $data}">
-                            <input type="checkbox"
-                                   data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
-                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </li>
-
         <li class="nav-item" data-bind="with: touchstoneFilter">
             <a class="nav-link nav-parent"
                href="#"

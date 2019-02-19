@@ -2,16 +2,17 @@ import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {WarningMessageManager} from "./WarningMessage"
-import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries"
+import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
 import {Chart} from "chart.js";
 import * as L from "leaflet";
 import "chartjs-plugin-datalabels"
 import {saveAs} from "file-saver"
-import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
+import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
 import {diseases, vaccines, countries, activityTypes, plottingVariables, touchstones} from "./Data";
 import 'bootstrap/dist/css/bootstrap.css';
+import "select2/dist/css/select2.min.css"
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 
 declare const impactData: ImpactDataRow[];
@@ -25,6 +26,7 @@ require("./image/caret-up-dark.svg");
 require("./image/caret-up-secondary.svg");
 require("./image/caret-down-secondary.svg");
 require("./css/styles.css");
+require("./select2Binding");
 
 const $ = require("jquery");
 
@@ -37,6 +39,20 @@ function createRangeArray(min: number = 1, max: number): number[] {
     }
     return a;
 }
+
+const getVaccineNamesLookup = (d: string) => {
+    return diseaseVaccineLookup[d].reduce((mapAccumulator, v) => {
+        mapAccumulator[v] = vaccineDict[v];
+        return mapAccumulator;
+    }, {} as { [code: string]: string })
+};
+
+const createVaccineFilterForDisease = (d: string) => new ListFilter({
+        name: d,
+        options: diseaseVaccineLookup[d],
+        humanNames: diseaseDict
+    }
+);
 
 class DataVisModel {
     plots = ko.observableArray(["Impact", "Time series"]);
@@ -63,15 +79,9 @@ class DataVisModel {
         options: countries,
         humanNames: countryDict
     }));
-    diseaseFilter = ko.observable(new ListFilter({
+    diseaseFilter = ko.observable(new DiseaseFilter({
         name: "Disease",
-        options: diseases,
-        humanNames: diseaseDict
-    }));
-    vaccineFilter = ko.observable(new ListFilter({
-        name: "Vaccine",
-        options: vaccines,
-        humanNames: vaccineDict
+        vaccineFilters: diseases.map(createVaccineFilterForDisease)
     }));
     touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
@@ -139,9 +149,6 @@ class DataVisModel {
             this.updateXAxisOptions();
         });
         this.diseaseFilter().selectedOptions.subscribe(() => {
-            this.updateXAxisOptions();
-        });
-        this.vaccineFilter().selectedOptions.subscribe(() => {
             this.updateXAxisOptions();
         });
         this.touchstoneFilter().selectedOptions.subscribe(() => {
@@ -280,8 +287,7 @@ class DataVisModel {
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
-            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
-            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
             timeSeries: this.currentPlot() == "Time series",
@@ -292,12 +298,12 @@ class DataVisModel {
 
     }, this).extend({rateLimit: 250});
 
-    warningMessage = ko.computed<string>(function() {
+    warningMessage = ko.computed<string>(function () {
         const message = new WarningMessageManager().getError(this.chartOptions());
         return message;
     }, this);
 
-    showWarning = ko.computed<boolean>(function() {
+    showWarning = ko.computed<boolean>(function () {
         return this.warningMessage().length > 1;
     }, this);
 

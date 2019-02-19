@@ -13,7 +13,6 @@ export interface DataFiltererOptions {
     yearHigh:            number;
     activityTypes:       Array<string>;
     selectedCountries:   Array<string>;
-    selectedDiseases:    Array<string>;
     selectedVaccines:    Array<string>;
     selectedTouchstones: Array<string>;
     cumulative:          boolean;
@@ -202,6 +201,7 @@ export class DataFilterer {
                                compare: string,
                                metric: string,
                                impactData: ImpactDataRow[]): any[] {
+        console.log(compare)
         if (maxPlot > 0) {
             // this is taken from https://stackoverflow.com/a/49717936
             let groupedSummed = new Map<string, number>();
@@ -233,10 +233,6 @@ export class DataFilterer {
         return impactData.filter(function(row) {return touchStone.indexOf(row.touchstone) > -1;})
     }
 
-    private filterByDisease(impactData: ImpactDataRow[], diseaseSet: string[]): ImpactDataRow[] {
-        return impactData.filter(function(row) {return diseaseSet.indexOf(row.disease) > -1;})
-    }
-
     private filterByVaccine(impactData: ImpactDataRow[], vaccineSet: string[]): ImpactDataRow[] {
         return impactData.filter(function(row) {return vaccineSet.indexOf(row.vaccine) > -1;})
     }
@@ -262,7 +258,6 @@ export class DataFilterer {
         filtData = this.filterByTouchstone(filtData, filterOptions.selectedTouchstones); // filter by touchstone
         filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type
         filtData = this.filterByCountrySet(filtData, filterOptions.selectedCountries); // filter by activity type
-        filtData = this.filterByDisease(filtData, filterOptions.selectedDiseases); // filter by diseases
         filtData = this.filterByVaccine(filtData, filterOptions.selectedVaccines); // filter by vaccine
 
         return filtData;
