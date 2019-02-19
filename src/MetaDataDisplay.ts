@@ -16,7 +16,7 @@ function prettyCountries(countryArr: string[], maxShow: number): string {
 		               countryArr.slice(0, maxShow).map(countryCodeToName).join(", ");
 		return retStr;
 	} else {
-		const retStr = countryArr.map(countryCodeToName).join(", ");
+		const retStr = "Countries: " + countryArr.map(countryCodeToName).join(", ");
 		return retStr;
 	}
 }
@@ -28,7 +28,7 @@ function prettyDiseases(diseaseArr: string[], maxShow: number): string {
 		               diseaseArr.slice(0, maxShow).map(diseaseCodeToName).join(", ");
 		return retStr;
 	} else {
-		const retStr = diseaseArr.map(diseaseCodeToName).join(", ");
+		const retStr = "Diseases: " + diseaseArr.map(diseaseCodeToName).join(", ");
 		return retStr;
 	}	
 }
@@ -40,7 +40,7 @@ function prettyVaccines(vaccineArr: string[], maxShow: number): string {
 		               vaccineArr.slice(0, maxShow).map(vaccineCodeToName).join(", ");
 		return retStr;
 	} else {
-		const retStr = vaccineArr.map(vaccineCodeToName).join(", ");
+		const retStr = "Vaccines: " + vaccineArr.map(vaccineCodeToName).join(", ");
 		return retStr;
 	}	
 }
@@ -52,53 +52,55 @@ function prettyTouchstones(touchstoneArr: string[], maxShow: number): string {
 		               touchstoneArr.slice(0, maxShow).join(", ");
 		return retStr;
 	} else {
-		const retStr = touchstoneArr.join(", ");
+		const retStr = "Touchstones: " + touchstoneArr.join(", ");
 		return retStr;
 	}	
 }
 
 function prettyYears(yearLo: number, yearHi: number): string {
-	const retStr = "the years " + yearLo.toString() + "-" + yearHi.toString();
+	const retStr = "From " + yearLo.toString() + " to " + yearHi.toString();
 	return retStr;
 }
 
 function prettyActivities(activityTypes: string[]) {
-	return activityTypes.join(", ");
+	return activityTypes.map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(", ");
 }
 
 export function MetaDataDisplay(chartOptions: CustomChartOptions,
 	                            human: boolean): string {
-	const metr: string = chartOptions.metric;					// IMPROVE?
-	const maxP: number = chartOptions.maxPlot;
-	const yrLo: number = chartOptions.yearLow; 					//
-	const yrHi: number = chartOptions.yearHigh;					//
-
-	const xdisAgg: string = chartOptions.compare;
-	const ydisAgg: string = chartOptions.disagg;
-
-	const actType: string[] = chartOptions.activityTypes;		//
-	const selCtry: string[] = chartOptions.selectedCountries;	//
-	const selDise: string[] = chartOptions.selectedDiseases;	//
-	const selVacc: string[] = chartOptions.selectedVaccines;	//
-	const selTchs: string[] = chartOptions.selectedTouchstones;	//
+	const maxPlot: number = chartOptions.maxPlot;
 
 	const pltType: string = "Impact / Time series";
 	const cumul: string = "cum:TRUE / cum:FALSE"
 
-	if (human) {
-		const metaStr : string = "This plot show the " +
-								 metr.replace("_", " ") + " data for " +
-		                         prettyCountries(selCtry, 4) + ", " +
-		                         prettyActivities(actType) + ", " + 
-		                         prettyDiseases(selDise, 4) + ", " +
-		                         prettyVaccines(selVacc, 4) + ", " +
-		                         prettyTouchstones(selTchs, 2) + ", " +
-		                         prettyYears(yrLo, yrHi) + ". " +
-		                         " The data is divide up by " +
-		                         xdisAgg + " and " + ydisAgg +
-		                         ". Plot produced at " + prettyDataAndTime();
-		return metaStr;
-	} else {
-		return "TODO!";
+	if (human) { // produce human readable metadata
+		if (chartOptions.plotType === "Impact") {
+			const metaStr : string = "This plot shows the " +
+									 chartOptions.metric.replace("_", " ") + " data for:\n" +
+			                         prettyActivities(chartOptions.activityTypes) + ";\n" + 
+			                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
+			                         prettyDiseases(chartOptions.selectedDiseases, 4) + ";\n" +
+			                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
+			                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
+			                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
+			                         "The data is divide up by " +
+			                         chartOptions.compare + " and " + chartOptions.disagg +
+			                         ".\nPlot produced at " + prettyDataAndTime();
+			return metaStr;
+		} if (chartOptions.plotType === "Time series") {
+			const metaStr : string = "This plot shows the " +
+									 chartOptions.metric.replace("_", " ") + " data for:\n" +
+			                         prettyActivities(chartOptions.activityTypes) + ";\n" + 
+			                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
+			                         prettyDiseases(chartOptions.selectedDiseases, 4) + ";\n" +
+			                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
+			                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
+			                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
+			                         "Each line represents a " + chartOptions.disagg +
+			                         ".\nPlot produced at " + prettyDataAndTime();
+			return metaStr;
+		} else {
+			return "ERROR!";
+		}
 	}
 }
