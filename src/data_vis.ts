@@ -40,13 +40,6 @@ function createRangeArray(min: number = 1, max: number): number[] {
     return a;
 }
 
-const getVaccineNamesLookup = (d: string) => {
-    return diseaseVaccineLookup[d].reduce((mapAccumulator, v) => {
-        mapAccumulator[v] = vaccineDict[v];
-        return mapAccumulator;
-    }, {} as { [code: string]: string })
-};
-
 const createVaccineFilterForDisease = (d: string) => new ListFilter({
         name: d,
         options: diseaseVaccineLookup[d],
