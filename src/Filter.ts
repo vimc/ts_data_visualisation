@@ -58,7 +58,6 @@ export class ListFilter extends Filter {
 }
 
 export class CountryFilter extends ListFilter {
-
     selectCountryGroup(selectedGroup: string) {
         switch(selectedGroup) {
             case "all":
@@ -68,13 +67,13 @@ export class CountryFilter extends ListFilter {
                 this.selectedOptions([]);
                 break;
             case "pine":
-                this.selectedOptions(pineCountries);
+                this.selectedOptions([...pineCountries]);
                 break;
             case "gavi73":
-                this.selectedOptions(gavi73);
+                this.selectedOptions([...gavi73]);
                 break;
             case "gavi69":
-                this.selectedOptions(gavi69);
+                this.selectedOptions([...gavi69]);
                 break;
             default:
                 this.selectedOptions([]);
