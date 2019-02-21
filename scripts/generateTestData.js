@@ -3,8 +3,9 @@ const fs = require('fs');
 import {countries, vaccines, touchstones, activityTypes} from "../src/Data.ts"
 
 for (let i in touchstones) {
-    var fileName = "data/test/impactData_" + touchstones[i] + ".js";
-    fs.writeFile(fileName, generateData(), function (err) {
+    var tsName = touchstones[i];
+    var fileName = "data/test/impactData_" + tsName + ".js";
+    fs.writeFile(fileName, generateData(tsName), function (err) {
     if (err) {
         return console.log(err);
     }
@@ -13,19 +14,19 @@ for (let i in touchstones) {
 });
 }
 
-function generateData() {
+function generateData(touchstone) {
 
     const touchstoneSubset = touchstones.slice(0, 3);
 
     const fakeImpactData =
         countries.flatMap((c) =>
             vaccines.flatMap((v) =>
-                touchstoneSubset.flatMap((t) =>
+//               touchstoneSubset.flatMap((t) =>
                     activityTypes.flatMap((a) =>
                         [2014, 2015, 2016, 2017, 2018, 2019, 2020]
                             .flatMap((y) => {
                                     return {
-                                        "touchstone": t,
+                                        "touchstone": touchstone,
                                         "disease": v,
                                         "is_focal": true,
                                         "activity_type": a,
@@ -49,7 +50,7 @@ function generateData() {
                                 }
                             )
                     )
-                )
+//                )
             )
         );
 
