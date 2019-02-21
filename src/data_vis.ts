@@ -183,8 +183,7 @@ class DataVisModel {
 
     updateXAxisOptions() {
         // refilter the data
-        let chartOptions = { ...this.chartOptions() };
-        chartOptions.maxPlot = -1;
+        const chartOptions = {...this.chartOptions(), maxPlot: -1};
 
         const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
         this.compareNames(filteredData.compVars);
