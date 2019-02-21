@@ -1,5 +1,5 @@
 import {DataFiltererOptions, FilteredData, MeanData, DataFilterer} from "./DataFilterer";
-import {Chart, ChartConfiguration} from "chart.js";
+import {Chart, ChartOptions, ChartConfiguration} from "chart.js";
 import {touchstoneYears} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 
@@ -8,6 +8,14 @@ export interface CustomChartOptions extends DataFiltererOptions {
     yAxisTitle: string;
     currentPlot: string;
     hideLabels: boolean;
+}
+
+export interface ChartOptionsWithAnnotation extends ChartOptions {
+    annotation: any;
+}
+
+export interface AnnotatedChartConfiguration extends ChartConfiguration {
+    options: ChartOptionsWithAnnotation
 }
 
 function rescaleLabel(value: number, scale: number): string {
@@ -129,14 +137,11 @@ export function impactChartConfig(filterData: FilteredData,
         }
     };
 }
-// this should return a ChartConfiguration object but that doesn't have the
-// annotation entry. So I've set it to any until I work out how to modify
-// ChartConfiguration in a way that doesn't break everything!
+
 export function timeSeriesChartConfig(filterData: MeanData,
                                       compareNames: string[],
-                                      chartOptions: CustomChartOptions): any {
+                                      chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
     const anno: any[] = dateToAnnotation(chartOptions.selectedTouchstones);
-    console.log(anno)
 
     return {
         type: 'line',
