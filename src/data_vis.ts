@@ -1,20 +1,22 @@
-import "bootstrap/dist/css/bootstrap.css";
+import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
+import {TableMaker} from "./CreateDataTable";
+import {ImpactDataRow} from "./ImpactDataRow";
+import {WarningMessageManager} from "./WarningMessage"
+import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries"
+import {plotColours} from "./PlotColours"
+import * as ko from "knockout";
 import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels";
 import {saveAs} from "file-saver";
 import * as $ from "jquery";
-import * as ko from "knockout";
 import * as L from "leaflet";
+import "chartjs-plugin-datalabels"
+import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
+import 'bootstrap/dist/css/bootstrap.css';
+import "select2/dist/css/select2.min.css"
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
-import {TableMaker} from "./CreateDataTable";
 import {activityTypes, countries, diseases, plottingVariables, touchstones, vaccines} from "./Data";
-import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
-import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries";
-import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
-import {ImpactDataRow} from "./ImpactDataRow";
-import {plotColours} from "./PlotColours";
-import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201807wue";
@@ -33,6 +35,7 @@ require("./image/caret-up-dark.svg");
 require("./image/caret-up-secondary.svg");
 require("./image/caret-down-secondary.svg");
 require("./css/styles.css");
+require("./select2Binding");
 
 const jsonexport = require("jsonexport");
 
@@ -43,6 +46,13 @@ function createRangeArray(min: number = 1, max: number): number[] {
     }
     return a;
 }
+
+const createVaccineFilterForDisease = (d: string) => new ListFilter({
+        name: d,
+        options: diseaseVaccineLookup[d],
+        humanNames: diseaseDict
+    }
+);
 
 class DataVisModel {
     private plots = ko.observableArray(["Impact", "Time series"]);
@@ -68,16 +78,9 @@ class DataVisModel {
         options: countries,
     }));
 
-    private diseaseFilter = ko.observable(new ListFilter({
-        humanNames: diseaseDict,
+    private diseaseFilter = ko.observable(new DiseaseFilter({
         name: "Disease",
-        options: diseases,
-    }));
-
-    private vaccineFilter = ko.observable(new ListFilter({
-        humanNames: vaccineDict,
-        name: "Vaccine",
-        options: vaccines,
+        vaccineFilters: diseases.map(createVaccineFilterForDisease)
     }));
 
     private touchstoneFilter = ko.observable(new ListFilter({
@@ -180,9 +183,8 @@ class DataVisModel {
             metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
             plotTitle: this.plotTitle(),
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
-            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
             timeSeries: this.currentPlot() === "Time series",
             yAxisTitle: this.yAxisTitle(),
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
@@ -190,12 +192,12 @@ class DataVisModel {
         };
     }, this).extend({rateLimit: 250});
 
-    private warningMessage = ko.computed<string>(function() {
+    private warningMessage = ko.computed<string>(function () {
         const message = new WarningMessageManager().getError(this.chartOptions());
         return message;
     }, this);
 
-    private showWarning = ko.computed<boolean>(function() {
+    private showWarning = ko.computed<boolean>(function () {
         return this.warningMessage().length > 1;
     }, this);
 
@@ -225,9 +227,7 @@ class DataVisModel {
         this.diseaseFilter().selectedOptions.subscribe(() => {
             this.updateXAxisOptions();
         });
-        this.vaccineFilter().selectedOptions.subscribe(() => {
-            this.updateXAxisOptions();
-        });
+
         this.touchstoneFilter().selectedOptions.subscribe(() => {
             const newUpdate: DataSetUpdate =
                 appendToDataSet(this.touchstoneFilter().selectedOptions(),

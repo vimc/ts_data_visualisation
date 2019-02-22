@@ -1,5 +1,7 @@
 import * as ko from "knockout";
-import {countries, gavi69, gavi73, pineCountries} from "./Data"; // for country filters
+
+import {countries, gavi69, gavi73, pineCountries} from "./Data";
+import {diseaseDict} from "./Dictionaries";
 
 export interface FilterSettings {
     name: string;
@@ -13,9 +15,9 @@ export interface RangeFilterSettings extends FilterSettings {
 }
 
 export interface ListFilterSettings extends FilterSettings {
-    options: string[];
-    selected?: string[];
-    humanNames?: { [code: string]: string };
+    options: Array<string>;
+    selected?: Array<string>;
+    humanNames?: { [code: string]: string }
 }
 
 export interface CountryFilterSettings extends ListFilterSettings {
@@ -36,15 +38,15 @@ export class Filter {
 }
 
 export class ListFilter extends Filter {
-    public options = ko.observableArray<string>();
-    public selectedOptions = ko.observableArray<string>();
-    private dictionary: { [code: string]: string };
+    options = ko.observableArray<string>();
+    selectedOptions = ko.observableArray<string>();
+    dictionary: { [code: string]: string };
 
     constructor(settings: ListFilterSettings) {
         super({name: settings.name});
         this.options(settings.options);
         this.selectedOptions(settings.selected || settings.options);
-        this.dictionary = (settings.humanNames || settings.humanNames);
+        this.dictionary = settings.humanNames;
     }
 
     public makeHumanreadable(code: string): string {
@@ -98,12 +100,32 @@ export class RangeFilter extends Filter {
         super({name: settings.name});
 
         const rangeArray = [];
-        for (let i = 0 ; i <= settings.max - settings.min; ++i) {
+        for (let i = 0; i <= settings.max - settings.min; i++) {
             rangeArray.push(settings.min + i);
         }
 
         this.rangeValues(rangeArray);
         this.selectedLow(settings.selectedLow || settings.min);
         this.selectedHigh(settings.selectedHigh || settings.max);
+    }
+}
+
+export class DiseaseFilter extends Filter {
+    vaccineFilters: ListFilter[] = [];
+    selectedOptions = ko.observableArray([]);
+
+    updateSelectedOptions = () => {
+         this.selectedOptions(this.vaccineFilters.map((v) => v.selectedOptions()).reduce((x, y) => x.concat(y), []))
+    };
+
+    constructor(settings: any) {
+        super(settings);
+        this.vaccineFilters = settings.vaccineFilters;
+        this.updateSelectedOptions();
+        this.vaccineFilters.map((f) => {
+            f.selectedOptions.subscribe(() => {
+                this.updateSelectedOptions()
+            })
+        })
     }
 }

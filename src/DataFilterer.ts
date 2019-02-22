@@ -10,19 +10,18 @@ interface ImpactDataByVaccineAndThenCountry {
 }
 
 export interface DataFiltererOptions {
-    metric: string;
-    maxPlot: number;
-    compare: string;
-    disagg: string;
-    yearLow: number;
-    yearHigh: number;
-    activityTypes: string[];
-    selectedCountries: string[];
-    selectedDiseases: string[];
-    selectedVaccines: string[];
-    selectedTouchstones: string[];
-    cumulative: boolean;
-    timeSeries: boolean;
+    metric:              string;
+    maxPlot:             number;
+    compare:             string;
+    disagg:              string;
+    yearLow:             number;
+    yearHigh:            number;
+    activityTypes:       Array<string>;
+    selectedCountries:   Array<string>;
+    selectedVaccines:    Array<string>;
+    selectedTouchstones: Array<string>;
+    cumulative:          boolean;
+    timeSeries:          boolean;
 }
 
 export interface FilteredData {
@@ -262,10 +261,6 @@ export class DataFilterer {
         return impactData.filter((row) => touchStone.indexOf(row.touchstone) > -1 );
     }
 
-    private filterByDisease(impactData: ImpactDataRow[], diseaseSet: string[]): ImpactDataRow[] {
-        return impactData.filter((row) => diseaseSet.indexOf(row.disease) > -1 );
-    }
-
     private filterByVaccine(impactData: ImpactDataRow[], vaccineSet: string[]): ImpactDataRow[] {
         return impactData.filter((row) => vaccineSet.indexOf(row.vaccine) > -1 );
     }
@@ -291,7 +286,6 @@ export class DataFilterer {
         filtData = this.filterByTouchstone(filtData, filterOptions.selectedTouchstones); // filter by touchstone
         filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type
         filtData = this.filterByCountrySet(filtData, filterOptions.selectedCountries); // filter by activity type
-        filtData = this.filterByDisease(filtData, filterOptions.selectedDiseases); // filter by diseases
         filtData = this.filterByVaccine(filtData, filterOptions.selectedVaccines); // filter by vaccine
 
         return filtData;

@@ -128,6 +128,19 @@ export const diseaseDict: { [code: string]: string} = {
     YF: "Yellow Fever"
 };
 
+export const diseaseVaccineLookup: { [code: string] : string[]} = {
+    HepB: ["HepB", "HepB_BD"],
+    Hib: ["Hib3"],
+    HPV: ["HPV"],
+    JE: ["JE"],
+    Measles: ["MCV1", "MCV2", "Measles"],
+    MenA: ["MenA"],
+    PCV: ["PCV3"],
+    Rota: ["Rota"],
+    Rubella: ["RCV2", "Rubella"],
+    YF: ["YF"]
+};
+
 export const touchstoneYears: { [code: string] : number} = {
     "201210gavi-201303gavi" : 2011,
     "201210gavi-201807wue"  : 2017,
@@ -138,4 +151,4 @@ export const touchstoneYears: { [code: string] : number} = {
     "201510gavi-201807wue"  : 2017,
     "201710gavi"            : 2016,
     "201710gavi-201807wue"  : 2017
-}
+};
