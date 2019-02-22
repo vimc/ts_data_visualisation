@@ -1,7 +1,6 @@
 import * as ko from "knockout";
 
-// for country filters
-import {countries, pineCountries, gavi69, gavi73} from "./Data";
+import {countries, gavi69, gavi73, pineCountries} from "./Data";
 import {diseaseDict} from "./Dictionaries";
 
 export interface FilterSettings {
@@ -26,15 +25,15 @@ export interface CountryFilterSettings extends ListFilterSettings {
 }
 
 export class Filter {
-    isOpen = ko.observable<boolean>(false);
-    name = ko.observable<string>();
-
-    toggleOpen() {
-        this.isOpen(!this.isOpen());
-    }
+    private isOpen = ko.observable<boolean>(false);
+    private name = ko.observable<string>();
 
     constructor(settings: FilterSettings) {
         this.name(settings.name);
+    }
+
+    public toggleOpen() {
+        this.isOpen(!this.isOpen());
     }
 }
 
@@ -43,23 +42,32 @@ export class ListFilter extends Filter {
     selectedOptions = ko.observableArray<string>();
     dictionary: { [code: string]: string };
 
-    makeHumanreadable(code: string): string {
-        if (this.dictionary)
-            return this.dictionary[code];
-
-        return null;
-    }
-
     constructor(settings: ListFilterSettings) {
         super({name: settings.name});
         this.options(settings.options);
         this.selectedOptions(settings.selected || settings.options);
         this.dictionary = settings.humanNames;
     }
+
+    public makeHumanreadable(code: string): string {
+        if (this.dictionary) {
+            return this.dictionary[code];
+        }
+
+        return null;
+    }
 }
 
 export class CountryFilter extends ListFilter {
-    selectCountryGroup(selectedGroup: string) {
+    constructor(settings: CountryFilterSettings) {
+        super(settings);
+        this.options(settings.options);
+        this.selectedOptions(settings.selected || settings.options);
+
+        this.selectCountryGroup("pine");
+    }
+
+    public selectCountryGroup(selectedGroup: string) {
         switch (selectedGroup) {
             case "all":
                 this.selectedOptions(this.options());
@@ -81,20 +89,12 @@ export class CountryFilter extends ListFilter {
                 break;
         }
     }
-
-    constructor(settings: CountryFilterSettings) {
-        super(settings);
-        this.options(settings.options);
-        this.selectedOptions(settings.selected || settings.options);
-
-        this.selectCountryGroup("pine");
-    }
 }
 
 export class RangeFilter extends Filter {
-    rangeValues = ko.observableArray<number>();
-    selectedLow = ko.observable<number>();
-    selectedHigh = ko.observable<number>();
+    public selectedLow = ko.observable<number>();
+    public selectedHigh = ko.observable<number>();
+    private rangeValues = ko.observableArray<number>();
 
     constructor(settings: RangeFilterSettings) {
         super({name: settings.name});
