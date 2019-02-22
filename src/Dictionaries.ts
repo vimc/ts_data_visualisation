@@ -136,9 +136,9 @@ export const diseaseVaccineLookup: { [code: string] : string[]} = {
     Measles: ["MCV1", "MCV2", "Measles"],
     MenA: ["MenA"],
     PCV: ["PCV3"],
-    Rota: ["Rotavirus"],
+    Rota: ["Rota"],
     Rubella: ["RCV2", "Rubella"],
-    YF: ["Yellow Fever"]
+    YF: ["YF"]
 };
 
 export const touchstoneYears: { [code: string] : number} = {

@@ -26,9 +26,9 @@ function generateData(touchstone) {
         Measles: ["MCV1", "MCV2", "Measles"],
         MenA: ["MenA"],
         PCV: ["PCV3"],
-        Rota: ["Rotavirus"],
+        Rota: ["Rota"],
         Rubella: ["RCV2", "Rubella"],
-        YF: ["Yellow Fever"]
+        YF: ["YF"]
     }
 
     const fakeImpactData =
