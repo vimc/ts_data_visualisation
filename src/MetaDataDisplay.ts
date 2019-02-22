@@ -21,18 +21,6 @@ function prettyCountries(countryArr: string[], maxShow: number): string {
 	}
 }
 
-function prettyDiseases(diseaseArr: string[], maxShow: number): string {
-	const diseaseCount: number = diseaseArr.length;
-	if (diseaseCount > maxShow) {
-		const retStr = diseaseCount.toString() + " diseases including " +
-		               diseaseArr.slice(0, maxShow).map(diseaseCodeToName).join(", ");
-		return retStr;
-	} else {
-		const retStr = "Diseases: " + diseaseArr.map(diseaseCodeToName).join(", ");
-		return retStr;
-	}	
-}
-
 function prettyVaccines(vaccineArr: string[], maxShow: number): string {
 	const vaccineCount: number = vaccineArr.length;
 	if (vaccineCount > maxShow) {
@@ -79,7 +67,6 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
 									 chartOptions.metric.replace("_", " ") + " data for:\n" +
 			                         prettyActivities(chartOptions.activityTypes) + ";\n" + 
 			                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
-			                         prettyDiseases(chartOptions.selectedDiseases, 4) + ";\n" +
 			                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
 			                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
 			                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
@@ -92,7 +79,6 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
 									 chartOptions.metric.replace("_", " ") + " data for:\n" +
 			                         prettyActivities(chartOptions.activityTypes) + ";\n" + 
 			                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
-			                         prettyDiseases(chartOptions.selectedDiseases, 4) + ";\n" +
 			                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
 			                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
 			                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +

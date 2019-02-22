@@ -1,30 +1,46 @@
 const fs = require('fs');
 
-import {countries, vaccines, touchstones, activityTypes} from "../src/Data.ts"
+import {countries, touchstones, activityTypes, diseases} from "../src/Data.ts"
 
-fs.writeFile("data/test/impactData.js", generateData(), function (err) {
+for (let i in touchstones) {
+    var tsName = touchstones[i];
+    var fileName = "data/test/impactData_" + tsName + ".js";
+    fs.writeFile(fileName, generateData(tsName), function (err) {
     if (err) {
         return console.log(err);
     }
 
-    console.log("Fake data saved to data/test/impactData.js")
+    console.log("Fake data saved to " + fileName)
 });
+}
 
-
-function generateData() {
-
+function generateData(touchstone) {
     const touchstoneSubset = touchstones.slice(0, 3);
+
+    // can't import typescript object, so just redefining this here
+    const diseaseVaccineLookup = {
+        HepB: ["HepB", "HepB_BD"],
+        Hib: ["Hib3"],
+        HPV: ["HPV"],
+        JE: ["JE"],
+        Measles: ["MCV1", "MCV2", "Measles"],
+        MenA: ["MenA"],
+        PCV: ["PCV3"],
+        Rota: ["Rota"],
+        Rubella: ["RCV2", "Rubella"],
+        YF: ["YF"]
+    }
 
     const fakeImpactData =
         countries.flatMap((c) =>
-            vaccines.flatMap((v) =>
-                touchstoneSubset.flatMap((t) =>
+            diseases.flatMap((d) =>
+                diseaseVaccineLookup[d].flatMap((v) =>
                     activityTypes.flatMap((a) =>
-                        [2014, 2015, 2016, 2017, 2018, 2019, 2020]
+                        [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
                             .flatMap((y) => {
                                     return {
-                                        "touchstone": t,
-                                        "disease": v,
+                                        "touchstone": touchstone,
+                                        "disease": d,
                                         "is_focal": true,
                                         "activity_type": a,
                                         "support_type": "gavi",
@@ -46,12 +62,12 @@ function generateData() {
                                     }
                                 }
                             )
+                        )
                     )
-                )
             )
         );
 
-    return "const impactData=" + JSON.stringify(fakeImpactData);
+    return JSON.stringify(fakeImpactData);
 }
 
 function randomNumber(floor, ceiling) {
