@@ -124,9 +124,9 @@ export function vaccineCodeToName(vaccCode: string) {
 };
 
 export const diseaseDict: { [code: string] : string} = {
+    HPV: "HPV",
     HepB: "Hepatitis B", 
     Hib: "Hib", 
-    HPV: "HPV",
     JE: "Japanese encephalitis",
     Measles: "Measles",
     MenA: "MenA",
