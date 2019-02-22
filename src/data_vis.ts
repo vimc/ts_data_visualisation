@@ -316,11 +316,8 @@ class DataVisModel {
     }
 
     private updateXAxisOptions() {
-        // we have to it this way because javascript doesn't copy object on
-        // assignmnet!
-        const chartOptions = $.extend(true, {}, this.chartOptions());
-        chartOptions.maxPlot = -1;
         // refilter the data
+        const chartOptions = {...this.chartOptions(), maxPlot: -1};
         const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
         this.compareNames(filteredData.compVars);
         this.maxPlotOptions(createRangeArray(1, this.compareNames().length));

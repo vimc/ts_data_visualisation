@@ -125,5 +125,17 @@ export const diseaseDict: { [code: string]: string} = {
     PCV: "PCV",
     Rota: "Rotavirus",
     Rubella: "Rubella",
-    YF: "Yellow Fever",
+    YF: "Yellow Fever"
 };
+
+export const touchstoneYears: { [code: string] : number} = {
+    "201210gavi-201303gavi" : 2011,
+    "201210gavi-201807wue"  : 2017,
+    "201310gavi"            : 2012,
+    "201310gavi-201403gavi" : 2012,
+    "201310gavi-201807wue"  : 2017,
+    "201510gavi"            : 2014,
+    "201510gavi-201807wue"  : 2017,
+    "201710gavi"            : 2016,
+    "201710gavi-201807wue"  : 2017
+}

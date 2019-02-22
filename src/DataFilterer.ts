@@ -127,7 +127,6 @@ export class DataFilterer {
         const meanVars = this.meanVariables(filterOptions.metric);
         const top = meanVars.top;
         const bottom = meanVars.bottom;
-
         const tempTop = this.filterByCompare(-1, "year", top, filtData);
         const compVarsTop: any[] = tempTop[1];
         const filteredDataTop: ImpactDataRow[] = tempTop[0];
