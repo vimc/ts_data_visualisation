@@ -1,7 +1,5 @@
 import * as ko from "knockout";
-
-// for country filters
-import {countries, pineCountries, gavi69, gavi73} from "./Data";
+import {countries, gavi69, gavi73, pineCountries} from "./Data"; // for country filters
 
 export interface FilterSettings {
     name: string;
@@ -15,9 +13,9 @@ export interface RangeFilterSettings extends FilterSettings {
 }
 
 export interface ListFilterSettings extends FilterSettings {
-    options: Array<string>;
-    selected?: Array<string>;
-    humanNames?: { [code: string] : string }
+    options: string[];
+    selected?: string[];
+    humanNames?: { [code: string]: string };
 }
 
 export interface CountryFilterSettings extends ListFilterSettings {
@@ -25,29 +23,22 @@ export interface CountryFilterSettings extends ListFilterSettings {
 }
 
 export class Filter {
-    isOpen = ko.observable<boolean>(false);
-    name = ko.observable<string>();
-
-    toggleOpen() {
-        this.isOpen(!this.isOpen());
-    }
+    private isOpen = ko.observable<boolean>(false);
+    private name = ko.observable<string>();
 
     constructor(settings: FilterSettings) {
         this.name(settings.name);
     }
+
+    public toggleOpen() {
+        this.isOpen(!this.isOpen());
+    }
 }
 
 export class ListFilter extends Filter {
-    options = ko.observableArray<string>();
-    selectedOptions = ko.observableArray<string>();
-    dictionary: { [code: string] : string };
-
-    makeHumanreadable(code: string): string {
-        if (this.dictionary)
-            return this.dictionary[code];
-
-        return null;
-    }
+    public options = ko.observableArray<string>();
+    public selectedOptions = ko.observableArray<string>();
+    private dictionary: { [code: string]: string };
 
     constructor(settings: ListFilterSettings) {
         super({name: settings.name});
@@ -55,11 +46,27 @@ export class ListFilter extends Filter {
         this.selectedOptions(settings.selected || settings.options);
         this.dictionary = (settings.humanNames || settings.humanNames);
     }
+
+    public makeHumanreadable(code: string): string {
+        if (this.dictionary) {
+            return this.dictionary[code];
+        }
+
+        return null;
+    }
 }
 
 export class CountryFilter extends ListFilter {
-    selectCountryGroup(selectedGroup: string) {
-        switch(selectedGroup) {
+    constructor(settings: CountryFilterSettings) {
+        super(settings);
+        this.options(settings.options);
+        this.selectedOptions(settings.selected || settings.options);
+
+        this.selectCountryGroup("pine");
+    }
+
+    public selectCountryGroup(selectedGroup: string) {
+        switch (selectedGroup) {
             case "all":
                 this.selectedOptions(this.options());
                 break;
@@ -80,26 +87,18 @@ export class CountryFilter extends ListFilter {
                 break;
         }
     }
-
-    constructor(settings: CountryFilterSettings) {
-        super(settings);
-        this.options(settings.options);
-        this.selectedOptions(settings.selected || settings.options);
-
-        this.selectCountryGroup("pine");
-    }
 }
 
 export class RangeFilter extends Filter {
-    rangeValues = ko.observableArray<number>();
-    selectedLow = ko.observable<number>();
-    selectedHigh = ko.observable<number>();
+    public selectedLow = ko.observable<number>();
+    public selectedHigh = ko.observable<number>();
+    private rangeValues = ko.observableArray<number>();
 
     constructor(settings: RangeFilterSettings) {
         super({name: settings.name});
 
         const rangeArray = [];
-        for (let i = 0 ; i <= settings.max - settings.min; i++){
+        for (let i = 0 ; i <= settings.max - settings.min; ++i) {
             rangeArray.push(settings.min + i);
         }
 

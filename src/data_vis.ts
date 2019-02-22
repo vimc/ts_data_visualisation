@@ -1,21 +1,28 @@
-import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
-import {TableMaker} from "./CreateDataTable";
-import {ImpactDataRow} from "./ImpactDataRow";
-import {WarningMessageManager} from "./WarningMessage"
-import {countryDict, diseaseDict, vaccineDict, touchstoneYears} from "./Dictionaries"
-import {plotColours} from "./PlotColours"
-import * as ko from "knockout";
+import "bootstrap/dist/css/bootstrap.css";
 import {Chart} from "chart.js";
+import "chartjs-plugin-datalabels";
+import {saveAs} from "file-saver";
+import * as $ from "jquery";
+import * as ko from "knockout";
 import * as L from "leaflet";
-import "chartjs-plugin-datalabels"
-import 'chartjs-plugin-annotation';
-import {saveAs} from "file-saver"
-import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
-import {diseases, vaccines, countries, activityTypes, plottingVariables, touchstones} from "./Data";
-import 'bootstrap/dist/css/bootstrap.css';
+import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
+import {TableMaker} from "./CreateDataTable";
+import {activityTypes, countries, diseases, plottingVariables, touchstones, vaccines} from "./Data";
+import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
+import {countryDict, diseaseDict, vaccineDict} from "./Dictionaries";
+import {CountryFilter, ListFilter, RangeFilter} from "./Filter";
+import {ImpactDataRow} from "./ImpactDataRow";
+import {plotColours} from "./PlotColours";
+import {WarningMessageManager} from "./WarningMessage";
 
-declare const impactData: ImpactDataRow[];
+// stuff to handle the data set being split into multiple files
+const initTouchstone: string = "201710gavi-201807wue";
+export let addedDataSets: string[] = [];
+const update = appendToDataSet([initTouchstone], addedDataSets, []);
+addedDataSets = update.newSeenList;
+export let impactData = update.newDataSet;
+
 declare const reportInfo: any;
 
 require("./index.html");
@@ -27,12 +34,10 @@ require("./image/caret-up-secondary.svg");
 require("./image/caret-down-secondary.svg");
 require("./css/styles.css");
 
-const $ = require("jquery");
-
-const jsonexport = require('jsonexport');
+const jsonexport = require("jsonexport");
 
 function createRangeArray(min: number = 1, max: number): number[] {
-    let a: number[] = [];
+    const a: number[] = [];
     for (let i: number = min; i <= max; ++i) {
         a.push(i);
     }
@@ -40,89 +45,167 @@ function createRangeArray(min: number = 1, max: number): number[] {
 }
 
 class DataVisModel {
-    plots = ko.observableArray(["Impact", "Time series"]);
-    currentPlot = ko.observable("Impact");
+    private plots = ko.observableArray(["Impact", "Time series"]);
+    private currentPlot = ko.observable("Impact");
 
-    selectPlot(plotName: string) {
-        this.currentPlot(plotName)
-    };
-
-    showSidebar = ko.observable(true);
-    yearFilter = ko.observable(new RangeFilter({
-        name: "Years",
-        min: 2011,
+    private showSidebar = ko.observable(true);
+    private yearFilter = ko.observable(new RangeFilter({
         max: 2030,
+        min: 2011,
+        name: "Years",
+        selectedHigh: 2020,
         selectedLow: 2016,
-        selectedHigh: 2020
     }));
-    activityFilter = ko.observable(new ListFilter({
+
+    private activityFilter = ko.observable(new ListFilter({
         name: "Activity",
-        options: activityTypes
+        options: activityTypes,
     }));
-    countryFilter = ko.observable(new CountryFilter({
+
+    private countryFilter = ko.observable(new CountryFilter({
+        humanNames: countryDict,
         name: "Country",
         options: countries,
-        humanNames: countryDict
     }));
-    diseaseFilter = ko.observable(new ListFilter({
+
+    private diseaseFilter = ko.observable(new ListFilter({
+        humanNames: diseaseDict,
         name: "Disease",
         options: diseases,
-        humanNames: diseaseDict
     }));
-    vaccineFilter = ko.observable(new ListFilter({
+
+    private vaccineFilter = ko.observable(new ListFilter({
+        humanNames: vaccineDict,
         name: "Vaccine",
         options: vaccines,
-        humanNames: vaccineDict
     }));
-    touchstoneFilter = ko.observable(new ListFilter({
+
+    private touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
         options: touchstones,
-        selected: ["201710gavi-201807wue"]
+        selected: [initTouchstone],
     }));
 
-    xAxisOptions = plottingVariables;
-    disaggregationOptions = plottingVariables;
+    private xAxisOptions = plottingVariables;
+    private disaggregationOptions = plottingVariables;
 
-    maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
-    maxBars = ko.observable<number>(5);
+    private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
+    private maxBars = ko.observable<number>(5);
 
-    compare = ko.observable<string>(this.xAxisOptions[1]);
-    disaggregateBy = ko.observable<string>("disease");
-    cumulativePlot = ko.observable<boolean>(false);
+    private compare = ko.observable<string>(this.xAxisOptions[1]);
+    private disaggregateBy = ko.observable<string>("disease");
+    private cumulativePlot = ko.observable<boolean>(false);
 
-    reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
-    dataId = ko.observable<string>("Data id: " + reportInfo.dep_id);
-    appId = ko.observable<string>("App. id: " + reportInfo.git_id);
+    private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
+    private dataId = ko.observable<string>("Data id: " + reportInfo.dep_id);
+    private appId = ko.observable<string>("App. id: " + reportInfo.git_id);
 
-    hideLabels = ko.observable<boolean>(false);
-    hideLegend = ko.observable<boolean>(false);
-    hideTitleOpts = ko.observable<boolean>(false);
+    private hideLabels = ko.observable<boolean>(false);
+    private hideLegend = ko.observable<boolean>(false);
+    private hideTitleOpts = ko.observable<boolean>(false);
 
-    humanReadableBurdenOutcome = ko.observable("deaths");
+    private humanReadableBurdenOutcome = ko.observable("deaths");
 
-    compareNames = ko.observableArray<string>([]);
+    private compareNames = ko.observableArray<string>([]);
 
-    canvas: any;
-    ctx: any;
-    chartObject: Chart;
+    private canvas: any;
+    private ctx: any;
+    private chartObject: Chart;
 
-    canvasTS: any;
-    ctxTS: any;
-    chartObjectTS: Chart;
+    private canvasTS: any;
+    private ctxTS: any;
+    private chartObjectTS: Chart;
 
-    /*    mymap: any;*/
+    private filteredTable: KnockoutObservableArray<any>;
+    private gridViewModel: any;
+    private filteredTSTable: KnockoutObservableArray<any>;
 
-    filteredTable: KnockoutObservableArray<any>;
-    gridViewModel: any;
-    filteredTSTable: KnockoutObservableArray<any>;
+    private burdenOutcome = ko.computed(() => {
+        switch (this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "deaths_averted";
+            case "cases":
+                return "cases_averted";
+            case "dalys":
+                return "dalys_averted";
+            case "fvps":
+                return "fvps";
+            case "coverage":
+                this.cumulativePlot(false); // this might not be prefered
+                return "coverage";          // behaviour, if a user goes deaths
+            case "casesRate":               // -> coverage -> death it will set
+                this.cumulativePlot(false); // cumulative to false
+                return "cases_averted_rate";
+            case "deathsRate":
+                this.cumulativePlot(false);
+                return "deaths_averted_rate";
+            default:
+                this.cumulativePlot(false);
+                return "deaths_averted";
+        }
+    }, this);
+
+    private plotTitle = ko.observable(this.defaultTitle());
+
+    private yAxisTitle = ko.computed(() => {
+        switch (this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "Future deaths averted";
+            case "cases":
+                return "Future cases averted";
+            case "dalys":
+                return "Future DALYS averted";
+            case "fvps":
+                return "fvps";
+            case "coverage":
+                return "Coverage";
+            case "casesRate":
+                return "Future cases averted (rate)";
+            case "deathsRate":
+                return "Future deaths averted (rate)";
+            default:
+                return "Future deaths averted";
+        }
+    }, this);
+
+    private chartOptions = ko.computed<CustomChartOptions>(() => {
+        return {
+            activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            compare: this.compare(), // variable we are comparing across
+            cumulative: this.cumulativePlot(), // are we creating a cumulative plot
+            currentPlot: this.currentPlot(),
+            disagg: this.disaggregateBy(), // variable we are disaggregating by
+            hideLabels: this.hideLabels(),
+            maxPlot: this.maxBars(), // How many bars on the plot
+            metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
+            plotTitle: this.plotTitle(),
+            selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
+            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
+            selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
+            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
+            timeSeries: this.currentPlot() === "Time series",
+            yAxisTitle: this.yAxisTitle(),
+            yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
+            yearLow: this.yearFilter().selectedLow(), // lower bound on year
+        };
+    }, this).extend({rateLimit: 250});
+
+    private warningMessage = ko.computed<string>(function() {
+        const message = new WarningMessageManager().getError(this.chartOptions());
+        return message;
+    }, this);
+
+    private showWarning = ko.computed<boolean>(function() {
+        return this.warningMessage().length > 1;
+    }, this);
 
     constructor() {
 
-        this.canvas = document.getElementById('myChart');
-        this.canvasTS = document.getElementById('timeSeriesChart');
+        this.canvas = document.getElementById("myChart");
+        this.canvasTS = document.getElementById("timeSeriesChart");
 
-        this.ctx = this.canvas.getContext('2d');
-        this.ctxTS = this.canvasTS.getContext('2d');
+        this.ctx = this.canvas.getContext("2d");
+        this.ctxTS = this.canvasTS.getContext("2d");
 
         this.compare.subscribe(() => {
             this.updateXAxisOptions();
@@ -146,166 +229,24 @@ class DataVisModel {
             this.updateXAxisOptions();
         });
         this.touchstoneFilter().selectedOptions.subscribe(() => {
+            const newUpdate: DataSetUpdate =
+                appendToDataSet(this.touchstoneFilter().selectedOptions(),
+                                addedDataSets, impactData);
+            addedDataSets = newUpdate.newSeenList;
+            impactData = newUpdate.newDataSet;
             this.updateXAxisOptions();
         });
 
         this.chartOptions.subscribe(() => {
             this.renderImpact();
             this.renderTimeSeries();
-        })
-
-    }
-
-    countryCodeToName(countryCode: string) {
-        return countryDict[countryCode];
-    };
-
-    exportPlot() {
-        this.canvas = document.getElementById('myChart');
-        this.canvas.toBlob(function (blob: Blob) {
-            saveAs(blob, "untitled.png");
         });
-    };
-
-    exportData() {
-        jsonexport(this.filteredTable(), function (err: any, csv: any) {
-            if (err) {
-                return; // probably do something else here
-            }
-            var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, "data.csv");
-        });
-    };
-
-    changeBurden(burden: string) {
-        this.humanReadableBurdenOutcome(burden);
-        this.plotTitle(this.defaultTitle());
-    };
-
-    updateXAxisOptions() {
-        // refilter the data
-        const chartOptions = {...this.chartOptions(), maxPlot: -1};
-
-        const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
-        this.compareNames(filteredData.compVars);
-        this.maxPlotOptions(createRangeArray(1, this.compareNames().length));
-        this.maxBars(this.compareNames().length);
     }
 
-    defaultTitle() {
-        switch (this.humanReadableBurdenOutcome()) {
-            case "deaths":
-                return "Future deaths averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "cases":
-                return "Future cases averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "dalys":
-                return "Future DALYS averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "fvps":
-                return "fvps between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "coverage":
-                return "Mean coverage between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "casesRate":
-                return "Mean rate of cases averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            case "deathsRate":
-                return "Mean rate of death averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh()
-            default:
-                return "Future deaths averted"
-        }
-    }
-
-    resetTitle() {
-        this.plotTitle(this.defaultTitle());
-    }
-
-    applyTitle() {
-        this.renderImpact();
-    }
-
-    burdenOutcome = ko.computed(() => {
-        switch (this.humanReadableBurdenOutcome()) {
-            case "deaths":
-                return "deaths_averted"
-            case "cases":
-                return "cases_averted"
-            case "dalys":
-                return "dalys_averted"
-            case "fvps":
-                return "fvps"
-            case "coverage":
-                this.cumulativePlot(false); // this might not be prefered
-                return "coverage"           // behaviour, if a user goes deaths
-            case "casesRate":               // -> coverage -> death it will set
-                this.cumulativePlot(false); // cumulative to false
-                return "cases_averted_rate"
-            case "deathsRate":
-                this.cumulativePlot(false);
-                return "deaths_averted_rate"
-            default:
-                this.cumulativePlot(false);
-                return "deaths_averted"
-        }
-    }, this);
-
-    plotTitle = ko.observable(this.defaultTitle());
-
-    yAxisTitle = ko.computed(() => {
-        switch (this.humanReadableBurdenOutcome()) {
-            case "deaths":
-                return "Future deaths averted";
-            case "cases":
-                return "Future cases averted";
-            case "dalys":
-                return "Future DALYS averted";
-            case "fvps":
-                return "fvps";
-            case "coverage":
-                return "Coverage"
-            case "casesRate":
-                return "Future cases averted (rate)"
-            case "deathsRate":
-                return "Future deaths averted (rate)"
-            default:
-                return "Future deaths averted"
-        }
-    }, this);
-
-    chartOptions = ko.computed<CustomChartOptions>(() => {
-        return {
-            currentPlot: this.currentPlot(),
-            metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
-            maxPlot: this.maxBars(), // How many bars on the plot
-            compare: this.compare(), // variable we are comparing across
-            disagg: this.disaggregateBy(), // variable we are disaggregating by
-            yearLow: this.yearFilter().selectedLow(), // lower bound on year
-            yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
-            activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
-            selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
-            selectedDiseases: this.diseaseFilter().selectedOptions(), // which diseases do we care about
-            selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
-            selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-            cumulative: this.cumulativePlot(), // are we creating a cumulative plot
-            timeSeries: this.currentPlot() == "Time series",
-            yAxisTitle: this.yAxisTitle(),
-            plotTitle: this.plotTitle(),
-            hideLabels: this.hideLabels()
-        }
-
-    }, this).extend({rateLimit: 250});
-
-    warningMessage = ko.computed<string>(function() {
-        const message = new WarningMessageManager().getError(this.chartOptions());
-        return message;
-    }, this);
-
-    showWarning = ko.computed<boolean>(function() {
-        return this.warningMessage().length > 1;
-    }, this);
-
-    renderImpact() {
-
+    public renderImpact() {
         const chartOptions: CustomChartOptions = this.chartOptions();
 
-        if (chartOptions.currentPlot != "Impact" || !this.ctx) {
+        if (chartOptions.currentPlot !== "Impact" || !this.ctx) {
             return;
         }
 
@@ -318,20 +259,18 @@ class DataVisModel {
 
         let compareNames: string[] = [...compVars];
         // when we put countries along convert the names to human readable
-        if (chartOptions.compare == "country") {
-            compareNames = compareNames.map(this.countryCodeToName)
+        if (chartOptions.compare === "country") {
+            compareNames = compareNames.map(this.countryCodeToName);
         }
 
         this.filteredTable = new TableMaker().createWideTable(datasets, compareNames);
         this.chartObject = new Chart(this.ctx, impactChartConfig(filterData, compareNames, chartOptions));
+    }
 
-    };
-
-    renderTimeSeries() {
-
+    public renderTimeSeries() {
         const chartOptions: CustomChartOptions = this.chartOptions();
 
-        if (chartOptions.currentPlot != "Time series" || !this.ctxTS) {
+        if (chartOptions.currentPlot !== "Time series" || !this.ctxTS) {
             return;
         }
 
@@ -340,39 +279,102 @@ class DataVisModel {
         }
 
         const filterData = new DataFilterer().calculateMean(chartOptions, impactData, plotColours);
-        const {datasets, compVars_top} = filterData;
+        const {datasets, compVarsTop} = filterData;
 
-        this.filteredTSTable = new TableMaker().createWideTable(datasets, compVars_top);
-        this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, compVars_top, chartOptions));
+        this.filteredTSTable = new TableMaker().createWideTable(datasets, compVarsTop);
+        this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, compVarsTop, chartOptions));
+    }
 
-    };
+    private selectPlot(plotName: string) {
+        this.currentPlot(plotName);
+    }
 
-    exportTSPlot() {
-        this.canvasTS.toBlob(function (blob: Blob) {
+    private countryCodeToName(countryCode: string) {
+        return countryDict[countryCode];
+    }
+
+    private exportPlot() {
+        this.canvas = document.getElementById("myChart");
+        this.canvas.toBlob((blob: Blob) => {
             saveAs(blob, "untitled.png");
         });
     }
 
-    exportTSData() {
-        jsonexport(this.filteredTSTable(), function (err: any, csv: any) {
+    private exportData() {
+        jsonexport(this.filteredTable(), (err: any, csv: any) => {
             if (err) {
                 return; // probably do something else here
             }
-            var blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
+            const blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
             saveAs(blob, "data.csv");
         });
     }
 
-    /*    renderMap() {
-           this.mymap = L.map('mapid').setView([51.505, -0.09], 13);
+    private changeBurden(burden: string) {
+        this.humanReadableBurdenOutcome(burden);
+        this.plotTitle(this.defaultTitle());
+    }
 
-            L.tileLayer('http://tiles.mapc.org/basemap/{z}/{x}/{y}.png',
-                {
-                    attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
-                      maxZoom: 17,
-                      minZoom: 9
-                }).addTo(this.mymap);
-            }*/
+    private updateXAxisOptions() {
+        // refilter the data
+        const chartOptions = {...this.chartOptions(), maxPlot: -1};
+        const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
+        this.compareNames(filteredData.compVars);
+        this.maxPlotOptions(createRangeArray(1, this.compareNames().length));
+        this.maxBars(this.compareNames().length);
+    }
+
+    private defaultTitle() {
+        switch (this.humanReadableBurdenOutcome()) {
+            case "deaths":
+                return "Future deaths averted between " + this.yearFilter().selectedLow() +
+                       " and " + this.yearFilter().selectedHigh();
+            case "cases":
+                return "Future cases averted between " + this.yearFilter().selectedLow() +
+                       " and " + this.yearFilter().selectedHigh();
+            case "dalys":
+                return "Future DALYS averted between " + this.yearFilter().selectedLow() +
+                       " and " + this.yearFilter().selectedHigh();
+            case "fvps":
+                return "fvps between " + this.yearFilter().selectedLow() +
+                       " and " + this.yearFilter().selectedHigh();
+            case "coverage":
+                return "Mean coverage between " + this.yearFilter().selectedLow() +
+                       " and " + this.yearFilter().selectedHigh();
+            case "casesRate":
+                return "Mean rate of cases averted between " + this.yearFilter().selectedLow() +
+                       " and " + this.yearFilter().selectedHigh();
+            case "deathsRate":
+                return "Mean rate of death averted between " + this.yearFilter().selectedLow() +
+                       " and " + this.yearFilter().selectedHigh();
+            default:
+                return "Future deaths averted";
+        }
+    }
+
+    private resetTitle() {
+        this.plotTitle(this.defaultTitle());
+    }
+
+    private applyTitle() {
+        this.renderImpact();
+    }
+
+    private exportTSPlot() {
+        this.canvasTS.toBlob((blob: Blob) => {
+            saveAs(blob, "untitled.png");
+        });
+    }
+
+    private exportTSData() {
+        jsonexport(this.filteredTSTable(), (err: any, csv: any) => {
+            if (err) {
+                return; // probably do something else here
+            }
+            const blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "data.csv");
+        });
+    }
 }
 
 $(document).ready(() => {
@@ -382,5 +384,4 @@ $(document).ready(() => {
 
     viewModel.renderImpact();
     viewModel.renderTimeSeries();
-    //  viewModel.renderMap();
 });

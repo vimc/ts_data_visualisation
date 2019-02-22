@@ -2,28 +2,31 @@ const fs = require('fs');
 
 import {countries, vaccines, touchstones, activityTypes} from "../src/Data.ts"
 
-fs.writeFile("data/test/impactData.js", generateData(), function (err) {
+for (let i in touchstones) {
+    var tsName = touchstones[i];
+    var fileName = "data/test/impactData_" + tsName + ".js";
+    fs.writeFile(fileName, generateData(tsName), function (err) {
     if (err) {
         return console.log(err);
     }
 
-    console.log("Fake data saved to data/test/impactData.js")
+    console.log("Fake data saved to " + fileName)
 });
+}
 
-
-function generateData() {
+function generateData(touchstone) {
 
     const touchstoneSubset = touchstones.slice(0, 3);
 
     const fakeImpactData =
         countries.flatMap((c) =>
             vaccines.flatMap((v) =>
-                touchstoneSubset.flatMap((t) =>
+//               touchstoneSubset.flatMap((t) =>
                     activityTypes.flatMap((a) =>
                         [2014, 2015, 2016, 2017, 2018, 2019, 2020]
                             .flatMap((y) => {
                                     return {
-                                        "touchstone": t,
+                                        "touchstone": touchstone,
                                         "disease": v,
                                         "is_focal": true,
                                         "activity_type": a,
@@ -47,11 +50,11 @@ function generateData() {
                                 }
                             )
                     )
-                )
+//                )
             )
         );
 
-    return "const impactData=" + JSON.stringify(fakeImpactData);
+    return JSON.stringify(fakeImpactData);
 }
 
 function randomNumber(floor, ceiling) {
