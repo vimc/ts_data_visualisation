@@ -14,6 +14,8 @@ export function appendToDataSet(touchstones: string[],
         // ...check if we've already added this data set...
         if (seenDataSets.indexOf(touchstone) === -1) {
             // ...if not add it
+            // WARNING This file needs to be in same directory otherwise
+            // it will break the report on the portal
             const filename = "./impactData_" + touchstone + ".js";
 
             let newData: ImpactDataRow[] = []; // fail safe in case the file can't be read
