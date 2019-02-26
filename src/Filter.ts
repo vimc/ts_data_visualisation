@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 
-import {countries, gavi69, gavi73, pineCountries} from "./Data";
+import {countries, dove94, dove96, gavi68, gavi72, gavi77, pineCountries} from "./Data";
 import {diseaseDict} from "./Dictionaries";
 
 export interface FilterSettings {
@@ -78,11 +78,20 @@ export class CountryFilter extends ListFilter {
             case "pine":
                 this.selectedOptions([...pineCountries]);
                 break;
-            case "gavi73":
-                this.selectedOptions([...gavi73]);
+            case "dove94":
+                this.selectedOptions([...dove94]);
                 break;
-            case "gavi69":
-                this.selectedOptions([...gavi69]);
+            case "dove96":
+                this.selectedOptions([...dove96]);
+                break;
+            case "gavi77":
+                this.selectedOptions([...gavi77]);
+                break;
+            case "gavi72":
+                this.selectedOptions([...gavi72]);
+                break;
+            case "gavi68":
+                this.selectedOptions([...gavi68]);
                 break;
             default:
                 this.selectedOptions([]);
