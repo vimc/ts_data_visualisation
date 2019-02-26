@@ -1,5 +1,6 @@
 import {FilteredRow} from "./FilteredRow";
 import {ImpactDataRow} from "./ImpactDataRow";
+import {niceColours} from "./PlotColours";
 
 interface ImpactDataByCountry {
     [country: string]: ImpactDataRow[];
@@ -81,6 +82,8 @@ export class DataFilterer {
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i - 1] || 0)], []);
             }
             // code here to convert sum to average
+
+            this.getColour(aggVar, plotColours, niceColours);
 
             if (filterOptions.timeSeries) {
                 const fRow: FilteredRow = { backgroundColor: "transparent",
@@ -171,6 +174,8 @@ export class DataFilterer {
                 summedMetricForDisagg = summedMetricForDisagg
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i - 1] || 0)], []);
             }
+
+            this.getColour(aggVar, plotColours, niceColours);
 
             const fRow: FilteredRow = { backgroundColor: "transparent",
                                         borderColor: plotColours[aggVar],
@@ -328,5 +333,23 @@ export class DataFilterer {
             }
         }, this);
         return summedMetricForDisagg;
+    }
+
+    // This is a slightly hacky way to dynamically assign colours to keys that don't have them
+    // This should never be hit, if it is we should add the missing colours to ./PlotColours.ts
+    private getColour(key: string, colourDict: { [key: string]: string },
+                      niceColours:{ [key: string]: string }): void {
+        // check if this key is in the dictionary...
+        if (!(key in colourDict)) { //...if not try to find a new colour
+            console.log("Warning: " + key + " does not have a default colour");
+            // convert niceColours to an array
+            const extraCNames = Object.keys(niceColours);
+            // pick one at random
+            let colourName: string = extraCNames[Math.floor(Math.random()*extraCNames.length)];
+            // add it to the colourDictionary
+            $.extend(colourDict, { [key]: niceColours[colourName]});
+            // delete it from the list of available colours
+            delete niceColours[colourName];
+        }
     }
 }
