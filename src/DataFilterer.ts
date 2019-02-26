@@ -234,11 +234,13 @@ export class DataFilterer {
             // this is taken from https://stackoverflow.com/a/49717936
             const groupedSummed = new Map<string, number>();
             impactData.map((row) => {
-                 groupedSummed.set(row[compare], (groupedSummed.get(row[compare]) || 0) + row[metric]);
+                 groupedSummed.set(row[compare], 
+                                   (groupedSummed.get(row[compare]) || 0) + (row[metric] === "NA" ? 0 : row[metric])
+                                  );
             });
             if (compare !== "year") {
                 const sortedGroupSummed = [...groupedSummed].sort((a, b) => a[1] < b[1] ? 1 : -1 );
-                const sortedCompares = sortedGroupSummed.map((d) => d[0] );
+                const sortedCompares = sortedGroupSummed.map((d) => d[0]);
                 return sortedCompares.slice(0, maxPlot);
             } else {
                 const unsortedGroupSummed =  [...groupedSummed].map((d) => d[0] );
