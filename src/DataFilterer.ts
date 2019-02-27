@@ -20,6 +20,7 @@ export interface DataFiltererOptions {
     selectedCountries:   Array<string>;
     selectedVaccines:    Array<string>;
     selectedTouchstones: Array<string>;
+    supportType:         Array<string>;
     cumulative:          boolean;
     timeSeries:          boolean;
 }
@@ -253,8 +254,8 @@ export class DataFilterer {
         return impactData.filter((row) => row.is_focal === isFocal );
     }
 
-    private filterBySupport(impactData: ImpactDataRow[], supportType: string): ImpactDataRow[] {
-        return impactData.filter((row) => row.support_type === supportType );
+    private filterBySupport(impactData: ImpactDataRow[], supportType: string[]): ImpactDataRow[] {
+        return impactData.filter((row) => supportType.indexOf(row.support_type) > -1 );
     }
 
     private filterByTouchstone(impactData: ImpactDataRow[], touchStone: string[]): ImpactDataRow[] {
@@ -281,7 +282,7 @@ export class DataFilterer {
     private filterByAll(filterOptions: DataFiltererOptions,
                         impactData: ImpactDataRow[]): ImpactDataRow[] {
         let filtData = this.filterByFocality(impactData, true); // filter focal model
-        filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
+        filtData = this.filterBySupport(filtData, filterOptions.supportType); // filter so that support = gavi
         filtData = this.filterByYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
         filtData = this.filterByTouchstone(filtData, filterOptions.selectedTouchstones); // filter by touchstone
         filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type

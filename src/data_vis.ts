@@ -16,7 +16,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import "select2/dist/css/select2.min.css"
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
-import {activityTypes, countries, diseases, plottingVariables, touchstones, vaccines} from "./Data";
+import {activityTypes, countries, diseases, plottingVariables, supportTypes, touchstones, vaccines} from "./Data";
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201807wue";
@@ -87,6 +87,12 @@ class DataVisModel {
         name: "Touchstone",
         options: touchstones,
         selected: [initTouchstone],
+    }));
+
+    private supportFilter = ko.observable(new ListFilter({
+        name: "Support type",
+        options: supportTypes,
+        selected: ["gavi"],
     }));
 
     private xAxisOptions = plottingVariables;
@@ -185,6 +191,7 @@ class DataVisModel {
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
             selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
+            supportType: this.supportFilter().selectedOptions(),
             timeSeries: this.currentPlot() === "Time series",
             yAxisTitle: this.yAxisTitle(),
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
@@ -225,6 +232,9 @@ class DataVisModel {
             this.updateXAxisOptions();
         });
         this.diseaseFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
+        this.supportFilter().selectedOptions.subscribe(() => {
             this.updateXAxisOptions();
         });
 
