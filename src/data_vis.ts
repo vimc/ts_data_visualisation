@@ -90,7 +90,16 @@ class DataVisModel {
     }));
 
     private xAxisOptions = plottingVariables;
-    private disaggregationOptions = plottingVariables;
+    private disaggregationOptions = ko.computed(() => {
+        switch (this.currentPlot()) {
+            case "Impact":
+                return plottingVariables;
+            case "Time series":
+                return plottingVariables.filter((v, i, a) => {return v !== "year"});
+            default:
+                return plottingVariables;
+        }
+    }, this);
 
     private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
     private maxBars = ko.observable<number>(5);
