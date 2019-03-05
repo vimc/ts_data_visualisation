@@ -54,17 +54,3 @@ of the app in production.
 1. Grab the real data set as above but this time put it straight into `data/test`.
 3. `npm run build-dev` or `npm run-build-dev-watch`
 4. open `out/index.html` in a browser to view the compiled app
-
-## TODO list
-* Make the text in the UI more human readable
-* Better automated titles
-* Make the country checkbox interface nicer
-### Added after meeting with funders
-* On time series add labels next to curves (instead of legend)
-* Allow user to set their own colours
-* BUG Title doesn't change on click
-* Organise legend order to reflect groupngs
-* Hover label show counties and rounded numbers
-* Add meta-data when saving plot/csv
-* Provide a warning message when there is no data
-* Hover over explaining metrics
