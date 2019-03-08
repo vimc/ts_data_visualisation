@@ -32,9 +32,9 @@ file.remove("temporary.json")
 ## Quick start:
 This method is ideal for UI development where the data does not matter at all.
 1. Generate completely fake data by running `npm run generate-fake-data`
-2. `npm run build-dev` or `npm run-build-dev-watch`
-3. open `out/index.html` in a browser to view the compiled app.
-4. Depending on your browser you may need to set up a local HTTPServer. One of the easiest ways to do this for our purposes is to use Python's `SimpleHTTPServer` module.
+1. `npm run build-dev` or `npm run-build-dev-watch`
+1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
+1. Visit localhost:8000 in your browser to view the app.
 
 Note that the fake data only contains points for years 2014 - 2020 and for the most 
 recent 3 touchstones.
@@ -44,13 +44,15 @@ Useful if you want data that resembles the real data set, but still want
 local development to be a bit quicker.
 1. Grab the real data set by downloading the relevant artefact from the
 reporting portal and copying it into this repo's `data` directory.
-2. `./scripts/thinData`.
-3. `npm run build-dev` or `npm run-build-dev-watch`
-4. open `out/index.html` in a browser to view the compiled app
+1. `./scripts/thinData`.
+1. `npm run build-dev` or `npm run-build-dev-watch`
+1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
+1. Visit localhost:8000 in your browser to view the app.
 
 ## Using real data:
 This will make development slow, but will give you the most accurate impression
 of the app in production.
 1. Grab the real data set as above but this time put it straight into `data/test`.
-3. `npm run build-dev` or `npm run-build-dev-watch`
-4. open `out/index.html` in a browser to view the compiled app
+1. `npm run build-dev` or `npm run-build-dev-watch`
+1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
+1. Visit localhost:8000 in your browser to view the app.
