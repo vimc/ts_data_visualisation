@@ -342,14 +342,22 @@ export class DataFilterer {
         // check if this key is in the dictionary...
         if (!(key in colourDict)) { //...if not try to find a new colour
             console.log("Warning: " + key + " does not have a default colour");
-            // convert niceColours to an array
-            const extraCNames = Object.keys(niceColours);
-            // pick one at random
-            let colourName: string = extraCNames[Math.floor(Math.random()*extraCNames.length)];
-            // add it to the colourDictionary
-            $.extend(colourDict, { [key]: niceColours[colourName]});
-            // delete it from the list of available colours
-            delete niceColours[colourName];
+            // make sure we have some nice colours to add
+            if (Object.keys(niceColours).length > 0) {
+                // convert niceColours to an array
+                const extraCNames = Object.keys(niceColours);
+                // pick one at random
+                let colourName: string = extraCNames[Math.floor(Math.random()*extraCNames.length)];
+                // add it to the colourDictionary
+                $.extend(colourDict, { [key]: niceColours[colourName]});
+                // delete it from the list of available colours
+                delete niceColours[colourName];
+            } else {
+                console.log("Additional warning: We have run out of nice colours");
+                // if there are no colours, so add a neutral grey colour so that it
+                // it should be obvious when we've run out of colours.
+                $.extend(colourDict, { [key]: "#999999"});
+            }
         }
     }
 }
