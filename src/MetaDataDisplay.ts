@@ -2,7 +2,7 @@ import {CustomChartOptions} from "./Chart";
 import {countryCodeToName, diseaseCodeToName, vaccineCodeToName} from "./Dictionaries"
 
 // there is almost certainly a library that does this!
-function prettyDataAndTime(): string {
+function prettyDateAndTime(): string {
 	const date: Date = new Date();
 	return date.toISOString().substring(0, 19);
 }
@@ -56,11 +56,6 @@ function prettyActivities(activityTypes: string[]) {
 
 export function MetaDataDisplay(chartOptions: CustomChartOptions,
 	                            human: boolean): string {
-	const maxPlot: number = chartOptions.maxPlot;
-
-	const pltType: string = "Impact / Time series";
-	const cumul: string = "cum:TRUE / cum:FALSE"
-
 	if (human) { // produce human readable metadata
 		if (chartOptions.plotType === "Impact") {
 			const metaStr : string = "This plot shows the " +
@@ -70,11 +65,11 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
 			                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
 			                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
 			                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
-			                         "The data is divide up by " +
+			                         "The data is divided up by " +
 			                         chartOptions.compare + " and " + chartOptions.disagg +
-			                         ".\nPlot produced at " + prettyDataAndTime();
+			                         ".\nPlot produced at " + prettyDateAndTime();
 			return metaStr;
-		} if (chartOptions.plotType === "Time series") {
+		} else if (chartOptions.plotType === "Time series") {
 			const metaStr : string = "This plot shows the " +
 									 chartOptions.metric.replace("_", " ") + " data for:\n" +
 			                         prettyActivities(chartOptions.activityTypes) + ";\n" + 
@@ -83,7 +78,7 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
 			                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
 			                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
 			                         "Each line represents a " + chartOptions.disagg +
-			                         ".\nPlot produced at " + prettyDataAndTime();
+			                         ".\nPlot produced at " + prettyDateAndTime();
 			return metaStr;
 		} else {
 			return "ERROR!";
