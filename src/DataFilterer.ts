@@ -314,8 +314,8 @@ export class DataFilterer {
     }
 
     public reduceSummary(aggregatedData: ImpactDataByVaccineAndThenCountry,
-                          aggVar: string, compVars: any[],
-                          metric: string): number[] {
+                         aggVar: string, compVars: any[],
+                         metric: string): number[] {
         const dataByCompare = aggregatedData[aggVar];
         const summedMetricForDisagg: number[] = compVars.map((compare: string) => {
             const data: ImpactDataRow[] = dataByCompare[compare];

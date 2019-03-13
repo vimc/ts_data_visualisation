@@ -21,18 +21,16 @@ const diseaseVaccineLookup: { [p: string]: string[] } = {
 };
 
 describe("DataFilterer", () => {
+    const testObject = new DataFilterer();
+
     const fakeImpactData: ImpactDataRow[] = [];
-
-
-
-
     //create fake Impact Data
-    countries.map((c: string) =>
-        diseases.map((d: string) =>
+    countries.slice(0, 10).map((c: string) =>
+        diseases.slice(0, 5).map((d: string) =>
             diseaseVaccineLookup[d].map((v: string) =>
                 activityTypes.map((a: string) =>
                     [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020].map((y: number) =>
-                        touchstones.map((t: string) => {
+                        touchstones.slice(0, 5).map((t: string) => {
                             fakeImpactData.push(<ImpactDataRow>{
                                 "activity_type": a,
                                 "touchstone": t,
@@ -67,7 +65,6 @@ describe("DataFilterer", () => {
     it("filterByCompare", () => {
         const max: number = 2;
 
-        const testObject = new DataFilterer();
         const out: [ImpactDataRow[], any[]] = testObject.filterByCompare(max,
                                                                          "disease",
                                                                          "deaths_averted",
@@ -77,6 +74,9 @@ describe("DataFilterer", () => {
 
         // because of the random numbers in the fake data we can't put exact bounds on the length
         expect(filteredData).to.have.lengthOf.below(fakeImpactData.length);
+        // check that all elements of metric are numberic
+        const metric: number[] = filteredData.map((row) => row["deaths_averted"])
+        metric.map((x) => expect(x).to.be.a("number"))
 
         // we are expecting 'max' compare Variables
         expect(compVars).to.have.lengthOf(max);
@@ -116,7 +116,6 @@ describe("DataFilterer", () => {
     it("getUniqueVariables", () => {
         const max: number = 2;
 
-        const testObject = new DataFilterer();
         const out1: any[] = 
             testObject.getUniqueVariables(max, "activity_type", "deaths_averted", fakeImpactData);
         // all of the members of compvars should be diseases
@@ -145,7 +144,6 @@ describe("DataFilterer", () => {
     })
 
     it("filterByFocality", () => {
-        const testObject = new DataFilterer();
         const outTrue: ImpactDataRow[] = testObject.filterByFocality(fakeImpactData, true);
         const sut: boolean[] = outTrue.map((row) => (row["is_focal"]));
         expect(sut).to.include.members([true]);
@@ -158,7 +156,6 @@ describe("DataFilterer", () => {
     })
 
     it("filterBySupport", () => {
-        const testObject = new DataFilterer();
         const outGavi: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, "gavi");
         const sut: string[] = outGavi.map((row) => (row["support_type"]));
         expect(sut).to.include.members(["gavi"]);
@@ -176,7 +173,6 @@ describe("DataFilterer", () => {
     })
 
     it("filterByTouchstone", () => {
-        const testObject = new DataFilterer();
         const outGood: ImpactDataRow[] =
             testObject.filterByTouchstone(fakeImpactData, touchstones.slice(0, 2));
 
@@ -190,7 +186,6 @@ describe("DataFilterer", () => {
     })
 
     it("filterByVaccine", () => {
-        const testObject = new DataFilterer();
         const outGood: ImpactDataRow[] =
             testObject.filterByVaccine(fakeImpactData, vaccines.slice(0, 2));
 
@@ -204,7 +199,6 @@ describe("DataFilterer", () => {
     })
 
     it("filterByCountrySet", () => {
-        const testObject = new DataFilterer();
         const outGood: ImpactDataRow[] =
             testObject.filterByCountrySet(fakeImpactData, countries.slice(0, 2));
 
@@ -218,7 +212,6 @@ describe("DataFilterer", () => {
     })
 
     it("filterByActivityType", () => {
-        const testObject = new DataFilterer();
         const outGood: ImpactDataRow[] =
             testObject.filterByActivityType(fakeImpactData, activityTypes.slice(0, 2));
 
@@ -232,7 +225,6 @@ describe("DataFilterer", () => {
     })
 
     it("filterByYear", () => {
-        const testObject = new DataFilterer();
         const outGood: ImpactDataRow[] =
             testObject.filterByYear(fakeImpactData, 2013, 2014);
 
@@ -243,5 +235,19 @@ describe("DataFilterer", () => {
 
         const outBad: ImpactDataRow[] = testObject.filterByYear(fakeImpactData, 2014, 2013);
         expect(outBad).to.have.lengthOf(0);
+    })
+
+    it("meanVariables", () => {
+        const out1 = testObject.meanVariables("coverage");
+        expect(out1).to.include({top: "fvps", bottom: "target_population"});
+
+        const out2 = testObject.meanVariables("deaths_averted_rate");
+        expect(out2).to.include({top: "deaths_averted", bottom: "fvps"});
+
+        const out3 = testObject.meanVariables("cases_averted_rate");
+        expect(out3).to.include({top: "cases_averted", bottom: "fvps"});
+
+        const out4 = testObject.meanVariables("fish");
+        expect(out4).to.include({top: "fish"});
     })
 });
