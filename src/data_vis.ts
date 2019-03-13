@@ -56,6 +56,12 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
 
 class DataVisModel {
     private plots = ko.observableArray(["Impact", "Time series"]);
+    private permittedMetrics: { [key: string]: Array<string> } = {
+        "Impact": ["deaths_averted", "dalys_averted", "cases_averted", "fvps"],
+        "Time series": ["deaths_averted", "dalys_averted", "cases_averted",
+                        "fvps", "deaths_averted_rate", "cases_averted_rate", 
+                        "coverage"]
+    }
     private currentPlot = ko.observable("Impact");
 
     private showSidebar = ko.observable(true);
@@ -295,6 +301,14 @@ class DataVisModel {
     }
 
     private selectPlot(plotName: string) {
+        // need to make sure that the new new plot  is valid with current metric
+        if (this.permittedMetrics[plotName].indexOf(this.burdenOutcome()) < 0) {
+            // ...if not set it to deaths
+            this.changeBurden('deaths');
+            // It might worth remember what the Burden was so we can restore it
+            // when we naviaget back? TODO
+        }
+
         this.currentPlot(plotName);
     }
 
