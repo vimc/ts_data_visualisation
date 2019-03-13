@@ -189,7 +189,7 @@ export class DataFilterer {
         return {datasets, compVarsTop};
     }
 
-    private groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],
+    public groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],
                                             filteredData: ImpactDataRow[]): ImpactDataByVaccineAndThenCountry {
         const dataByDisagg: ImpactDataByVaccineAndThenCountry = {};
         disaggVars.map((disagg: string) => { dataByDisagg[disagg] = {}; } );
@@ -214,10 +214,10 @@ export class DataFilterer {
     // Then it calculates the maxPlot largest compare variables and filters out the rest from the original dataset
     // It will return an array of the largest compare variables and
     // the original dataset with all but the largest removed
-    private filterByCompare(maxPlot: number,
-                            compare: string,
-                            metric: string,
-                            impactData: ImpactDataRow[]): [ImpactDataRow[], any[]] {
+    public filterByCompare(maxPlot: number,
+                           compare: string,
+                           metric: string,
+                           impactData: ImpactDataRow[]): [ImpactDataRow[], any[]] {
         const uniqueCompare: any[] = this.getUniqueVariables(maxPlot, compare, metric, impactData);
         const filteredData = impactData.filter((d) => (uniqueCompare.indexOf(d[compare]) > -1));
         return [filteredData, uniqueCompare];
@@ -226,10 +226,10 @@ export class DataFilterer {
     // TODO Tidy this up!
     // This function groups the data by the compare variable, then sums by the metric variable
     // It returns an array of the largest maxPlot compare variables wrt metric
-    private getUniqueVariables(maxPlot: number,
-                               compare: string,
-                               metric: string,
-                               impactData: ImpactDataRow[]): any[] {
+    public getUniqueVariables(maxPlot: number,
+                              compare: string,
+                              metric: string,
+                              impactData: ImpactDataRow[]): any[] {
         if (maxPlot > 0) {
             // this is taken from https://stackoverflow.com/a/49717936
             const groupedSummed = new Map<string, number>();
@@ -251,36 +251,36 @@ export class DataFilterer {
         }
     }
 
-    private filterByFocality(impactData: ImpactDataRow[], isFocal: boolean): ImpactDataRow[] {
+    public filterByFocality(impactData: ImpactDataRow[], isFocal: boolean): ImpactDataRow[] {
         return impactData.filter((row) => row.is_focal === isFocal );
     }
 
-    private filterBySupport(impactData: ImpactDataRow[], supportType: string): ImpactDataRow[] {
+    public filterBySupport(impactData: ImpactDataRow[], supportType: string): ImpactDataRow[] {
         return impactData.filter((row) => row.support_type === supportType );
     }
 
-    private filterByTouchstone(impactData: ImpactDataRow[], touchStone: string[]): ImpactDataRow[] {
+    public filterByTouchstone(impactData: ImpactDataRow[], touchStone: string[]): ImpactDataRow[] {
         return impactData.filter((row) => touchStone.indexOf(row.touchstone) > -1 );
     }
 
-    private filterByVaccine(impactData: ImpactDataRow[], vaccineSet: string[]): ImpactDataRow[] {
+    public filterByVaccine(impactData: ImpactDataRow[], vaccineSet: string[]): ImpactDataRow[] {
         return impactData.filter((row) => vaccineSet.indexOf(row.vaccine) > -1 );
     }
 
-    private filterByCountrySet(impactData: ImpactDataRow[], countrySet: string[]): ImpactDataRow[] {
+    public filterByCountrySet(impactData: ImpactDataRow[], countrySet: string[]): ImpactDataRow[] {
         return impactData.filter((row) => countrySet.indexOf(row.country) > -1 );
     }
 
-    private filterByActivityType(impactData: ImpactDataRow[], selectedActivityType: string[]): ImpactDataRow[] {
+    public filterByActivityType(impactData: ImpactDataRow[], selectedActivityType: string[]): ImpactDataRow[] {
         return impactData.filter((row) => selectedActivityType.indexOf(row.activity_type) > -1 );
     }
 
-    private filterByYear(impactData: ImpactDataRow[], yearLow: number, yearHigh: number) {
+    public filterByYear(impactData: ImpactDataRow[], yearLow: number, yearHigh: number) {
         return impactData.filter((row) => row.year >= yearLow )
                          .filter((row) => row.year <= yearHigh );
     }
 
-    private filterByAll(filterOptions: DataFiltererOptions,
+    public filterByAll(filterOptions: DataFiltererOptions,
                         impactData: ImpactDataRow[]): ImpactDataRow[] {
         let filtData = this.filterByFocality(impactData, true); // filter focal model
         filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
@@ -293,7 +293,7 @@ export class DataFilterer {
         return filtData;
     }
 
-    private meanVariables(compareVariable: string): { [fracPart: string]: string } {
+    public meanVariables(compareVariable: string): { [fracPart: string]: string } {
         switch (compareVariable) {
             case "coverage":
                 return {top: "fvps", bottom: "target_population"};
@@ -313,7 +313,7 @@ export class DataFilterer {
         }
     }
 
-    private reduceSummary(aggregatedData: ImpactDataByVaccineAndThenCountry,
+    public reduceSummary(aggregatedData: ImpactDataByVaccineAndThenCountry,
                           aggVar: string, compVars: any[],
                           metric: string): number[] {
         const dataByCompare = aggregatedData[aggVar];

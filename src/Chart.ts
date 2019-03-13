@@ -18,7 +18,7 @@ export interface AnnotatedChartConfiguration extends ChartConfiguration {
     options: ChartOptionsWithAnnotation
 }
 
-function rescaleLabel(value: number, scale: number): string {
+export function rescaleLabel(value: number, scale: number): string {
     // we need to round down to three significant figures
     const df = new DataFilterer();
     if (scale > 1000000000) {
