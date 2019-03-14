@@ -32,7 +32,8 @@ file.remove("temporary.json")
 ## Quick start:
 This method is ideal for UI development where the data does not matter at all.
 1. Generate completely fake data by running `npm run generate-fake-data`
-1. `npm run build-dev` or `npm run-build-dev-watch`
+1. `npm install`
+1. `npm run build-dev` or `npm run build-dev-watch`
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
@@ -45,7 +46,8 @@ local development to be a bit quicker.
 1. Grab the real data set by downloading the relevant artefact from the
 reporting portal and copying it into this repo's `data` directory.
 1. `./scripts/thinData`.
-1. `npm run build-dev` or `npm run-build-dev-watch`
+1. `npm install`
+1. `npm run build-dev` or `npm run build-dev-watch`
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
@@ -53,7 +55,8 @@ reporting portal and copying it into this repo's `data` directory.
 This will make development slow, but will give you the most accurate impression
 of the app in production.
 1. Grab the real data set as above but this time put it straight into `data/test`.
-1. `npm run build-dev` or `npm run-build-dev-watch`
+1. `npm install`
+1. `npm run build-dev` or `npm run build-dev-watch`
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
