@@ -190,7 +190,7 @@ export class DataFilterer {
     }
 
     public groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],
-                                            filteredData: ImpactDataRow[]): ImpactDataByVaccineAndThenCountry {
+                                           filteredData: ImpactDataRow[]): ImpactDataByVaccineAndThenCountry {
         const dataByDisagg: ImpactDataByVaccineAndThenCountry = {};
         disaggVars.map((disagg: string) => { dataByDisagg[disagg] = {}; } );
 
@@ -281,7 +281,7 @@ export class DataFilterer {
     }
 
     public filterByAll(filterOptions: DataFiltererOptions,
-                        impactData: ImpactDataRow[]): ImpactDataRow[] {
+                       impactData: ImpactDataRow[]): ImpactDataRow[] {
         let filtData = this.filterByFocality(impactData, true); // filter focal model
         filtData = this.filterBySupport(filtData, "gavi"); // filter so that support = gavi
         filtData = this.filterByYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
