@@ -208,6 +208,15 @@ class DataVisModel {
     }, this);
 
     constructor() {
+        // chartjs plots have a transparent background as default
+        // this fills the background opaque white
+        Chart.plugins.register({
+            beforeDraw: function(chartInstance: any) {
+                chartInstance.chart.ctx.fillStyle = "white";
+                chartInstance.chart.ctx.fillRect(0, 0,
+                    chartInstance.chart.width, chartInstance.chart.height);
+            }
+        });
 
         this.canvas = document.getElementById("myChart");
         this.canvasTS = document.getElementById("timeSeriesChart");
