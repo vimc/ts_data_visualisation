@@ -94,7 +94,7 @@ export class CountryFilter extends ListFilter {
 export class RangeFilter extends Filter {
     public selectedLow = ko.observable<number>();
     public selectedHigh = ko.observable<number>();
-    private rangeValues = ko.observableArray<number>();
+    public rangeValues = ko.observableArray<number>();
 
     constructor(settings: RangeFilterSettings) {
         super({name: settings.name});

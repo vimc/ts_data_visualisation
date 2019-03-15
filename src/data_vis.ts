@@ -177,7 +177,6 @@ class DataVisModel {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
             compare: this.compare(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
-            currentPlot: this.currentPlot(),
             disagg: this.disaggregateBy(), // variable we are disaggregating by
             hideLabels: this.hideLabels(),
             maxPlot: this.maxBars(), // How many bars on the plot
@@ -195,7 +194,7 @@ class DataVisModel {
     }, this).extend({rateLimit: 250});
 
     private metaData = ko.computed<string>(() => {
-        return MetaDataDisplay(this.chartOptions(), true);
+        return MetaDataDisplay(this.chartOptions());
     }, this);
 
     private warningMessage = ko.computed<string>(function () {
@@ -252,7 +251,7 @@ class DataVisModel {
     public renderImpact() {
         const chartOptions: CustomChartOptions = this.chartOptions();
 
-        if (chartOptions.currentPlot !== "Impact" || !this.ctx) {
+        if (chartOptions.plotType !== "Impact" || !this.ctx) {
             return;
         }
 
@@ -276,7 +275,7 @@ class DataVisModel {
     public renderTimeSeries() {
         const chartOptions: CustomChartOptions = this.chartOptions();
 
-        if (chartOptions.currentPlot !== "Time series" || !this.ctxTS) {
+        if (chartOptions.plotType !== "Time series" || !this.ctxTS) {
             return;
         }
 
