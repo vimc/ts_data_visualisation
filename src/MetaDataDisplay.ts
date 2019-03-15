@@ -9,7 +9,7 @@ function prettyDateAndTime(): string {
 
 function largest(max: number, option: string) {
 	const plural: boolean = max > 1;
-	return "Only the largest " + max + " " + toPlural(option, plural) +
+	return "The largest " + max + " " + toPlural(option, plural) +
 				 (plural ? " are " : " is ") + "shown.\n";
 }
 
@@ -122,8 +122,8 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions): string {
 		                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
 		                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
 		                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
-		                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
-		                         "Each line represents a " + chartOptions.disagg + ".\n" +
+		                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";\n" +
+		                         "Each line represents a " + chartOptions.disagg + ";\n" +
 		                         largest(chartOptions.maxPlot, chartOptions.compare) +
 		                         "Plot produced at " + prettyDateAndTime();
 		return metaStr;
