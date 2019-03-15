@@ -7,6 +7,53 @@ function prettyDateAndTime(): string {
 	return date.toISOString().substring(0, 19);
 }
 
+function largest(max: number, option: string) {
+	const plural: boolean = max > 1;
+	return "Only the largest " + max + " " + toPlural(option, plural) +
+				 (plural ? " are " : " is ") + "shown.\n";
+}
+
+function toPlural(noun: string, plural: boolean): string {
+	switch (noun) {
+		case "year":
+		case "continent":
+		case "region":
+		case "disease":
+		case "vaccine":
+		case "touchstone":
+			if (plural)
+				return noun + "s";
+			else
+				return noun;
+			break;
+
+		case "country":
+			if (plural)
+				return "countries";
+			else
+				return "country";
+			break;
+
+		case "cofinance_status_2018":
+			if (plural)
+				return "cofinance statuses";
+			else
+				return "cofinance status";
+			break;
+
+		case "activity_type":
+			if (plural)
+				return "activity_types";
+			else
+				return "activity_type";
+			break;
+
+		default:
+			return "ERROR!"
+			break;
+	}
+}
+
 // there's a lot of C+P programming here that could arguably be refactored into a
 //single function, but in future they might need to be dictinct functions?
 function prettyCountries(countryArr: string[], maxShow: number): string {
@@ -54,34 +101,33 @@ function prettyActivities(activityTypes: string[]) {
 	return activityTypes.map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(", ");
 }
 
-export function MetaDataDisplay(chartOptions: CustomChartOptions,
-	                            human: boolean): string {
-	if (human) { // produce human readable metadata
-		if (chartOptions.plotType === "Impact") {
-			const metaStr : string = "This plot shows the " +
-									 chartOptions.metric.replace("_", " ") + " data for:\n" +
-			                         prettyActivities(chartOptions.activityTypes) + ";\n" + 
-			                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
-			                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
-			                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
-			                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
-			                         "The data is divided up by " +
-			                         chartOptions.compare + " and " + chartOptions.disagg +
-			                         ".\nPlot produced at " + prettyDateAndTime();
-			return metaStr;
-		} else if (chartOptions.plotType === "Time series") {
-			const metaStr : string = "This plot shows the " +
-									 chartOptions.metric.replace("_", " ") + " data for:\n" +
-			                         prettyActivities(chartOptions.activityTypes) + ";\n" + 
-			                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
-			                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
-			                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
-			                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
-			                         "Each line represents a " + chartOptions.disagg +
-			                         ".\nPlot produced at " + prettyDateAndTime();
-			return metaStr;
-		} else {
-			return "ERROR!";
-		}
+export function MetaDataDisplay(chartOptions: CustomChartOptions): string {
+	if (chartOptions.plotType === "Impact") {
+		const metaStr : string = "This plot shows the " +
+								 chartOptions.metric.replace("_", " ") + " data for:\n" +
+		                         prettyActivities(chartOptions.activityTypes) + ";\n" +
+		                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
+		                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
+		                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
+		                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
+		                         "The data is divided up by " +
+		                         chartOptions.compare + " and " + chartOptions.disagg + ".\n" +
+		                         largest(chartOptions.maxPlot, chartOptions.compare) +
+		                         "Plot produced at " + prettyDateAndTime();
+		return metaStr;
+	} else if (chartOptions.plotType === "Time series") {
+		const metaStr : string = "This plot shows the " +
+								 chartOptions.metric.replace("_", " ") + " data for:\n" +
+		                         prettyActivities(chartOptions.activityTypes) + ";\n" +
+		                         prettyCountries(chartOptions.selectedCountries, 4) + ";\n" +
+		                         prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
+		                         prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
+		                         prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
+		                         "Each line represents a " + chartOptions.disagg + ".\n" +
+		                         largest(chartOptions.maxPlot, chartOptions.compare) +
+		                         "Plot produced at " + prettyDateAndTime();
+		return metaStr;
+	} else {
+		return "ERROR!";
 	}
 }
