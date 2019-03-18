@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-import {countries, touchstones, activityTypes, diseases} from "../src/Data.ts"
+import {countries, touchstones, activityTypes, diseases, supportTypes} from "../src/Data.ts"
 
 for (let i in touchstones) {
     var tsName = touchstones[i];
@@ -35,15 +35,16 @@ function generateData(touchstone) {
         countries.flatMap((c) =>
             diseases.flatMap((d) =>
                 diseaseVaccineLookup[d].flatMap((v) =>
-                    activityTypes.flatMap((a) =>
-                        [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
-                            .flatMap((y) => {
+                    supportTypes.flatMap((s) =>
+                        activityTypes.flatMap((a) =>
+                            [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+                                .flatMap((y) => {
                                     return {
                                         "touchstone": touchstone,
                                         "disease": d,
                                         "is_focal": true,
                                         "activity_type": a,
-                                        "support_type": "gavi",
+                                        "support_type": s,
                                         "vaccine": v,
                                         "gavi73": true,
                                         "country": c,
@@ -64,6 +65,7 @@ function generateData(touchstone) {
                             )
                         )
                     )
+                )
             )
         );
 

@@ -217,6 +217,25 @@
                 </div>
             </div>
         </li>
+        <li class="nav-item" data-bind="with: supportFilter">
+            <a class="nav-link nav-parent"
+               href="#"
+               data-bind="text: name,
+                              css: { active: isOpen },
+                              click: toggleOpen"></a>
+
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        <label data-bind="attr: {for: $data}">
+                            <input type="checkbox"
+                                   data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
+                            <span data-bind="text: $data"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </li>
     </ul>
 </div>
 
@@ -395,7 +414,9 @@
 
 </div>
 
-<script src="data/reportInfo.js"></script>
+<!-- WARNING This file needs to be in same directory otherwise
+it will break the report on the portal  -->
+<script src="reportInfo.js"></script>
 <script src="bundle.js"></script>
 
 </body>

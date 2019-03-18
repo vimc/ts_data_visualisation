@@ -70,7 +70,7 @@ export class CountryFilter extends ListFilter {
     public selectCountryGroup(selectedGroup: string) {
         switch (selectedGroup) {
             case "all":
-                this.selectedOptions(this.options());
+                this.selectedOptions([...this.options()]);
                 break;
             case "none":
                 this.selectedOptions([]);

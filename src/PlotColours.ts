@@ -1,4 +1,5 @@
-export const plotColours: { [vaccine: string]: string } = {
+// This is not const as we might append colours to it at run time
+export let plotColours: { [vaccine: string]: string } = {
     // disease / vaccine colours
     "HPV":     "#BEBADA",
     "HepB":    "#8DD3C7",
@@ -58,9 +59,9 @@ export const plotColours: { [vaccine: string]: string } = {
     "Europe":   "#003399",
     "Oceania":  "#a267ff",
     // gavi cofin status
-    "Graduating": "#90ee90",
-    "Intermediate": "#ffd700",
-    "Low-Income": "#8B0000",
+    "ATP": "#90ee90",
+    "ISF": "#ffd700",
+    "PTP": "#8B0000",
     // regions
     "Southern Asia":      "#FF8C00",
     "Middle Africa":      "#00873a",
@@ -188,9 +189,12 @@ export const plotColours: { [vaccine: string]: string } = {
     "201210gavi-201807wue":  "#ff0000",
     "201210gavi-201303gavi": "#9400d3",
     "201310gavi-201403gavi": "#808000",
+    // support Types
+    "gavi":  "#0000ff",
+    "other": "#8b0000",
 };
 
-export const niceColours = {
+export let niceColours = {
     aqua:           "#00ffff",
     azure:          "#f0ffff",
     beige:          "#f5f5dc",
