@@ -2,7 +2,7 @@ import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {WarningMessageManager} from "./WarningMessage"
-import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries"
+import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
 import {Chart} from "chart.js";
@@ -17,6 +17,7 @@ import "select2/dist/css/select2.min.css"
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {activityTypes, countries, diseases, plottingVariables, supportTypes, touchstones, vaccines} from "./Data";
+import {MetaDataDisplay} from "./MetaDataDisplay"
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201807wue";
@@ -197,12 +198,12 @@ class DataVisModel {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
             compare: this.compare(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
-            currentPlot: this.currentPlot(),
             disagg: this.disaggregateBy(), // variable we are disaggregating by
             hideLabels: this.hideLabels(),
             maxPlot: this.maxBars(), // How many bars on the plot
             metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
             plotTitle: this.plotTitle(),
+            plotType: this.currentPlot(),
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
             selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
@@ -213,6 +214,10 @@ class DataVisModel {
             yearLow: this.yearFilter().selectedLow(), // lower bound on year
         };
     }, this).extend({rateLimit: 250});
+
+    private metaData = ko.computed<string>(() => {
+        return MetaDataDisplay(this.chartOptions());
+    }, this);
 
     private warningMessage = ko.computed<string>(function () {
         const message = new WarningMessageManager().getError(this.chartOptions());
@@ -280,7 +285,7 @@ class DataVisModel {
     public renderImpact() {
         const chartOptions: CustomChartOptions = this.chartOptions();
 
-        if (chartOptions.currentPlot !== "Impact" || !this.ctx) {
+        if (chartOptions.plotType !== "Impact" || !this.ctx) {
             return;
         }
 
@@ -294,7 +299,7 @@ class DataVisModel {
         let compareNames: string[] = [...compVars];
         // when we put countries along convert the names to human readable
         if (chartOptions.compare === "country") {
-            compareNames = compareNames.map(this.countryCodeToName);
+            compareNames = compareNames.map(countryCodeToName);
         }
 
         this.filteredTable = new TableMaker().createWideTable(datasets, compareNames);
@@ -304,7 +309,7 @@ class DataVisModel {
     public renderTimeSeries() {
         const chartOptions: CustomChartOptions = this.chartOptions();
 
-        if (chartOptions.currentPlot !== "Time series" || !this.ctxTS) {
+        if (chartOptions.plotType !== "Time series" || !this.ctxTS) {
             return;
         }
 

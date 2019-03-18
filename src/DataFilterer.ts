@@ -21,6 +21,7 @@ export interface DataFiltererOptions {
     selectedCountries:   Array<string>;
     selectedVaccines:    Array<string>;
     selectedTouchstones: Array<string>;
+    plotType:            string;
     supportType:         Array<string>;
     cumulative:          boolean;
     timeSeries:          boolean;
