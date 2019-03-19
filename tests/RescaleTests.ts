@@ -1,5 +1,4 @@
 import {rescaleLabel} from "../src/Chart";
-import {DataFilterer} from "../src/DataFilterer";
 import {expect} from "chai";
 
 describe("rescaleLabels", () => {
