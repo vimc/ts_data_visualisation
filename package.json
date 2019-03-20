@@ -9,7 +9,7 @@
     "build-dev-watch": "mkdir -p out && cp -R data/test/. out/ &&  webpack --watch",
     "build-dev": "mkdir -p out && cp -R data/test/. out/ && webpack",
     "webpack": "webpack",
-    "test": "mocha-webpack --webpack-config webpack-test.config.js tests/**/*Tests.ts --timeout 5000 -- full-trace --bail",
+    "test": "mocha -r ts-node/register tests/**/*Tests.ts",
     "coverage": "cross-env NODE_ENV=coverage nyc --require ts-node/register --reporter=lcov --reporter=text npm run test",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
