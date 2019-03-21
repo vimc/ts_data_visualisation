@@ -36,10 +36,7 @@
     "extension": [
       ".ts"
     ],
-    "cache": true,
-    "all": true,
-    "sourceMap": true,
-    "instrument": true
+    "all": true
   },
   "author": "",
   "license": "ISC",
