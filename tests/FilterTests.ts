@@ -51,6 +51,16 @@ describe("ListFilter", () => {
         expect(sut.makeHumanreadable("d")).to.be.undefined;
     })
 
+    it("Check ListFilter no selected option", () => {
+
+        const sut = new ListFilter({name: "whatever",
+                                    options: ["a", "b", "c"],
+                                    humanNames: {"a": "cat", "b": "dog", "c": "fish"}
+                                  });
+
+        expect(sut.selectedOptions()).to.have.members(["a", "b", "c"]);
+    })
+
 });
 
 describe("CountryFilter", () => {
@@ -88,16 +98,13 @@ describe("CountryFilter", () => {
         expect(sut.selectedOptions()).to.have.members([]);
 
     })
-});
 
-describe("DiseaseFilter", () => {
-
-    it("Check CountryFilter member variables are set correctly", () => {
-
-        const sut = new DiseaseFilter({name: "whatever",
+    it("Check CountryFilter no selected option", () => {
+        const sut = new CountryFilter({name: "whatever",
                                        options: countries,
-                                       selected: ["KIR"],
                                        humanNames: countryDict
                                       });
+
+        expect(sut.selectedOptions()).to.have.members(pineCountries);
     })
 });

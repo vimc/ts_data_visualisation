@@ -50,11 +50,7 @@ export class ListFilter extends Filter {
     }
 
     public makeHumanreadable(code: string): string {
-        if (this.dictionary) {
-            return this.dictionary[code];
-        }
-
-        return null;
+        return this.dictionary[code];
     }
 }
 
