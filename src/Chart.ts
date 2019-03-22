@@ -6,7 +6,6 @@ import {plotColours} from "./PlotColours"
 export interface CustomChartOptions extends DataFiltererOptions {
     plotTitle: string;
     yAxisTitle: string;
-    currentPlot: string;
     hideLabels: boolean;
 }
 

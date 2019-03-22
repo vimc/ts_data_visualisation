@@ -98,6 +98,10 @@ export const countryDict: { [code: string]: string} = {
     ZWE: "Zimbabwe",
 };
 
+export function countryCodeToName(countryCode: string) {
+    return countryDict[countryCode];
+};
+
 export const vaccineDict: { [code: string]: string} = {
     HPV: "HPV",
     HepB: "Hepatitis B",
@@ -115,10 +119,14 @@ export const vaccineDict: { [code: string]: string} = {
     YF: "Yellow Fever",
 };
 
-export const diseaseDict: { [code: string]: string} = {
+export function vaccineCodeToName(vaccCode: string) {
+    return vaccineDict[vaccCode];
+};
+
+export const diseaseDict: { [code: string] : string} = {
     HPV: "HPV",
-    HepB: "Hepatitis B",
-    Hib: "Hib",
+    HepB: "Hepatitis B", 
+    Hib: "Hib", 
     JE: "Japanese encephalitis",
     Measles: "Measles",
     MenA: "MenA",
@@ -126,6 +134,10 @@ export const diseaseDict: { [code: string]: string} = {
     Rota: "Rotavirus",
     Rubella: "Rubella",
     YF: "Yellow Fever"
+}
+
+export function diseaseCodeToName(disCode: string) {
+    return diseaseDict[disCode];
 };
 
 export const diseaseVaccineLookup: { [code: string] : string[]} = {
@@ -152,3 +164,4 @@ export const touchstoneYears: { [code: string] : number} = {
     "201710gavi"            : 2016,
     "201710gavi-201807wue"  : 2017
 };
+

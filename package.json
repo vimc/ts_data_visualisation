@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "generate-fake-data": "babel-node scripts/generateTestData  --presets es2015",
-    "build": "mkdir -p out && cp -R data/ out/ && webpack",
-    "build-dev-watch": "mkdir -p out && cp -R data/test/. out/data &&  webpack --watch",
-    "build-dev": "mkdir -p out && cp -R data/test/. out/data && webpack",
+    "build": "mkdir -p out && cp -R data/. out/ && webpack",
+    "build-dev-watch": "mkdir -p out && cp -R data/test/. out/ &&  webpack --watch",
+    "build-dev": "mkdir -p out && cp -R data/test/. out/ && webpack",
     "webpack": "webpack",
     "test": "mocha-webpack --webpack-config webpack-test.config.js tests/**/*Tests.ts",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"

@@ -2,7 +2,7 @@ import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {TableMaker} from "./CreateDataTable";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {WarningMessageManager} from "./WarningMessage"
-import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries"
+import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries"
 import {plotColours} from "./PlotColours"
 import * as ko from "knockout";
 import {Chart} from "chart.js";
@@ -16,7 +16,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import "select2/dist/css/select2.min.css"
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
-import {activityTypes, countries, diseases, plottingVariables, touchstones, vaccines} from "./Data";
+import {activityTypes, countries, diseases, plottingVariables, supportTypes, touchstones, vaccines} from "./Data";
+import {MetaDataDisplay} from "./MetaDataDisplay"
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201807wue";
@@ -56,6 +57,12 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
 
 class DataVisModel {
     private plots = ko.observableArray(["Impact", "Time series"]);
+    private permittedMetrics: { [key: string]: Array<string> } = {
+        "Impact": ["deaths_averted", "dalys_averted", "cases_averted", "fvps"],
+        "Time series": ["deaths_averted", "dalys_averted", "cases_averted",
+                        "fvps", "deaths_averted_rate", "cases_averted_rate", 
+                        "coverage"]
+    }
     private currentPlot = ko.observable("Impact");
 
     private showSidebar = ko.observable(true);
@@ -89,8 +96,23 @@ class DataVisModel {
         selected: [initTouchstone],
     }));
 
+    private supportFilter = ko.observable(new ListFilter({
+        name: "Support type",
+        options: supportTypes,
+        selected: ["gavi"],
+    }));
+
     private xAxisOptions = plottingVariables;
-    private disaggregationOptions = plottingVariables;
+    private disaggregationOptions = ko.computed(() => {
+        switch (this.currentPlot()) {
+            case "Impact":
+                return plottingVariables;
+            case "Time series":
+                return plottingVariables.filter((v, i, a) => {return v !== "year"});
+            default:
+                return plottingVariables;
+        }
+    }, this);
 
     private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
     private maxBars = ko.observable<number>(5);
@@ -176,21 +198,26 @@ class DataVisModel {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
             compare: this.compare(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
-            currentPlot: this.currentPlot(),
             disagg: this.disaggregateBy(), // variable we are disaggregating by
             hideLabels: this.hideLabels(),
             maxPlot: this.maxBars(), // How many bars on the plot
             metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
             plotTitle: this.plotTitle(),
+            plotType: this.currentPlot(),
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
             selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
+            supportType: this.supportFilter().selectedOptions(),
             timeSeries: this.currentPlot() === "Time series",
             yAxisTitle: this.yAxisTitle(),
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
             yearLow: this.yearFilter().selectedLow(), // lower bound on year
         };
     }, this).extend({rateLimit: 250});
+
+    private metaData = ko.computed<string>(() => {
+        return MetaDataDisplay(this.chartOptions());
+    }, this);
 
     private warningMessage = ko.computed<string>(function () {
         const message = new WarningMessageManager().getError(this.chartOptions());
@@ -202,6 +229,15 @@ class DataVisModel {
     }, this);
 
     constructor() {
+        // chartjs plots have a transparent background as default
+        // this fills the background opaque white
+        Chart.plugins.register({
+            beforeDraw: function(chartInstance: any) {
+                chartInstance.chart.ctx.fillStyle = "white";
+                chartInstance.chart.ctx.fillRect(0, 0,
+                    chartInstance.chart.width, chartInstance.chart.height);
+            }
+        });
 
         this.canvas = document.getElementById("myChart");
         this.canvasTS = document.getElementById("timeSeriesChart");
@@ -227,6 +263,9 @@ class DataVisModel {
         this.diseaseFilter().selectedOptions.subscribe(() => {
             this.updateXAxisOptions();
         });
+        this.supportFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
 
         this.touchstoneFilter().selectedOptions.subscribe(() => {
             const newUpdate: DataSetUpdate =
@@ -246,7 +285,7 @@ class DataVisModel {
     public renderImpact() {
         const chartOptions: CustomChartOptions = this.chartOptions();
 
-        if (chartOptions.currentPlot !== "Impact" || !this.ctx) {
+        if (chartOptions.plotType !== "Impact" || !this.ctx) {
             return;
         }
 
@@ -260,7 +299,7 @@ class DataVisModel {
         let compareNames: string[] = [...compVars];
         // when we put countries along convert the names to human readable
         if (chartOptions.compare === "country") {
-            compareNames = compareNames.map(this.countryCodeToName);
+            compareNames = compareNames.map(countryCodeToName);
         }
 
         this.filteredTable = new TableMaker().createWideTable(datasets, compareNames);
@@ -270,7 +309,7 @@ class DataVisModel {
     public renderTimeSeries() {
         const chartOptions: CustomChartOptions = this.chartOptions();
 
-        if (chartOptions.currentPlot !== "Time series" || !this.ctxTS) {
+        if (chartOptions.plotType !== "Time series" || !this.ctxTS) {
             return;
         }
 
@@ -286,6 +325,14 @@ class DataVisModel {
     }
 
     private selectPlot(plotName: string) {
+        // need to make sure that the new new plot  is valid with current metric
+        if (this.permittedMetrics[plotName].indexOf(this.burdenOutcome()) < 0) {
+            // ...if not set it to deaths
+            this.changeBurden('deaths');
+            // It might worth remember what the Burden was so we can restore it
+            // when we naviaget back? TODO
+        }
+
         this.currentPlot(plotName);
     }
 

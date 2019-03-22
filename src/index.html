@@ -11,6 +11,9 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
+    <!-- We seem to need this to get the collapsable card to work -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>/
+
     <!-- Loading Screen -->
     <script type="text/javascript">
         $(window).load(function() {
@@ -227,6 +230,25 @@
                 </div>
             </div>
         </li>
+        <li class="nav-item" data-bind="with: supportFilter">
+            <a class="nav-link nav-parent"
+               href="#"
+               data-bind="text: name,
+                              css: { active: isOpen },
+                              click: toggleOpen"></a>
+
+            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        <label data-bind="attr: {for: $data}">
+                            <input type="checkbox"
+                                   data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
+                            <span data-bind="text: $data"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </li>
     </ul>
 </div>
 
@@ -383,23 +405,31 @@
                 </div>
             </div>
         </div>
-<!--         <div id="maps" class="container tab-pane">
-            <div class="row">
-                <div class="col-12 p-5">
+        <!-- META-DATA TEXT BOX -->
 
-                    <div style="max-width: 1000px">
-                        <div id="mapid"></div>
-                    </div>
-                    <button class="btn btn-success" data-bind="click: renderMap">Redraw Plot</button>
-                </div>
+        <div class="card" style="width: 50rem;">
+            <div class="card-header">
+                <a class="nav-link nav-parent collapsed"
+                   data-toggle="collapse"
+                   href="#showHideMeta"
+                   aria-expanded="false"
+                   aria-controls="showHideMeta">
+                    <span class="if-collapsed">Show description</span>
+                    <span class="if-not-collapsed">Hide description</span>
+                </a>
             </div>
-        </div> -->
+            <div style="white-space: pre-wrap" id="showHideMeta" class="card-body collapse" data-bind="text: metaData"></div>
+        </div>
+
+
     </div>
 </div>
 
 </div>
 
-<script src="data/reportInfo.js"></script>
+<!-- WARNING This file needs to be in same directory otherwise
+it will break the report on the portal  -->
+<script src="reportInfo.js"></script>
 <script src="bundle.js"></script>
 
 </body>

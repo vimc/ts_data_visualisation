@@ -44,9 +44,11 @@ export const vaccines = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1", "MCV2",
 export const activityTypes = ["routine", "campaign", "combined"];
 
 export const plottingVariables = ["year", "country", "continent", "region",
-    "cofinance_status_2018", "activity_type", "disease", "vaccine", "touchstone"];
+    "cofinance_status_2018", "activity_type", "disease", "vaccine", "touchstone", "support_type"];
 
 export const touchstones = ["201710gavi", "201710gavi-201807wue", "201510gavi",
                             "201310gavi-201807wue", "201310gavi",
                             "201310gavi-201403gavi", "201510gavi-201807wue",
                             "201210gavi-201807wue", "201210gavi-201303gavi"];
+
+export const supportTypes = ["gavi", "other"];
