@@ -1,4 +1,8 @@
 # ts_data_visualisation
+
+[![Build Status](https://travis-ci.org/vimc/ts_data_visualisation.svg?branch=master )](https://travis-ci.org/vimc/ts_data_visualisation)
+[![codecov.io](https://codecov.io/github/vimc/ts_data_visualisation/coverage.svg?branch=master)](https://codecov.io/github/vimc/ts_data_visualisation?branch=master)
+
 The typescript / knockout implementation of the interactive reporting app.
 
 Compiling this is somewhat complicated as it relies on a large 100+MB data file that we don't want to put into git.
