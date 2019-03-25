@@ -8,4 +8,5 @@ before_script:
   # TODO: disabled for now as it does not pass
   # - npm run-script lint
 after_success:
+  - npm run-script coverage
   - codecov -f coverage/*.json
