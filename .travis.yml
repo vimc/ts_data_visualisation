@@ -7,6 +7,10 @@ before_script:
   - npm install codecov -g
   # TODO: disabled for now as it does not pass
   # - npm run-script lint
-after_success:
+
+# Can't use the default here because it does not include coverage
+script:
   - npm run-script coverage
+
+after_success:
   - codecov -f coverage/*.json
