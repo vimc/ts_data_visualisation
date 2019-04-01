@@ -1,23 +1,21 @@
-import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
-import {TableMaker} from "./CreateDataTable";
-import {ImpactDataRow} from "./ImpactDataRow";
-import {WarningMessageManager} from "./WarningMessage"
-import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries"
-import {plotColours} from "./PlotColours"
-import * as ko from "knockout";
+import "bootstrap/dist/css/bootstrap.css";
 import {Chart} from "chart.js";
 import "chartjs-plugin-datalabels";
 import {saveAs} from "file-saver";
 import * as $ from "jquery";
-import * as L from "leaflet";
-import "chartjs-plugin-datalabels"
-import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
-import 'bootstrap/dist/css/bootstrap.css';
-import "select2/dist/css/select2.min.css"
+import * as ko from "knockout";
+import "select2/dist/css/select2.min.css";
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
+import {TableMaker} from "./CreateDataTable";
 import {activityTypes, countries, diseases, plottingVariables, supportTypes, touchstones, vaccines} from "./Data";
-import {MetaDataDisplay} from "./MetaDataDisplay"
+import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
+import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
+import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
+import {ImpactDataRow} from "./ImpactDataRow";
+import {MetaDataDisplay} from "./MetaDataDisplay";
+import {plotColours} from "./PlotColours";
+import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201807wue";
@@ -51,18 +49,18 @@ function createRangeArray(min: number = 1, max: number): number[] {
 const createVaccineFilterForDisease = (d: string) => new ListFilter({
         name: d,
         options: diseaseVaccineLookup[d],
-        humanNames: diseaseDict
-    }
+        humanNames: diseaseDict,
+    },
 );
 
 class DataVisModel {
     private plots = ko.observableArray(["Impact", "Time series"]);
-    private permittedMetrics: { [key: string]: Array<string> } = {
+    private permittedMetrics: { [key: string]: string[] } = {
         "Impact": ["deaths_averted", "dalys_averted", "cases_averted", "fvps"],
         "Time series": ["deaths_averted", "dalys_averted", "cases_averted",
-                        "fvps", "deaths_averted_rate", "cases_averted_rate", 
-                        "coverage"]
-    }
+                        "fvps", "deaths_averted_rate", "cases_averted_rate",
+                        "coverage" ],
+    };
     private currentPlot = ko.observable("Impact");
 
     private showSidebar = ko.observable(true);
@@ -87,7 +85,7 @@ class DataVisModel {
 
     private diseaseFilter = ko.observable(new DiseaseFilter({
         name: "Disease",
-        vaccineFilters: diseases.map(createVaccineFilterForDisease)
+        vaccineFilters: diseases.map(createVaccineFilterForDisease),
     }));
 
     private touchstoneFilter = ko.observable(new ListFilter({
@@ -108,7 +106,7 @@ class DataVisModel {
             case "Impact":
                 return plottingVariables;
             case "Time series":
-                return plottingVariables.filter((v, i, a) => {return v !== "year"});
+                return plottingVariables.filter((v, i, a) => (v !== "year"));
             default:
                 return plottingVariables;
         }
@@ -219,12 +217,12 @@ class DataVisModel {
         return MetaDataDisplay(this.chartOptions());
     }, this);
 
-    private warningMessage = ko.computed<string>(function () {
+    private warningMessage = ko.computed<string>(() => {
         const message = new WarningMessageManager().getError(this.chartOptions());
         return message;
     }, this);
 
-    private showWarning = ko.computed<boolean>(function () {
+    private showWarning = ko.computed<boolean>(() => {
         return this.warningMessage().length > 1;
     }, this);
 
@@ -232,11 +230,11 @@ class DataVisModel {
         // chartjs plots have a transparent background as default
         // this fills the background opaque white
         Chart.plugins.register({
-            beforeDraw: function(chartInstance: any) {
+            beforeDraw: (chartInstance: any) => {
                 chartInstance.chart.ctx.fillStyle = "white";
                 chartInstance.chart.ctx.fillRect(0, 0,
                     chartInstance.chart.width, chartInstance.chart.height);
-            }
+            },
         });
 
         this.canvas = document.getElementById("myChart");
@@ -328,7 +326,7 @@ class DataVisModel {
         // need to make sure that the new new plot  is valid with current metric
         if (this.permittedMetrics[plotName].indexOf(this.burdenOutcome()) < 0) {
             // ...if not set it to deaths
-            this.changeBurden('deaths');
+            this.changeBurden("deaths");
             // It might worth remember what the Burden was so we can restore it
             // when we naviaget back? TODO
         }
