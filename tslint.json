@@ -7,10 +7,11 @@
     "rules": {
         "interface-name": [true, "never-prefix"],
         "variable-name": [true, "allow-leading-underscore"],
-        "object-literal-sort-keys": false,
-        "no-console": false,
-        "max-classes-per-file": false,
-        "no-empty-interface": false
+        "object-literal-sort-keys": false, // keys in alphabetical order
+        "no-console": false, // allow console.log()
+        "max-classes-per-file": false, // allow multiple classes per file
+        "no-empty-interface": false, // allow a derived class to add no new members
+        "no-var-requires": false // const $ = require("jquery"); is a waking nightmare
     },
     "rulesDirectory": []
 }
