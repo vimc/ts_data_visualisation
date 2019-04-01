@@ -4,11 +4,11 @@ export class TableMaker {
     public createTable(dataSets: any[], compareNames: string[]): KnockoutObservableArray<any> {
         const returnData = ko.observableArray([]);
         for (const ds of dataSets) {
-            const label = ds.label;
+            const lbl = ds.label;
             for (let i = 0; i < compareNames.length; ++i) {
                 const compName = compareNames[i];
                 const dataValue = ds.data[i];
-                returnData.push({compare: compName, label: label, data: dataValue});
+                returnData.push({compare: compName, label: lbl, data: dataValue});
             }
         }
         return returnData;
@@ -16,7 +16,8 @@ export class TableMaker {
 
     public createWideTable(dataSets: any[], compareNames: string[]): KnockoutObservableArray<any> {
         const returnData = ko.observableArray([]);
-        const disAggVars = dataSets.map((x) => x["label"]);
+        const key = "label"; // this is a hack, eventually dataset needs an interface
+        const disAggVars = dataSets.map((x) => x[key]);
         for (let i = 0; i < compareNames.length; ++i) {
             const tempObject: any = {compare: compareNames[i]};
             for (const ds of dataSets) {
