@@ -1,5 +1,5 @@
 import {CountryFilter, DiseaseFilter, Filter, ListFilter, RangeFilter} from "../src/Filter";
-import {countries, pineCountries, gavi69, gavi73} from "../src/Data";
+import {countries, dove94, dove96, gavi77, pineCountries, gavi68, gavi72} from "../src/Data";
 import {countryCodeToName, countryDict,} from "../src/Dictionaries"
 import {expect} from "chai";
 
@@ -88,11 +88,20 @@ describe("CountryFilter", () => {
         sut.selectCountryGroup("none");
         expect(sut.selectedOptions()).to.have.members([]);
 
-        sut.selectCountryGroup("gavi73");
-        expect(sut.selectedOptions()).to.have.members(gavi73);
+        sut.selectCountryGroup("gavi72");
+        expect(sut.selectedOptions()).to.have.members(gavi72);
 
-        sut.selectCountryGroup("gavi69");
-        expect(sut.selectedOptions()).to.have.members(gavi69);
+        sut.selectCountryGroup("gavi68");
+        expect(sut.selectedOptions()).to.have.members(gavi68);
+
+        sut.selectCountryGroup("dove94");
+        expect(sut.selectedOptions()).to.have.members(dove94);
+
+        sut.selectCountryGroup("dove96");
+        expect(sut.selectedOptions()).to.have.members(dove96);
+
+        sut.selectCountryGroup("gavi77");
+        expect(sut.selectedOptions()).to.have.members(gavi77);
 
         sut.selectCountryGroup("FISH");
         expect(sut.selectedOptions()).to.have.members([]);

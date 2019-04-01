@@ -11,22 +11,29 @@ export const countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
     "SYR", "TJK", "TZA", "TLS", "TGO", "TON", "TKM", "TUV", "UGA", "UKR", "UZB",
     "VUT", "VNM", "YEM", "ZMB", "ZWE"];
 
-export const pineCountries = ["IND", "PAK", "NGA", "ETH"];
+export const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
 
-export const gavi69 = ["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD",
-    "BOL", "BTN", "CAF", "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI",
-    "GEO", "GHA", "GIN", "GMB", "GNB", "GUY", "HND", "HTI", "IDN", "KEN", "KGZ",
-    "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA", "MDG", "MLI", "MMR", "MNG",
-    "MOZ", "MRT", "MWI", "NER", "NIC", "NPL", "PNG", "PRK", "RWA", "SDN", "SEN",
-    "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO", "TJK", "TLS", "TZA", "UGA",
-    "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"];
-export const gavi73 = ["AFG", "AGO", "ARM", "AZE", "BDI", "BEN", "BFA", "BGD",
-    "BOL", "BTN", "CAF", "CIV", "CMR", "COD", "COG", "COM", "CUB", "DJI", "ERI",
-    "ETH", "GEO", "GHA", "GIN", "GMB", "GNB", "GUY", "HND", "HTI", "IDN", "IND",
-    "KEN", "KGZ", "KHM", "KIR", "LAO", "LBR", "LKA", "LSO", "MDA", "MDG", "MLI",
-    "MMR", "MNG", "MOZ", "MRT", "MWI", "NER", "NGA", "NIC", "NPL", "PAK", "PNG",
-    "PRK", "RWA", "SDN", "SEN", "SLB", "SLE", "SOM", "SSD", "STP", "TCD", "TGO",
-    "TJK", "TLS", "TZA", "UGA",    "UKR", "UZB", "VNM", "YEM", "ZMB", "ZWE"];
+const notDove94 = ["ALB", "BIH", "CHN", "TUN"];
+export const dove94 = countries.filter(x => notDove94.indexOf(x) < 0 );
+
+const notDove96 = ["TUN", "XK"];
+export const dove96 = countries.filter(x => notDove96.indexOf(x) < 0 );
+
+const notGavi68 = ["ALB", "BIH", "BLZ", "BTN", "CHN", "CPV", "EGY",
+    "FJI", "FSM", "GTM", "HND", "IRQ", "LKA", "MAR", "MHL", "MNG", "PHL", "PRY",
+    "PSE", "SLV", "SWZ", "SYR", "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM",
+    "XK"];
+export const gavi68 = countries.filter(x => notGavi68.indexOf(x) < 0 );
+
+const notGavi72 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
+    "FSM", "GTM", "IRQ", "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR",
+    "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM", "XK"];
+export const gavi72 = countries.filter(x => notGavi72.indexOf(x) < 0 );
+
+const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
+    "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR", "TON", "TUN", "TUV",
+    "VUT", "WSM", "XK"];
+export const gavi77 = countries.filter(x => notGavi77.indexOf(x) < 0 );
 
 export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA", "PCV",
     "Rota", "Rubella", "YF"];

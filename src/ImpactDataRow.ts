@@ -1,6 +1,6 @@
 export interface ImpactDataRow {
     activity_type: string;
-    cases_averted: string;
+    cases_averted: number;
     continent: string;
     country: string;
     countryName: string;
@@ -8,7 +8,7 @@ export interface ImpactDataRow {
     disease: string;
     isGavi: boolean;
     is_focal: boolean;
-    rate_type: string;
+    rate_type: string; // is this ever used?
     support_type: string;
     touchstone: string;
     vaccine: string;
