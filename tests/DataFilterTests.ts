@@ -156,19 +156,19 @@ describe("DataFilterer", () => {
     })
 
     it("filterBySupport", () => {
-        const outGavi: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, "gavi");
+        const outGavi: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, ["gavi"]);
         const sut: string[] = outGavi.map((row) => (row["support_type"]));
         expect(sut).to.include.members(["gavi"]);
         expect(sut).to.not.include.members(["other"]);
         expect(sut).to.not.include.members(["fish"]);
 
-        const outOther: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, "other");
+        const outOther: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, ["other"]);
         const tus: string[] = outOther.map((row) => (row["support_type"]));
         expect(tus).to.include.members(["other"]);
         expect(tus).to.not.include.members(["gavi"]);
         expect(tus).to.not.include.members(["fish"]);
 
-        const outBad: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, "fish");
+        const outBad: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, ["fish"]);
         expect(outBad).to.have.lengthOf(0);
     })
 
