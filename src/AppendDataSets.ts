@@ -26,6 +26,8 @@ export function appendToDataSet(touchstones: string[],
                 dataType: "text",
                 global: false,
                 success: (data: string) => {
+                    // eval is awful but we have to parse text files to variable
+                    // there might be a way around this
                     newData = eval(data);
                     return;
                 },
