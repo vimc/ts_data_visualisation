@@ -1,15 +1,15 @@
-import {MetaDataDisplay} from "../src/MetaDataDisplay";
+import {MetaDataDisplay, toPlural} from "../src/MetaDataDisplay";
 import {CustomChartOptions} from "../src/Chart";
 import {expect} from "chai";
 
 
 describe("MetaDataDisplay", () => {
-    it("MetaDataDisplay", () => {
+    it("Check meta data", () => {
         // we don't do any error checking in MetaDataDisplay, so these fields can be gibberish
         const chartOptions: CustomChartOptions
             = <CustomChartOptions>{
                 activityTypes: ["at1", "at2"],
-                compare: "CMP",
+                compare: "cofinance_status_2018",
                 cumulative: true,
                 disagg: "DIS",
                 hideLabels: false,
@@ -35,7 +35,7 @@ describe("MetaDataDisplay", () => {
         expect(md2).to.include("This plot shows the");
         expect(md2).to.include("METRIC");
         expect(md2).to.include("DIS");
-        expect(md2).to.include("CMP");
+        expect(md2).to.include("cofinance statuses");
         expect(md2).to.include("1066");
         expect(md2).to.include("2525");
         expect(md2).to.include("6 touchstones");
@@ -46,5 +46,57 @@ describe("MetaDataDisplay", () => {
         expect(md2).to.include("Myanmar");
         expect(md2).to.include("At2");
         expect(md2).to.include("163");
+
+        chartOptions["plotType"] = "Time series";
+        chartOptions["compare"] = "country";
+        chartOptions["maxPlot"] = 1;
+        chartOptions['selectedCountries'] = ["FJI", "GMB", "GEO", "GHA", "GTM", "GIN", "GNB", "GUY", "HTI", "HND", "IND"];
+        chartOptions['selectedTouchstones'] = ["ts1", "ts2"];
+        chartOptions['selectedVaccines'] = ["HepB", "HepB_BD"];
+        const md3 = MetaDataDisplay(chartOptions);
+        expect(md3).to.be.a("string");
+        expect(md3).to.include("This plot shows the");
+        expect(md2).to.include("METRIC");
+        expect(md3).to.include("DIS");
+        expect(md3).to.include("1066");
+        expect(md2).to.include("2525");
+        expect(md3).to.include("Touchstones");
+        expect(md3).to.include("ts2");
+        expect(md3).to.include("Vaccines");
+        expect(md3).to.include("Hepatitis B");
+        expect(md3).to.include("Gambia");
+        expect(md3).to.include("Ghana");
+        expect(md3).to.include("At2");
+        expect(md3).to.include("1");
+    })
+});
+
+describe("MetaDataDisplay", () => {
+    it("Check meta data", () => {
+        expect(toPlural("year", true)).to.equal("years");
+        expect(toPlural("continent", true)).to.equal("continents");
+        expect(toPlural("region", true)).to.equal("regions");
+        expect(toPlural("disease", true)).to.equal("diseases");
+        expect(toPlural("vaccine", true)).to.equal("vaccines");
+        expect(toPlural("touchstone", true)).to.equal("touchstones");
+
+        expect(toPlural("year", false)).to.equal("year");
+        expect(toPlural("continent", false)).to.equal("continent");
+        expect(toPlural("region", false)).to.equal("region");
+        expect(toPlural("disease", false)).to.equal("disease");
+        expect(toPlural("vaccine", false)).to.equal("vaccine");
+        expect(toPlural("touchstone", false)).to.equal("touchstone");
+
+        expect(toPlural("country", true)).to.equal("countries");
+        expect(toPlural("country", false)).to.equal("country");
+
+        expect(toPlural("cofinance_status_2018", true)).to.equal("cofinance statuses");
+        expect(toPlural("cofinance_status_2018", false)).to.equal("cofinance status");
+
+        expect(toPlural("activity_type", true)).to.equal("activity types");
+        expect(toPlural("activity_type", false)).to.equal("activity type");
+
+        expect(toPlural("Fish", true)).to.equal("ERROR!");
+        expect(toPlural("Fish", false)).to.equal("ERROR!");
     })
 });

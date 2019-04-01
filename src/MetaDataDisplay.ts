@@ -13,7 +13,7 @@ function largest(max: number, option: string) {
 				 (plural ? " are " : " is ") + "shown.\n";
 }
 
-function toPlural(noun: string, plural: boolean): string {
+export function toPlural(noun: string, plural: boolean): string {
 	switch (noun) {
 		case "year":
 		case "continent":
@@ -43,9 +43,9 @@ function toPlural(noun: string, plural: boolean): string {
 
 		case "activity_type":
 			if (plural)
-				return "activity_types";
+				return "activity types";
 			else
-				return "activity_type";
+				return "activity type";
 			break;
 
 		default:

@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - 10
+before_script:
+  - npm run-script generate-fake-data
+  - npm run-script build-dev
+  - npm install codecov -g
+  # TODO: disabled for now as it does not pass
+  # - npm run-script lint
+
+# Can't use the default here because it does not include coverage
+script:
+  - npm run-script coverage
+
+after_success:
+  - codecov -f coverage/*.json
