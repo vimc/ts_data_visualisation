@@ -25,8 +25,8 @@ export interface CountryFilterSettings extends ListFilterSettings {
 }
 
 export class Filter {
-    private isOpen = ko.observable<boolean>(false);
-    private name = ko.observable<string>();
+    public isOpen = ko.observable<boolean>(false);
+    public name = ko.observable<string>();
 
     constructor(settings: FilterSettings) {
         this.name(settings.name);
@@ -50,11 +50,7 @@ export class ListFilter extends Filter {
     }
 
     public makeHumanreadable(code: string): string {
-        if (this.dictionary) {
-            return this.dictionary[code];
-        }
-
-        return null;
+        return this.dictionary[code];
     }
 }
 
