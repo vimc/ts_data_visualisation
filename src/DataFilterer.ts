@@ -11,20 +11,20 @@ interface ImpactDataByVaccineAndThenCountry {
 }
 
 export interface DataFiltererOptions {
-    metric:              string;
-    maxPlot:             number;
-    compare:             string;
-    disagg:              string;
-    yearLow:             number;
-    yearHigh:            number;
-    activityTypes:       Array<string>;
-    selectedCountries:   Array<string>;
-    selectedVaccines:    Array<string>;
-    selectedTouchstones: Array<string>;
-    plotType:            string;
-    supportType:         Array<string>;
-    cumulative:          boolean;
-    timeSeries:          boolean;
+    metric: string;
+    maxPlot: number;
+    compare: string;
+    disagg: string;
+    yearLow: number;
+    yearHigh: number;
+    activityTypes: string[];
+    selectedCountries: string[];
+    selectedVaccines: string[];
+    selectedTouchstones: string[];
+    plotType: string;
+    supportType: string[];
+    cumulative: boolean;
+    timeSeries: boolean;
 }
 
 export interface FilteredData {
@@ -241,8 +241,8 @@ export class DataFilterer {
             // this is taken from https://stackoverflow.com/a/49717936
             const groupedSummed = new Map<string, number>();
             impactData.map((row) => {
-                 groupedSummed.set(row[compare], 
-                                   (groupedSummed.get(row[compare]) || 0) + (row[metric] === "NA" ? 0 : row[metric])
+                 groupedSummed.set(row[compare],
+                                   (groupedSummed.get(row[compare]) || 0) + (row[metric] === "NA" ? 0 : row[metric]),
                                   );
             });
             if (compare !== "year") {
@@ -342,20 +342,20 @@ export class DataFilterer {
     // This is a slightly hacky way to dynamically assign colours to keys that don't have them
     // This should never be hit, if it is we should add the missing colours to ./PlotColours.ts
     private getColour(key: string, colourDict: { [key: string]: string },
-                      niceColours:{ [key: string]: string }): void {
+                      bonusColours: { [key: string]: string }): void {
         // check if this key is in the dictionary...
-        if (!(key in colourDict)) { //...if not try to find a new colour
+        if (!(key in colourDict)) { // ...if not try to find a new colour
             console.log("Warning: " + key + " does not have a default colour");
             // make sure we have some nice colours to add
-            if (Object.keys(niceColours).length > 0) {
+            if (Object.keys(bonusColours).length > 0) {
                 // convert niceColours to an array
-                const extraCNames = Object.keys(niceColours);
+                const extraCNames = Object.keys(bonusColours);
                 // pick one at random
-                let colourName: string = extraCNames[Math.floor(Math.random()*extraCNames.length)];
+                const colourName: string = extraCNames[Math.floor(Math.random() * extraCNames.length)];
                 // add it to the colourDictionary
-                $.extend(colourDict, { [key]: niceColours[colourName]});
+                $.extend(colourDict, { [key]: bonusColours[colourName]});
                 // delete it from the list of available colours
-                delete niceColours[colourName];
+                delete bonusColours[colourName];
             } else {
                 console.log("Additional warning: We have run out of nice colours");
                 // if there are no colours, so add a neutral grey colour so that it
