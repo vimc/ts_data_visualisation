@@ -15,9 +15,9 @@ export interface RangeFilterSettings extends FilterSettings {
 }
 
 export interface ListFilterSettings extends FilterSettings {
-    options: Array<string>;
-    selected?: Array<string>;
-    humanNames?: { [code: string]: string }
+    options: string[];
+    selected?: string[];
+    humanNames?: { [code: string]: string };
 }
 
 export interface CountryFilterSettings extends ListFilterSettings {
@@ -38,9 +38,9 @@ export class Filter {
 }
 
 export class ListFilter extends Filter {
-    options = ko.observableArray<string>();
-    selectedOptions = ko.observableArray<string>();
-    dictionary: { [code: string]: string };
+    public options = ko.observableArray<string>();
+    public selectedOptions = ko.observableArray<string>();
+    private dictionary: { [code: string]: string };
 
     constructor(settings: ListFilterSettings) {
         super({name: settings.name});
@@ -116,12 +116,8 @@ export class RangeFilter extends Filter {
 }
 
 export class DiseaseFilter extends Filter {
-    vaccineFilters: ListFilter[] = [];
-    selectedOptions = ko.observableArray([]);
-
-    updateSelectedOptions = () => {
-         this.selectedOptions(this.vaccineFilters.map((v) => v.selectedOptions()).reduce((x, y) => x.concat(y), []))
-    };
+    public selectedOptions = ko.observableArray([]);
+    private vaccineFilters: ListFilter[] = [];
 
     constructor(settings: any) {
         super(settings);
@@ -129,8 +125,12 @@ export class DiseaseFilter extends Filter {
         this.updateSelectedOptions();
         this.vaccineFilters.map((f) => {
             f.selectedOptions.subscribe(() => {
-                this.updateSelectedOptions()
-            })
-        })
+                this.updateSelectedOptions();
+            });
+        });
+    }
+
+    private updateSelectedOptions = () => {
+         this.selectedOptions(this.vaccineFilters.map((v) => v.selectedOptions()).reduce((x, y) => x.concat(y), []));
     }
 }

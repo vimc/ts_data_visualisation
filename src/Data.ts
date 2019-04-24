@@ -14,26 +14,26 @@ export const countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
 export const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
 
 const notDove94 = ["ALB", "BIH", "CHN", "TUN"];
-export const dove94 = countries.filter(x => notDove94.indexOf(x) < 0 );
+export const dove94 = countries.filter((x) => notDove94.indexOf(x) < 0 );
 
 const notDove96 = ["TUN", "XK"];
-export const dove96 = countries.filter(x => notDove96.indexOf(x) < 0 );
+export const dove96 = countries.filter((x) => notDove96.indexOf(x) < 0 );
 
 const notGavi68 = ["ALB", "BIH", "BLZ", "BTN", "CHN", "CPV", "EGY",
     "FJI", "FSM", "GTM", "HND", "IRQ", "LKA", "MAR", "MHL", "MNG", "PHL", "PRY",
     "PSE", "SLV", "SWZ", "SYR", "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM",
     "XK"];
-export const gavi68 = countries.filter(x => notGavi68.indexOf(x) < 0 );
+export const gavi68 = countries.filter((x) => notGavi68.indexOf(x) < 0 );
 
 const notGavi72 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
     "FSM", "GTM", "IRQ", "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR",
     "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM", "XK"];
-export const gavi72 = countries.filter(x => notGavi72.indexOf(x) < 0 );
+export const gavi72 = countries.filter((x) => notGavi72.indexOf(x) < 0 );
 
 const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
     "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR", "TON", "TUN", "TUV",
     "VUT", "WSM", "XK"];
-export const gavi77 = countries.filter(x => notGavi77.indexOf(x) < 0 );
+export const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
 
 export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA", "PCV",
     "Rota", "Rubella", "YF"];

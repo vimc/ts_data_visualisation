@@ -100,7 +100,7 @@ export const countryDict: { [code: string]: string} = {
 
 export function countryCodeToName(countryCode: string) {
     return countryDict[countryCode];
-};
+}
 
 export const vaccineDict: { [code: string]: string} = {
     HPV: "HPV",
@@ -121,26 +121,26 @@ export const vaccineDict: { [code: string]: string} = {
 
 export function vaccineCodeToName(vaccCode: string) {
     return vaccineDict[vaccCode];
-};
+}
 
-export const diseaseDict: { [code: string] : string} = {
+export const diseaseDict: { [code: string]: string} = {
     HPV: "HPV",
-    HepB: "Hepatitis B", 
-    Hib: "Hib", 
+    HepB: "Hepatitis B",
+    Hib: "Hib",
     JE: "Japanese encephalitis",
     Measles: "Measles",
     MenA: "MenA",
     PCV: "PCV",
     Rota: "Rotavirus",
     Rubella: "Rubella",
-    YF: "Yellow Fever"
-}
+    YF: "Yellow Fever",
+};
 
 export function diseaseCodeToName(disCode: string) {
     return diseaseDict[disCode];
-};
+}
 
-export const diseaseVaccineLookup: { [code: string] : string[]} = {
+export const diseaseVaccineLookup: { [code: string]: string[]} = {
     HepB: ["HepB", "HepB_BD"],
     Hib: ["Hib3"],
     HPV: ["HPV"],
@@ -150,10 +150,10 @@ export const diseaseVaccineLookup: { [code: string] : string[]} = {
     PCV: ["PCV3"],
     Rota: ["Rota"],
     Rubella: ["RCV2", "Rubella"],
-    YF: ["YF"]
+    YF: ["YF"],
 };
 
-export const touchstoneYears: { [code: string] : number} = {
+export const touchstoneYears: { [code: string]: number} = {
     "201210gavi-201303gavi" : 2011,
     "201210gavi-201807wue"  : 2017,
     "201310gavi"            : 2012,
@@ -162,6 +162,5 @@ export const touchstoneYears: { [code: string] : number} = {
     "201510gavi"            : 2014,
     "201510gavi-201807wue"  : 2017,
     "201710gavi"            : 2016,
-    "201710gavi-201807wue"  : 2017
+    "201710gavi-201807wue"  : 2017,
 };
-

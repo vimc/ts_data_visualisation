@@ -1,7 +1,7 @@
-import {DataFiltererOptions, FilteredData, MeanData, DataFilterer} from "./DataFilterer";
-import {Chart, ChartOptions, ChartConfiguration} from "chart.js";
-import {touchstoneYears} from "./Dictionaries"
-import {plotColours} from "./PlotColours"
+import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
+import {DataFilterer, DataFiltererOptions, FilteredData, MeanData} from "./DataFilterer";
+import {touchstoneYears} from "./Dictionaries";
+import {plotColours} from "./PlotColours";
 
 export interface CustomChartOptions extends DataFiltererOptions {
     plotTitle: string;
@@ -14,7 +14,7 @@ export interface ChartOptionsWithAnnotation extends ChartOptions {
 }
 
 export interface AnnotatedChartConfiguration extends ChartConfiguration {
-    options: ChartOptionsWithAnnotation
+    options: ChartOptionsWithAnnotation;
 }
 
 export function rescaleLabel(value: number, scale: number): string {
@@ -48,14 +48,14 @@ function annotationHelper(touchstone: string, year: number, colour: string): any
                     label: {
                         content: touchstone,
                         enabled: true,
-                        position: "top"
-                            }
+                        position: "top",
+                            },
                 };
     return a;
 }
 
 function dateToAnnotation(touchstones: string[]): any[] {
-    const anno = touchstones.map( function(tch: string) :any {
+    const anno = touchstones.map( (tch: string): any => {
                     return annotationHelper(tch, touchstoneYears[tch],
                                             plotColours[tch]);
                 });
@@ -66,8 +66,8 @@ function dateToAnnotation(touchstones: string[]): any[] {
 export function impactChartConfig(filterData: FilteredData,
                                   compareNames: string[],
                                   chartOptions: CustomChartOptions): ChartConfiguration {
-
-    const {totals, datasets} = filterData;
+    const ds = filterData.datasets;
+    const totals = filterData.totals;
 
     const maxTotal = Math.max(...totals);
 
@@ -75,7 +75,7 @@ export function impactChartConfig(filterData: FilteredData,
         type: "bar",
         data: {
             labels: compareNames,
-            datasets: datasets,
+            datasets: ds,
         },
         options: {
             legend: {
@@ -117,10 +117,10 @@ export function impactChartConfig(filterData: FilteredData,
                 },
             },
             animation: {
-                onComplete: function() {
+                onComplete: () => {
                     const chart = this.chart;
                     const context = chart.ctx;
-                    const lastDataSet: number = datasets.length - 1;
+                    const lastDataSet: number = ds.length - 1;
                     if (lastDataSet > -1) {
                         const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
                         // this is a lot of nonsense to grab the plot meta data
@@ -176,8 +176,8 @@ export function timeSeriesChartConfig(filterData: MeanData,
                 }],
             },
             annotation: {
-                annotations: anno
-            }
+                annotations: anno,
+            },
         },
     };
 }
