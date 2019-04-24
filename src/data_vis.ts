@@ -140,7 +140,7 @@ class DataVisModel {
     private chartObjectTS: Chart;
 
     private filteredTable: KnockoutObservableArray<WideTableRow>;
-    private filteredTSTable: KnockoutObservableArray<any>;
+    private filteredTSTable: KnockoutObservableArray<WideTableRow>;
 
     private burdenOutcome = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
