@@ -2,12 +2,12 @@ import {FilteredRow} from "./FilteredRow";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {niceColours} from "./PlotColours";
 
-interface ImpactDataByCountry {
+interface SplitImpactData {
     [country: string]: ImpactDataRow[];
 }
 
-interface ImpactDataByVaccineAndThenCountry {
-    [vaccine: string]: ImpactDataByCountry;
+interface AggregatedSplitImpactData {
+    [vaccine: string]: SplitImpactData;
 }
 
 export interface DataFiltererOptions {
@@ -29,7 +29,8 @@ export interface DataFiltererOptions {
 
 export interface FilteredData {
     datasets: FilteredRow[];
-    compVars: any[];
+    //compVars: any[];
+    compVars: string[];
     totals: number[];
 }
 
@@ -206,8 +207,8 @@ export class DataFilterer {
     public groupDataByDisaggAndThenCompare(compareName: string,
                                            disaggName: string,
                                            disaggVars: string[],
-                                           filteredData: ImpactDataRow[]): ImpactDataByVaccineAndThenCountry {
-        const dataByDisagg: ImpactDataByVaccineAndThenCountry = {};
+                                           filteredData: ImpactDataRow[]): AggregatedSplitImpactData {
+        const dataByDisagg: AggregatedSplitImpactData = {};
         disaggVars.map((disagg: string) => { dataByDisagg[disagg] = {}; } );
 
         for (const row of filteredData) {
@@ -359,7 +360,7 @@ export class DataFilterer {
         }
     }
 
-    public reduceSummary(aggregatedData: ImpactDataByVaccineAndThenCountry,
+    public reduceSummary(aggregatedData: AggregatedSplitImpactData,
                          aggVar: string, compVars: any[],
                          metric: string): number[] {
         const dataByCompare = aggregatedData[aggVar];
