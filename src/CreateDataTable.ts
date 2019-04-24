@@ -1,8 +1,22 @@
 import * as ko from "knockout";
+import {FilteredRow} from "./FilteredRow";
+
+interface BaseRow {
+    compare: string;
+}
+
+export type TableRow = BaseRow & {
+    label: string;
+    data: number;
+}
+
+export type WideTableRow = BaseRow & {
+    [prop: string]: number;
+}
 
 export class TableMaker {
-    public createTable(dataSets: any[], compareNames: string[]): KnockoutObservableArray<any> {
-        const returnData = ko.observableArray([]);
+    public createTable(dataSets: FilteredRow[], compareNames: string[]): KnockoutObservableArray<TableRow> {
+        const returnData = ko.observableArray<TableRow>([]);
         for (const ds of dataSets) {
             const lbl = ds.label;
             for (let i = 0; i < compareNames.length; ++i) {
@@ -14,7 +28,7 @@ export class TableMaker {
         return returnData;
     }
 
-    public createWideTable(dataSets: any[], compareNames: string[]): KnockoutObservableArray<any> {
+    public createWideTable(dataSets: FilteredRow[], compareNames: string[]): KnockoutObservableArray<WideTableRow> {
         const returnData = ko.observableArray([]);
         const key = "label"; // this is a hack, eventually dataset needs an interface
         const disAggVars = dataSets.map((x) => x[key]);
