@@ -29,14 +29,13 @@ export interface DataFiltererOptions {
 
 export interface FilteredData {
     datasets: FilteredRow[];
-    //compVars: any[];
     compVars: string[];
     totals: number[];
 }
 
 export interface MeanData {
     datasets: FilteredRow[];
-    compVarsTop: any[];
+    compVarsTop: string[];
 }
 
 export class DataFilterer {
@@ -65,11 +64,11 @@ export class DataFilterer {
         const temp = this.filterByCompare(maxCompare, filterOptions.compare,
                                           filterOptions.metric, filtData);
         // these are the values that go along the x-axis
-        const compVars: any[] = temp[1];
+        const compVars: string[] = temp[1];
         const filteredData: ImpactDataRow[] = temp[0];
 
         // get an array of all the remaining disagg values
-        const aggVars: any[] =
+        const aggVars: string[] =
             [...this.getUniqueVariables(-1, filterOptions.disagg,
                                             filterOptions.metric,
                                             filteredData)];
@@ -140,10 +139,10 @@ export class DataFilterer {
         const top = meanVars.top;
         const bottom = meanVars.bottom;
         const tempTop = this.filterByCompare(-1, "year", top, filtData);
-        const compVarsTop: any[] = tempTop[1];
+        const compVarsTop: string[] = tempTop[1];
         const filteredDataTop: ImpactDataRow[] = tempTop[0];
         // get an array of all the remaining disagg values
-        const aggVarsTop: any[] =
+        const aggVarsTop: string[] =
             [...this.getUniqueVariables(-1, filterOptions.disagg, top,
                                         filteredDataTop)];
         const dataByAggregateTop =
@@ -156,10 +155,10 @@ export class DataFilterer {
             if (bottom != null) {
                 const tempBottom =
                     this.filterByCompare(-1, "year", bottom, filtData);
-                const compVarsBottom: any[] = tempBottom[1];
+                const compVarsBottom: string[] = tempBottom[1];
                 const filteredDataVottom: ImpactDataRow[] = tempBottom[0];
                 // get an array of all the remaining disagg values
-                const aggVarsBottom: any[] =
+                const aggVarsBottom: string[] =
                     [...this.getUniqueVariables(-1, filterOptions.disagg,
                                                 bottom, filteredDataVottom)];
                 const dataByAggregateBottom =
@@ -236,8 +235,8 @@ export class DataFilterer {
     public filterByCompare(maxPlot: number,
                            compare: string,
                            metric: string,
-                           impactData: ImpactDataRow[]): [ImpactDataRow[], any[]] {
-        const uniqueCompare: any[] =
+                           impactData: ImpactDataRow[]): [ImpactDataRow[], string[]] {
+        const uniqueCompare: string[] =
             this.getUniqueVariables(maxPlot, compare, metric, impactData);
         const filteredData = impactData.filter((d) =>
                                       (uniqueCompare.indexOf(d[compare]) > -1));
@@ -251,7 +250,7 @@ export class DataFilterer {
     public getUniqueVariables(maxPlot: number,
                               compare: string,
                               metric: string,
-                              impactData: ImpactDataRow[]): any[] {
+                              impactData: ImpactDataRow[]): string[] {
         if (maxPlot > 0) {
             // this is taken from https://stackoverflow.com/a/49717936
             const groupedSummed = new Map<string, number>();
@@ -361,7 +360,7 @@ export class DataFilterer {
     }
 
     public reduceSummary(aggregatedData: AggregatedSplitImpactData,
-                         aggVar: string, compVars: any[],
+                         aggVar: string, compVars: string[],
                          metric: string): number[] {
         const dataByCompare = aggregatedData[aggVar];
         const summedMetricForDisagg: number[] =

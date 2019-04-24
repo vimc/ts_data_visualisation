@@ -117,11 +117,9 @@ export function impactChartConfig(filterData: FilteredData,
                 },
             },
             animation: {
-                onComplete: () => {
+                // this has to be a methodName() and not a () => or else it breaks chart.js!
+                onComplete() {
                     const chart = this.chart;
-                    console.log(this)
-                    console.log(chart)
-                    console.log(chart.ctx)
                     const context = chart.ctx;
                     const lastDataSet: number = ds.length - 1;
                     if (lastDataSet > -1) {
