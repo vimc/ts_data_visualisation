@@ -318,6 +318,7 @@ class DataVisModel {
         const {datasets, compVarsTop} = filterData;
 
         this.filteredTSTable = new TableMaker().createWideTable(datasets, compVarsTop);
+        console.log(timeSeriesChartConfig(filterData, compVarsTop, chartOptions))
         this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, compVarsTop, chartOptions));
     }
 

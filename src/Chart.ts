@@ -35,8 +35,22 @@ export function rescaleLabel(value: number, scale: number): string {
     return value.toString();
 }
 
-// At some point need to write a typedef for the return class
-function annotationHelper(touchstone: string, year: number, colour: string): any {
+export interface baseAnnotation {
+    drawTime: string,
+    type: string,
+    mode: string,
+    scaleID: string,
+    value: number,
+    borderWidth: number,
+    borderColor: string,
+    label: {
+        content: string,
+        enabled: boolean,
+        position: string,
+    },
+}
+
+function annotationHelper(touchstone: string, year: number, colour: string): baseAnnotation {
     const a =   {
                     drawTime: "afterDatasetsDraw",
                     type: "line",
@@ -54,12 +68,11 @@ function annotationHelper(touchstone: string, year: number, colour: string): any
     return a;
 }
 
-function dateToAnnotation(touchstones: string[]): any[] {
-    const anno = touchstones.map( (tch: string): any => {
+function dateToAnnotation(touchstones: string[]): baseAnnotation[] {
+    const anno = touchstones.map( (tch: string): baseAnnotation => {
                     return annotationHelper(tch, touchstoneYears[tch],
                                             plotColours[tch]);
                 });
-
     return anno;
 }
 
@@ -142,7 +155,7 @@ export function impactChartConfig(filterData: FilteredData,
 export function timeSeriesChartConfig(filterData: MeanData,
                                       compareNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
-    const anno: any[] = dateToAnnotation(chartOptions.selectedTouchstones);
+    const anno: baseAnnotation[] = dateToAnnotation(chartOptions.selectedTouchstones);
 
     return {
         type: "line",
