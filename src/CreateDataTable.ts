@@ -33,11 +33,13 @@ export class TableMaker {
         const key = "label"; // this is a hack, eventually dataset needs an interface
         const disAggVars = dataSets.map((x) => x[key]);
         for (let i = 0; i < compareNames.length; ++i) {
-            const tempObject: any = {compare: compareNames[i]};
+            // there is probably a better way to this this!
+            const tempObject: BaseRow = {compare: compareNames[i]};
+            const row: WideTableRow = <WideTableRow>tempObject;
             for (const ds of dataSets) {
-                tempObject[ds.label] =  ds.data[i];
+                row[ds.label] =  ds.data[i];
             }
-            returnData.push(tempObject);
+            returnData.push(row);
         }
         return returnData;
     }
