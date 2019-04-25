@@ -115,8 +115,8 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions): string {
                                 prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
                                 prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
                                 "The data is divided up by " +
-                                chartOptions.compare + " and " + chartOptions.disagg + ".\n" +
-                                largest(chartOptions.maxPlot, chartOptions.compare) +
+                                chartOptions.xAxis + " and " + chartOptions.disagg + ".\n" +
+                                largest(chartOptions.maxPlot, chartOptions.xAxis) +
                                 "Plot produced at " + prettyDateAndTime();
         return metaStr;
     } else if (chartOptions.plotType === "Time series") {
@@ -128,7 +128,7 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions): string {
                                  prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
                                  prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";\n" +
                                  "Each line represents a " + chartOptions.disagg + ";\n" +
-                                 largest(chartOptions.maxPlot, chartOptions.compare) +
+                                 largest(chartOptions.maxPlot, chartOptions.xAxis) +
                                  "Plot produced at " + prettyDateAndTime();
         return metaStr;
     } else {

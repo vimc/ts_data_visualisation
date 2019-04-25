@@ -35,22 +35,22 @@ export function rescaleLabel(value: number, scale: number): string {
     return value.toString();
 }
 
-export interface baseAnnotation {
-    drawTime: string,
-    type: string,
-    mode: string,
-    scaleID: string,
-    value: number,
-    borderWidth: number,
-    borderColor: string,
+export interface BaseAnnotation {
+    drawTime: string;
+    type: string;
+    mode: string;
+    scaleID: string;
+    value: number;
+    borderWidth: number;
+    borderColor: string;
     label: {
-        content: string,
-        enabled: boolean,
-        position: string,
-    },
+        content: string;
+        enabled: boolean;
+        position: string;
+    };
 }
 
-function annotationHelper(touchstone: string, year: number, colour: string): baseAnnotation {
+function annotationHelper(touchstone: string, year: number, colour: string): BaseAnnotation {
     const a =   {
                     drawTime: "afterDatasetsDraw",
                     type: "line",
@@ -68,8 +68,8 @@ function annotationHelper(touchstone: string, year: number, colour: string): bas
     return a;
 }
 
-function dateToAnnotation(touchstones: string[]): baseAnnotation[] {
-    const anno = touchstones.map( (tch: string): baseAnnotation => {
+function dateToAnnotation(touchstones: string[]): BaseAnnotation[] {
+    const anno = touchstones.map( (tch: string): BaseAnnotation => {
                     return annotationHelper(tch, touchstoneYears[tch],
                                             plotColours[tch]);
                 });
@@ -155,7 +155,7 @@ export function impactChartConfig(filterData: FilteredData,
 export function timeSeriesChartConfig(filterData: MeanData,
                                       compareNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
-    const anno: baseAnnotation[] = dateToAnnotation(chartOptions.selectedTouchstones);
+    const anno: BaseAnnotation[] = dateToAnnotation(chartOptions.selectedTouchstones);
 
     return {
         type: "line",

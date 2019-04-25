@@ -13,7 +13,7 @@ interface AggregatedSplitImpactData {
 export interface DataFiltererOptions {
     metric: string;
     maxPlot: number;
-    compare: string;
+    xAxis: string;
     disagg: string;
     yearLow: number;
     yearHigh: number;
@@ -27,9 +27,28 @@ export interface DataFiltererOptions {
     timeSeries: boolean;
 }
 
+/**
+ * This objects contains the filtered data to be passed to the plot functions
+ * @interface
+ */
 export interface FilteredData {
+    /**
+     * An array of to be used as the dataset in a chartjs plot
+     * @abstract
+     */
     datasets: FilteredRow[];
-    compVars: string[];
+    /**
+     * An array of string containing he names of the x axis variables
+     * @abstract
+     */
+    xAxisVals: string[];
+    /**
+     * An array of numbers containing the totals of the datasets for each
+     * element of XAxisVals. Strictly this is redundent as we could always
+     * calculate it when needed. But there's no harm in doing once an passing it
+     * around.
+     * @abstract
+     */
     totals: number[];
 }
 
@@ -39,7 +58,18 @@ export interface MeanData {
 }
 
 export class DataFilterer {
-    // this function rounds DOWN to n significant figures
+   /**
+    * The function rounds DOWN to n siginificant figure
+    *
+    * @remarks
+    * This is has been a point of contention between the funders and science
+    * team.
+    *
+    * @param value - The number to be rounded
+    * @param sigFigs - The number of significant figures (should be an integer
+    *                  but we don't check)
+    * @returns `value` rounded down to `sigFigs` significant figures
+    */
     public roundDown(value: number, sigFigs: number): number {
         // this should never be hit (negative deaths shouldn't happen)
         // so we're not going to try anything clever
@@ -48,12 +78,28 @@ export class DataFilterer {
         }
 
         const n: number = Math.ceil(Math.log(value + 1) / Math.log(10));
-        // log10 is not a standard Math function!
+        // This calculate log10, whihc is not a standard Math function.
         const m: number = n - sigFigs; // this number is definitely positive
 
         return Math.floor(value / (Math.pow(10, m))) * (Math.pow(10, m));
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based on some
+    * parameters and returns a FilteredData object used by chartjs to produce
+    * the plot
+    *
+    * @remarks
+    *
+    * @param filterOptions - A DataFiltererOptions object that contains the
+    *                        filters that will be applied to the data
+    * @param impactData - The data as an array of ImpactDataRows
+    * @param plotColours - A dictionary of colours to be assigned to filtered
+    *                      datasets
+    *
+    * @returns A FilteredData object containing the datasets (for a charjs
+    *          plot), the names of the x-axis variables and the totals.
+    */
     public filterData(filterOptions: DataFiltererOptions,
                       impactData: ImpactDataRow[],
                       plotColours: { [p: string]: string }): FilteredData {
@@ -61,10 +107,10 @@ export class DataFilterer {
 
         // now we filter by the compare variable
         const maxCompare = filterOptions.timeSeries ? -1 : filterOptions.maxPlot;
-        const temp = this.filterByCompare(maxCompare, filterOptions.compare,
+        const temp = this.filterByCompare(maxCompare, filterOptions.xAxis,
                                           filterOptions.metric, filtData);
         // these are the values that go along the x-axis
-        const compVars: string[] = temp[1];
+        const xAxisVals: string[] = temp[1];
         const filteredData: ImpactDataRow[] = temp[0];
 
         // get an array of all the remaining disagg values
@@ -73,7 +119,7 @@ export class DataFilterer {
                                             filterOptions.metric,
                                             filteredData)];
         const dataByAggregate =
-            this.groupDataByDisaggAndThenCompare(filterOptions.compare,
+            this.groupDataByDisaggAndThenCompare(filterOptions.xAxis,
                                                  filterOptions.disagg,
                                                  aggVars,
                                                  filteredData);
@@ -81,10 +127,10 @@ export class DataFilterer {
         const datasets: FilteredRow[] = [];
         for (const aggVar of aggVars) {
             let summedMetricForDisagg: number[] =
-                this.reduceSummary(dataByAggregate, aggVar, compVars,
+                this.reduceSummary(dataByAggregate, aggVar, xAxisVals,
                                    filterOptions.metric);
             // we're doing a cumulative plot
-            if (filterOptions.compare === "year" && filterOptions.cumulative) {
+            if (filterOptions.xAxis === "year" && filterOptions.cumulative) {
                 summedMetricForDisagg = summedMetricForDisagg
                     .reduce((a: number[], x: number, i: number) =>
                                             [...a, (+x) + (a[i - 1] || 0)], []);
@@ -118,7 +164,7 @@ export class DataFilterer {
         // while we're here we might as well calculate the sum for each
         // compare variable as we need them later
         const totals: number[] = [];
-        for (let i = 0; i < compVars.length; ++i) {
+        for (let i = 0; i < xAxisVals.length; ++i) {
             let total: number = 0;
             for (const ds of datasets) {
                 total += (+ds.data[i]);
@@ -126,7 +172,7 @@ export class DataFilterer {
             totals.push(total);
         }
 
-        return {datasets, compVars, totals};
+        return {datasets, xAxisVals, totals};
     }
 
     public calculateMean(filterOptions: DataFiltererOptions,
