@@ -107,8 +107,8 @@ export class DataFilterer {
 
         // now we filter by the compare variable
         const maxCompare = filterOptions.timeSeries ? -1 : filterOptions.maxPlot;
-        const temp: UniqueData = this.filterByCompare(maxCompare, filterOptions.xAxis,
-                                          filterOptions.metric, filtData);
+        const temp: UniqueData = this.filterByxAxis(maxCompare, filterOptions.xAxis,
+                                                    filterOptions.metric, filtData);
         // these are the values that go along the x-axis
         const xAxisVals: string[] = temp.xAxisVals;
         const filteredData: ImpactDataRow[] = temp.data;
@@ -205,7 +205,7 @@ export class DataFilterer {
         const bottom: string = meanVars.bottom;
 
         // get data for the top of the ratio
-        const tempTop: UniqueData = this.filterByCompare(-1, "year", top, filtData);
+        const tempTop: UniqueData = this.filterByxAxis(-1, "year", top, filtData);
         const xAxisVals: string[] = tempTop.xAxisVals;
         const filteredDataTop: ImpactDataRow[] = tempTop.data;
 
@@ -222,7 +222,7 @@ export class DataFilterer {
                 this.reduceSummary(dataByAggregateTop, aggVar, xAxisVals, top);
             if (bottom != null) {
                 const tempBottom: UniqueData =
-                    this.filterByCompare(-1, "year", bottom, filtData);
+                    this.filterByxAxis(-1, "year", bottom, filtData);
                 const xValsBottom: string[] = tempBottom.xAxisVals;
                 const filteredDataVottom: ImpactDataRow[] = tempBottom.data;
                 // get an array of all the remaining disagg values
@@ -283,11 +283,13 @@ export class DataFilterer {
     * The function takes data (as an array of ImpactDataRows) and organises it
     * into a dictionary of dictionary. Index first by disaggName, then by
     * xAxisName.
+    *
+    * @remark tbh I don't know how this works!
     *  
     * @param xAxisName - The variable that goes along the x-axis
     * @param disaggName - The variable that we will be aggregating by
     * @param disaggVars - The different values for disaggName
-    * @param filteredData - The data that will split and recombined
+    * @param filteredData - The data that will organsied
     *
     * @returns A AggregatedSplitImpactData object 
     */
@@ -297,7 +299,7 @@ export class DataFilterer {
         // create a dictionary of empty dictionaries
         const dataByDisagg: ArrangedSplitImpactData = {};
         disaggVars.map((disagg: string) => { dataByDisagg[disagg] = {}; } );
-        // now fill 'em
+        // now fill 'em in
         for (const row of filteredData) {
             let dataByCompare = dataByDisagg[row[disaggName]];
             if (!dataByCompare) {
@@ -314,16 +316,25 @@ export class DataFilterer {
         return dataByDisagg;
     }
 
-    // This function calls getUniqueVariables to find the largest compare
-    // variables wrt to metric
-    // Then it calculates the maxPlot largest compare variables and filters
-    // out the rest from the original dataset
-    // It will return an array of the largest compare variables and
-    // the original dataset with all but the largest removed
-    public filterByCompare(maxPlot: number,
-                           xAxisVar: string,
-                           metric: string,
-                           impactData: ImpactDataRow[]): UniqueData {
+   /**
+    * This function is mainly a wrapper to getUniqueVariables to find the
+    * largest xAxisVar variables wrt to metric
+    * Then it calculates the maxPlot largest compare variables and filters
+    * out the rest from the original dataset
+    *  
+    * @param maxPlot - We return the largest N... (if this is -1 we return all)
+    * @param xAxisVar - ...x Axis variables...
+    * @param metric - ...with repect to this metric
+    * @param impactData - The data that will be filtered
+    *
+    * @returns An UniqueData object consist of of the largest compare
+    * variables and the original dataset with all but the largest maxPlot 
+    * removed
+    */
+    public filterByxAxis(maxPlot: number,
+                         xAxisVar: string,
+                         metric: string,
+                         impactData: ImpactDataRow[]): UniqueData {
         const uniqueCompare: string[] =
             this.getUniqueVariables(maxPlot, xAxisVar, metric, impactData);
         const filteredData = impactData.filter((d) =>
@@ -331,10 +342,19 @@ export class DataFilterer {
         return {data: filteredData, xAxisVals: uniqueCompare};
     }
 
-    // TODO Tidy this up!
-    // This function groups the data by the compare variable, then sums by the
-    // metric variable
-    // It returns an array of the largest maxPlot compare variables wrt metric
+   /**
+    * This function calls getUniqueVariables to find the largest xAxisVar
+    * variables wrt to metric
+    * Then it calculates the maxPlot largest compare variables and filters
+    * out the rest from the original dataset
+    *  
+    * @param maxPlot - We return the largest N...
+    * @param xAxisVar - ...x Axis variables...
+    * @param metric - ...with repect to this metric
+    * @param impactData - The data that will be filtered
+    *
+    * @returns An array of strings with the N largest x axis variables
+    */
     public getUniqueVariables(maxPlot: number,
                               xAxisVar: string,
                               metric: string,
@@ -362,47 +382,131 @@ export class DataFilterer {
         }
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the focality of the model
+    *  
+    * @param impactData - The data that will be filtered
+    * @param isFocal - Removes any ImpactDataRow where is_focal does not
+    * match this argument
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterByFocality(impactData: ImpactDataRow[],
                             isFocal: boolean): ImpactDataRow[] {
         return impactData.filter((row) => row.is_focal === isFocal );
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the focality of the model
+    *  
+    * @param impactData - The data that will be filtered
+    * @param isFocal - Removes any ImpactDataRow where is_focal does not
+    * match this argument
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterBySupport(impactData: ImpactDataRow[],
                            supportType: string[]): ImpactDataRow[] {
         return impactData.filter((row) =>
             supportType.indexOf(row.support_type) > -1 );
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the touchstone
+    *  
+    * @param impactData - The data that will be filtered
+    * @param isFocal - Removes any ImpactDataRow where touchstone does not
+    * match at least one element of this array
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterByTouchstone(impactData: ImpactDataRow[],
                               touchStone: string[]): ImpactDataRow[] {
         return impactData.filter((row) =>
             touchStone.indexOf(row.touchstone) > -1 );
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the vaccine
+    *  
+    * @param impactData - The data that will be filtered
+    * @param vaccineSet - Removes any ImpactDataRow where vaccine does not
+    * match at least one element of this array
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterByVaccine(impactData: ImpactDataRow[],
                            vaccineSet: string[]): ImpactDataRow[] {
         return impactData.filter((row) =>
             vaccineSet.indexOf(row.vaccine) > -1 );
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the country
+    *  
+    * @param impactData - The data that will be filtered
+    * @param countrySet - Removes any ImpactDataRow where country does not
+    * match at least one element of this array
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterByCountrySet(impactData: ImpactDataRow[],
                               countrySet: string[]): ImpactDataRow[] {
         return impactData.filter((row) =>
             countrySet.indexOf(row.country) > -1 );
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the activity_type
+    *  
+    * @param impactData - The data that will be filtered
+    * @param activitySet - Removes any ImpactDataRow where activity_type does not
+    * match at least one element of this array
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterByActivityType(impactData: ImpactDataRow[],
-                                selectedActivity: string[]): ImpactDataRow[] {
+                                activitySet: string[]): ImpactDataRow[] {
         return impactData.filter((row) =>
-            selectedActivity.indexOf(row.activity_type) > -1 );
+            activitySet.indexOf(row.activity_type) > -1 );
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the year
+    *  
+    * @param impactData - The data that will be filtered
+    * @param yearLow - Removes any ImpactDataRow where year is below this
+    * @param yearHigh - Removes any ImpactDataRow where year is above this
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterByYear(impactData: ImpactDataRow[], yearLow: number,
                         yearHigh: number) {
         return impactData.filter((row) => row.year >= yearLow )
                          .filter((row) => row.year <= yearHigh );
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the the parameters in a DataFiltererOptions object
+    *
+    * @remark This function essentiall calls all the filterByXYZ functions
+    * above in order. The order was vaguely chosen to be as fast as possible
+    * i.e. do the biggest filter first. I may have got this wrong. it was 
+    * based on guess work.
+    *  
+    * @param impactData - The data that will be filtered
+    * @param filterOptions - A DataFiltererOptions object
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterByAll(filterOptions: DataFiltererOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
          // filter focal model
@@ -427,6 +531,14 @@ export class DataFilterer {
         return filtData;
     }
 
+   /**
+    * A simple look up that given a ratio metric, returns the top and bottom
+    * of the ratio. 
+    *  
+    * @param compareVariable - The metric
+    *
+    * @returns An object with top and bottom members
+    */
     public meanVariables(compareVariable: string): { [fracPart: string]: string } {
         switch (compareVariable) {
             case "coverage":
@@ -447,6 +559,17 @@ export class DataFilterer {
         }
     }
 
+   /**
+    * Sums and rounds down the organised data (any other simple post 
+    * processing to data should be done here)
+    *  
+    * @param aggregatedData - The organised data
+    * @param aggVar - The Y axis value that we are summing
+    * @param xAxisVar - An array of the X axis values
+    * @param metric - The metric
+    *
+    * @returns A array of numbers, the same length as the xAxisVar
+    */
     public reduceSummary(aggregatedData: ArrangedSplitImpactData,
                          aggVar: string, xAxisVar: string[],
                          metric: string): number[] {
@@ -472,6 +595,16 @@ export class DataFilterer {
     // don't have them
     // This should never be hit, if it is we should add the missing colours to
     // ./PlotColours.ts
+    /**
+    * Dynamically assign colours to keys that don't have them. This should
+    * never be hit, if it is we should add the missing colours to ./PlotColours.ts
+    *  
+    * @param key - The value that we want a colour for
+    * @param colourDict - A dictionary of predefined colours
+    * @param bonusColours - An array on nice extra colours
+    *
+    * @returns Nothing, modifies colourDict.
+    */
     private getColour(key: string, colourDict: { [key: string]: string },
                       bonusColours: { [key: string]: string }): void {
         // check if this key is in the dictionary...

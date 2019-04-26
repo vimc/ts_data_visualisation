@@ -65,10 +65,10 @@ describe("DataFilterer", () => {
     it("filterByCompare", () => {
         const max: number = 2;
 
-        const out: UniqueData = testObject.filterByCompare(max,
-                                                           "disease",
-                                                           "deaths_averted",
-                                                           fakeImpactData);
+        const out: UniqueData = testObject.filterByxAxis(max,
+                                                         "disease",
+                                                         "deaths_averted",
+                                                         fakeImpactData);
         const filteredData = out.data;
         const compVars = out.xAxisVals;
 
