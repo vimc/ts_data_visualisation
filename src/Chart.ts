@@ -1,5 +1,5 @@
 import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
-import {DataFilterer, DataFiltererOptions, FilteredData, MeanData} from "./DataFilterer";
+import {DataFilterer, DataFiltererOptions, FilteredData} from "./DataFilterer";
 import {touchstoneYears} from "./Dictionaries";
 import {plotColours} from "./PlotColours";
 
@@ -152,7 +152,7 @@ export function impactChartConfig(filterData: FilteredData,
     };
 }
 
-export function timeSeriesChartConfig(filterData: MeanData,
+export function timeSeriesChartConfig(filterData: FilteredData,
                                       compareNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
     const anno: BaseAnnotation[] = dateToAnnotation(chartOptions.selectedTouchstones);
