@@ -101,7 +101,7 @@ class DataVisModel {
     }));
 
     private xAxisOptions = plottingVariables;
-    private disaggregationOptions = ko.computed(() => {
+    private yAxisOptions = ko.computed(() => {
         switch (this.currentPlot()) {
             case "Impact":
                 return plottingVariables;
@@ -116,7 +116,7 @@ class DataVisModel {
     private maxBars = ko.observable<number>(5);
 
     private xAxis = ko.observable<string>(this.xAxisOptions[1]);
-    private disaggregateBy = ko.observable<string>("disease");
+    private yAxis = ko.observable<string>("disease");
     private cumulativePlot = ko.observable<boolean>(false);
 
     private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
@@ -195,7 +195,7 @@ class DataVisModel {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
             xAxis: this.xAxis(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
-            disagg: this.disaggregateBy(), // variable we are disaggregating by
+            yAxis: this.yAxis(), // variable we are disaggregating by
             hideLabels: this.hideLabels(),
             maxPlot: this.maxBars(), // How many bars on the plot
             metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs

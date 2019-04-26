@@ -115,7 +115,7 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions): string {
                                 prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
                                 prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
                                 "The data is divided up by " +
-                                chartOptions.xAxis + " and " + chartOptions.disagg + ".\n" +
+                                chartOptions.xAxis + " and " + chartOptions.yAxis + ".\n" +
                                 largest(chartOptions.maxPlot, chartOptions.xAxis) +
                                 "Plot produced at " + prettyDateAndTime();
         return metaStr;
@@ -127,7 +127,7 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions): string {
                                  prettyVaccines(chartOptions.selectedVaccines, 4) + ";\n" +
                                  prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
                                  prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";\n" +
-                                 "Each line represents a " + chartOptions.disagg + ";\n" +
+                                 "Each line represents a " + chartOptions.yAxis + ";\n" +
                                  largest(chartOptions.maxPlot, chartOptions.xAxis) +
                                  "Plot produced at " + prettyDateAndTime();
         return metaStr;

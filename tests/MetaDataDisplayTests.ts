@@ -11,7 +11,7 @@ describe("MetaDataDisplay", () => {
                 activityTypes: ["at1", "at2"],
                 xAxis: "cofinance_status_2018",
                 cumulative: true,
-                disagg: "DIS",
+                yAxis: "DIS",
                 hideLabels: false,
                 maxPlot: 163,
                 metric: "METRIC",

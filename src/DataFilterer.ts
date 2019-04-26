@@ -14,7 +14,7 @@ export interface DataFiltererOptions {
     metric: string;
     maxPlot: number;
     xAxis: string;
-    disagg: string;
+    yAxis: string;
     yearLow: number;
     yearHigh: number;
     activityTypes: string[];
@@ -53,9 +53,9 @@ export interface FilteredData {
 }
 
 export interface UniqueData {
-    data: ImpactDataRow[]
+    data: ImpactDataRow[];
     xAxisVals: string[];
-};
+}
 
 export class DataFilterer {
    /**
@@ -113,38 +113,38 @@ export class DataFilterer {
         const xAxisVals: string[] = temp.xAxisVals;
         const filteredData: ImpactDataRow[] = temp.data;
 
-        // get an array of all the remaining disagg values
-        const aggVars: string[] =
-            [...this.getUniqueVariables(-1, filterOptions.disagg,
+        // get an array of all the remaining y axis values
+        const yAxisVars: string[] =
+            [...this.getUniqueVariables(-1, filterOptions.yAxis,
                                             filterOptions.metric,
                                             filteredData)];
-        // recombine the split data by aggVars
-        const dataByAggregate: ArrangedSplitImpactData =
-            this.ArrangeSplitData(filterOptions.xAxis, filterOptions.disagg,
-                                  aggVars, filteredData);
+        // recombine the split data by y axis values
+        const organisedData: ArrangedSplitImpactData =
+            this.ArrangeSplitData(filterOptions.xAxis, filterOptions.yAxis,
+                                  yAxisVars, filteredData);
 
         const datasets: FilteredRow[] = [];
-        for (const aggVar of aggVars) {
-            let summedMetricForDisagg: number[] =
-                this.reduceSummary(dataByAggregate, aggVar, xAxisVals,
+        for (const yAxisVal of yAxisVars) {
+            let summedMetricByYAxis: number[] =
+                this.reduceSummary(organisedData, yAxisVal, xAxisVals,
                                    filterOptions.metric);
             // we're doing a cumulative plot
             if (filterOptions.xAxis === "year" && filterOptions.cumulative) {
-                summedMetricForDisagg = summedMetricForDisagg
+                summedMetricByYAxis = summedMetricByYAxis
                     .reduce((a: number[], x: number, i: number) =>
                                             [...a, (+x) + (a[i - 1] || 0)], []);
             }
-            // make sure we have colours for each 
-            this.getColour(aggVar, plotColours, niceColours);
+            // make sure we have colours for each yAxisVal
+            this.getColour(yAxisVal, plotColours, niceColours);
 
             // construct the relevant object for chartjs
             if (filterOptions.timeSeries) {
                 const fRow: FilteredRow = { backgroundColor: "transparent",
-                        borderColor: plotColours[aggVar],
-                        data: summedMetricForDisagg,
-                        label: aggVar,
+                        borderColor: plotColours[yAxisVal],
+                        data: summedMetricByYAxis,
+                        label: yAxisVal,
                         lineTension: 0.1,
-                        pointBackgroundColor: "plotColours[aggVar]",
+                        pointBackgroundColor: "plotColours[yAxisVal]",
                         pointHitRadius: 15,
                         pointHoverRadius: 7.5,
                         pointRadius: 2.5,
@@ -153,9 +153,9 @@ export class DataFilterer {
                 datasets.push(fRow);
             } else {
                 const fRow: FilteredRow = {
-                        backgroundColor: plotColours[aggVar],
-                        data: summedMetricForDisagg,
-                        label: aggVar,
+                        backgroundColor: plotColours[yAxisVal],
+                        data: summedMetricByYAxis,
+                        label: yAxisVal,
                     };
                 datasets.push(fRow);
             }
@@ -209,35 +209,35 @@ export class DataFilterer {
         const xAxisVals: string[] = tempTop.xAxisVals;
         const filteredDataTop: ImpactDataRow[] = tempTop.data;
 
-        // get an array of all the remaining disagg values
-        const aggVarsTop: string[] =
-            [...this.getUniqueVariables(-1, filterOptions.disagg, top,
+        // get an array of all the remaining y axis values
+        const yAxisVarsTop: string[] =
+            [...this.getUniqueVariables(-1, filterOptions.yAxis, top,
                                         filteredDataTop)];
-        const dataByAggregateTop: ArrangedSplitImpactData =
-            this.ArrangeSplitData("year", filterOptions.disagg, aggVarsTop,
+        const dataByYAxisTop: ArrangedSplitImpactData =
+            this.ArrangeSplitData("year", filterOptions.yAxis, yAxisVarsTop,
                                   filteredDataTop);
         const datasets: FilteredRow[] = [];
-        for (const aggVar of aggVarsTop) {
-            let summedMetricForDisagg: number[] =
-                this.reduceSummary(dataByAggregateTop, aggVar, xAxisVals, top);
+        for (const yVar of yAxisVarsTop) {
+            let summedMetricByYAxis: number[] =
+                this.reduceSummary(dataByYAxisTop, yVar, xAxisVals, top);
             if (bottom != null) {
                 const tempBottom: UniqueData =
                     this.filterByxAxis(-1, "year", bottom, filtData);
                 const xValsBottom: string[] = tempBottom.xAxisVals;
                 const filteredDataVottom: ImpactDataRow[] = tempBottom.data;
-                // get an array of all the remaining disagg values
-                const aggVarsBottom: string[] =
-                    [...this.getUniqueVariables(-1, filterOptions.disagg,
+                // get an array of all the remaining Y Axis values
+                const yAxisVarsBottom: string[] =
+                    [...this.getUniqueVariables(-1, filterOptions.yAxis,
                                                 bottom, filteredDataVottom)];
-                const dataByAggregateBottom: ArrangedSplitImpactData =
-                    this.ArrangeSplitData("year", filterOptions.disagg,
-                                          aggVarsBottom, filteredDataVottom);
-                const summedMetricForDisaggBottom: number[] =
-                    this.reduceSummary(dataByAggregateBottom, aggVar,
+                const dataByYAxisBottom: ArrangedSplitImpactData =
+                    this.ArrangeSplitData("year", filterOptions.yAxis,
+                                          yAxisVarsBottom, filteredDataVottom);
+                const summedMetricByYAxisBottom: number[] =
+                    this.reduceSummary(dataByYAxisBottom, yVar,
                                        xValsBottom, bottom);
-                summedMetricForDisagg = summedMetricForDisagg.map( (x, i) => {
-                    if (summedMetricForDisaggBottom[i] !== 0) {
-                        return (x / summedMetricForDisaggBottom[i]);
+                summedMetricByYAxis = summedMetricByYAxis.map( (x, i) => {
+                    if (summedMetricByYAxisBottom[i] !== 0) {
+                        return (x / summedMetricByYAxisBottom[i]);
                     } else {
                         return 0;
                     }
@@ -245,20 +245,20 @@ export class DataFilterer {
             }
             // we're doing a cumulative plot
             if (filterOptions.cumulative) {
-                summedMetricForDisagg = summedMetricForDisagg
+                summedMetricByYAxis = summedMetricByYAxis
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i - 1] || 0)], []);
             }
 
-            // make sure we have colours for each 
-            this.getColour(aggVar, plotColours, niceColours);
+            // make sure we have colours for each yVar
+            this.getColour(yVar, plotColours, niceColours);
 
             const fRow: FilteredRow = {
                             backgroundColor: "transparent",
-                            borderColor: plotColours[aggVar],
-                            data: summedMetricForDisagg,
-                            label: aggVar,
+                            borderColor: plotColours[yVar],
+                            data: summedMetricByYAxis,
+                            label: yVar,
                             lineTension: 0.1,
-                            pointBackgroundColor: "plotColours[aggVar]",
+                            pointBackgroundColor: "plotColours[yVar]",
                             pointHitRadius: 15,
                             pointHoverRadius: 7.5,
                             pointRadius: 2.5,
@@ -277,33 +277,33 @@ export class DataFilterer {
             }
             totals.push(total);
         }
-        return {datasets: datasets, xAxisVals: xAxisVals, totals: totals};
+        return {datasets, xAxisVals, totals};
     }
    /**
     * The function takes data (as an array of ImpactDataRows) and organises it
-    * into a dictionary of dictionary. Index first by disaggName, then by
+    * into a dictionary of dictionary. Index first by yAxisName, then by
     * xAxisName.
     *
     * @remark tbh I don't know how this works!
-    *  
+    *
     * @param xAxisName - The variable that goes along the x-axis
-    * @param disaggName - The variable that we will be aggregating by
-    * @param disaggVars - The different values for disaggName
+    * @param yAxisName - The variable that we will be arranging by
+    * @param yAxisVars - The different values for yAxisName
     * @param filteredData - The data that will organsied
     *
-    * @returns A AggregatedSplitImpactData object 
+    * @returns A AggregatedSplitImpactData object
     */
-    public ArrangeSplitData(xAxisName: string, disaggName: string,
-                            disaggVars: string[],
+    public ArrangeSplitData(xAxisName: string, yAxisName: string,
+                            yAxisVars: string[],
                             filteredData: ImpactDataRow[]): ArrangedSplitImpactData {
         // create a dictionary of empty dictionaries
-        const dataByDisagg: ArrangedSplitImpactData = {};
-        disaggVars.map((disagg: string) => { dataByDisagg[disagg] = {}; } );
+        const dataByYAxis: ArrangedSplitImpactData = {};
+        yAxisVars.map((y: string) => { dataByYAxis[y] = {}; } );
         // now fill 'em in
         for (const row of filteredData) {
-            let dataByCompare = dataByDisagg[row[disaggName]];
+            let dataByCompare = dataByYAxis[row[yAxisName]];
             if (!dataByCompare) {
-                dataByCompare = dataByDisagg[row[disaggName]] = {};
+                dataByCompare = dataByYAxis[row[yAxisName]] = {};
             }
 
             let list = dataByCompare[row[xAxisName]];
@@ -313,7 +313,7 @@ export class DataFilterer {
 
             list.push(row);
         }
-        return dataByDisagg;
+        return dataByYAxis;
     }
 
    /**
@@ -321,14 +321,14 @@ export class DataFilterer {
     * largest xAxisVar variables wrt to metric
     * Then it calculates the maxPlot largest compare variables and filters
     * out the rest from the original dataset
-    *  
+    *
     * @param maxPlot - We return the largest N... (if this is -1 we return all)
     * @param xAxisVar - ...x Axis variables...
     * @param metric - ...with repect to this metric
     * @param impactData - The data that will be filtered
     *
     * @returns An UniqueData object consist of of the largest compare
-    * variables and the original dataset with all but the largest maxPlot 
+    * variables and the original dataset with all but the largest maxPlot
     * removed
     */
     public filterByxAxis(maxPlot: number,
@@ -347,7 +347,7 @@ export class DataFilterer {
     * variables wrt to metric
     * Then it calculates the maxPlot largest compare variables and filters
     * out the rest from the original dataset
-    *  
+    *
     * @param maxPlot - We return the largest N...
     * @param xAxisVar - ...x Axis variables...
     * @param metric - ...with repect to this metric
@@ -385,7 +385,7 @@ export class DataFilterer {
    /**
     * The function filters a dataset (an array of ImpactDataRows) based
     * on the focality of the model
-    *  
+    *
     * @param impactData - The data that will be filtered
     * @param isFocal - Removes any ImpactDataRow where is_focal does not
     * match this argument
@@ -400,7 +400,7 @@ export class DataFilterer {
    /**
     * The function filters a dataset (an array of ImpactDataRows) based
     * on the focality of the model
-    *  
+    *
     * @param impactData - The data that will be filtered
     * @param isFocal - Removes any ImpactDataRow where is_focal does not
     * match this argument
@@ -416,7 +416,7 @@ export class DataFilterer {
    /**
     * The function filters a dataset (an array of ImpactDataRows) based
     * on the touchstone
-    *  
+    *
     * @param impactData - The data that will be filtered
     * @param isFocal - Removes any ImpactDataRow where touchstone does not
     * match at least one element of this array
@@ -432,7 +432,7 @@ export class DataFilterer {
    /**
     * The function filters a dataset (an array of ImpactDataRows) based
     * on the vaccine
-    *  
+    *
     * @param impactData - The data that will be filtered
     * @param vaccineSet - Removes any ImpactDataRow where vaccine does not
     * match at least one element of this array
@@ -448,7 +448,7 @@ export class DataFilterer {
    /**
     * The function filters a dataset (an array of ImpactDataRows) based
     * on the country
-    *  
+    *
     * @param impactData - The data that will be filtered
     * @param countrySet - Removes any ImpactDataRow where country does not
     * match at least one element of this array
@@ -464,7 +464,7 @@ export class DataFilterer {
    /**
     * The function filters a dataset (an array of ImpactDataRows) based
     * on the activity_type
-    *  
+    *
     * @param impactData - The data that will be filtered
     * @param activitySet - Removes any ImpactDataRow where activity_type does not
     * match at least one element of this array
@@ -480,7 +480,7 @@ export class DataFilterer {
    /**
     * The function filters a dataset (an array of ImpactDataRows) based
     * on the year
-    *  
+    *
     * @param impactData - The data that will be filtered
     * @param yearLow - Removes any ImpactDataRow where year is below this
     * @param yearHigh - Removes any ImpactDataRow where year is above this
@@ -499,9 +499,9 @@ export class DataFilterer {
     *
     * @remark This function essentiall calls all the filterByXYZ functions
     * above in order. The order was vaguely chosen to be as fast as possible
-    * i.e. do the biggest filter first. I may have got this wrong. it was 
+    * i.e. do the biggest filter first. I may have got this wrong. it was
     * based on guess work.
-    *  
+    *
     * @param impactData - The data that will be filtered
     * @param filterOptions - A DataFiltererOptions object
     *
@@ -533,8 +533,8 @@ export class DataFilterer {
 
    /**
     * A simple look up that given a ratio metric, returns the top and bottom
-    * of the ratio. 
-    *  
+    * of the ratio.
+    *
     * @param compareVariable - The metric
     *
     * @returns An object with top and bottom members
@@ -560,26 +560,26 @@ export class DataFilterer {
     }
 
    /**
-    * Sums and rounds down the organised data (any other simple post 
+    * Sums and rounds down the organised data (any other simple post
     * processing to data should be done here)
-    *  
+    *
     * @param aggregatedData - The organised data
-    * @param aggVar - The Y axis value that we are summing
+    * @param yAxisVar - The Y axis value that we are summing
     * @param xAxisVar - An array of the X axis values
     * @param metric - The metric
     *
     * @returns A array of numbers, the same length as the xAxisVar
     */
-    public reduceSummary(aggregatedData: ArrangedSplitImpactData,
-                         aggVar: string, xAxisVar: string[],
+    public reduceSummary(organisedData: ArrangedSplitImpactData,
+                         yAxisVar: string, xAxisVar: string[],
                          metric: string): number[] {
-        const dataByCompare = aggregatedData[aggVar];
-        const summedMetricForDisagg: number[] =
-            xAxisVar.map((xAxisVar: string) => {
-                const data: ImpactDataRow[] = dataByCompare[xAxisVar];
+        const dataByYAxis = organisedData[yAxisVar];
+        const summedMetricByYAxis: number[] =
+            xAxisVar.map((xVar: string) => {
+                const data: ImpactDataRow[] = dataByYAxis[xVar];
                 if (typeof data !== "undefined") {
-                    // this is necessary to prevent errors when this compare +
-                    // aggregate combo is empty
+                    // this is necessary to prevent errors when this yAxisVar +
+                    // xAxisVar combo is empty
                     const summedData =  data.map((x) => x[metric])
                                             .filter((x) => !isNaN(x))
                                             .reduce((acc, x) => acc + x, 0);
@@ -588,17 +588,13 @@ export class DataFilterer {
                     return 0;
                 }
         }, this);
-        return summedMetricForDisagg;
+        return summedMetricByYAxis;
     }
 
-    // This is a slightly hacky way to dynamically assign colours to keys that
-    // don't have them
-    // This should never be hit, if it is we should add the missing colours to
-    // ./PlotColours.ts
-    /**
+   /**
     * Dynamically assign colours to keys that don't have them. This should
     * never be hit, if it is we should add the missing colours to ./PlotColours.ts
-    *  
+    *
     * @param key - The value that we want a colour for
     * @param colourDict - A dictionary of predefined colours
     * @param bonusColours - An array on nice extra colours
