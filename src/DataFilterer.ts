@@ -284,7 +284,12 @@ export class DataFilterer {
     * into a dictionary of dictionary. Index first by yAxisName, then by
     * xAxisName.
     *
-    * @remark tbh I don't know how this works!
+    * @remark This function relies on the Javascript behaviour for making copies
+    * of arrays and objects. (Twice!)
+    * let a = []
+    * let b = a
+    * b.push("test")
+    * \\ b[0] = "test"
     *
     * @param xAxisName - The variable that goes along the x-axis
     * @param yAxisName - The variable that we will be arranging by
@@ -311,6 +316,13 @@ export class DataFilterer {
                 list = dataByCompare[row[xAxisName]] = [];
             }
 
+            // At this line of code `dataByCompare` is pointing at the
+            // object with key `row[yAxisName]` in `dataByYAxis`,
+            // And `list` is pointing to the array in `dataByCompare`
+            // with key row[xAxisName]. Which itself points at an object in
+            // `dataByYAxis`.
+            // So when we push we are pushing row into the array in the object
+            // `dataByYAxis` via two levels of redirection!
             list.push(row);
         }
         return dataByYAxis;
