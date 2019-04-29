@@ -50,7 +50,7 @@ export interface BaseAnnotation {
     };
 }
 
-function annotationHelper(touchstone: string, year: number, colour: string): BaseAnnotation {
+export function annotationHelper(touchstone: string, year: number, colour: string): BaseAnnotation {
     const a =   {
                     drawTime: "afterDatasetsDraw",
                     type: "line",
@@ -68,7 +68,7 @@ function annotationHelper(touchstone: string, year: number, colour: string): Bas
     return a;
 }
 
-function dateToAnnotation(touchstones: string[]): BaseAnnotation[] {
+export function dateToAnnotation(touchstones: string[]): BaseAnnotation[] {
     const anno = touchstones.map( (tch: string): BaseAnnotation => {
                     return annotationHelper(tch, touchstoneYears[tch],
                                             plotColours[tch]);
