@@ -3,10 +3,10 @@ export interface ImpactDataRow {
     cases_averted: number;
     continent: string;
     country: string;
-    countryName: string;
+    country_name: string;
     deaths_averted: number;
     disease: string;
-    isGavi: boolean;
+    is_gavi: boolean;
     is_focal: boolean;
     rate_type: string; // is this ever used?
     support_type: string;
