@@ -117,7 +117,7 @@ export function impactChartConfig(filterData: FilteredData,
                 },
             },
             animation: {
-                onComplete: () => {
+                onComplete() {
                     const chart = this.chart;
                     const context = chart.ctx;
                     const lastDataSet: number = ds.length - 1;
