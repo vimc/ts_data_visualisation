@@ -18,7 +18,7 @@ import {plotColours} from "./PlotColours";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
-const initTouchstone: string = "201710gavi-201807wue";
+const initTouchstone: string = "201710gavi-201810gavi";
 export let addedDataSets: string[] = [];
 const update = appendToDataSet([initTouchstone], addedDataSets, []);
 addedDataSets = update.newSeenList;
