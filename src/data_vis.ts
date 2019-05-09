@@ -8,7 +8,8 @@ import "select2/dist/css/select2.min.css";
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker} from "./CreateDataTable";
-import {activityTypes, countries, diseases, plottingVariables, supportTypes, touchstones, vaccines} from "./Data";
+import {activityTypes, countries, dates, diseases, plottingVariables,
+        supportTypes, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
@@ -65,8 +66,8 @@ class DataVisModel {
 
     private showSidebar = ko.observable(true);
     private yearFilter = ko.observable(new RangeFilter({
-        max: 2030,
-        min: 2011,
+        max: dates["max"][0],
+        min: dates["min"][0],
         name: "Years",
         selectedHigh: 2020,
         selectedLow: 2016,
@@ -97,7 +98,7 @@ class DataVisModel {
     private supportFilter = ko.observable(new ListFilter({
         name: "Support type",
         options: supportTypes,
-        selected: ["gavi"],
+        selected: supportTypes.slice(0, 1),
     }));
 
     private xAxisOptions = plottingVariables;

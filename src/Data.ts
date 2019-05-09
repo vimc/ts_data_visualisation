@@ -1,16 +1,21 @@
-// the data for South Sudan (SSD), Palestinian Territories (PSE) and Kosovo (XK)
-// are dodgy so I've omitted them
-export const countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
-    "BEN", "BTN", "BOL", "BIH", "BFA", "BDI", "KHM", "CMR", "CPV", "CAF", "TCD",
-    "CHN", "COM", "CIV", "CUB", "DJI", "PRK", "COD", "EGY", "SLV", "ERI", "ETH",
-    "FJI", "GMB", "GEO", "GHA", "GTM", "GIN", "GNB", "GUY", "HTI", "HND", "IND",
-    "IDN", "IRQ", "KEN", "KIR", /*"XK",*/ "KGZ", "LSO", "LBR", "MDG", "MWI",
-    "MLI", "MHL", "MRT", "FSM", "MDA", "MNG", "MAR", "MOZ", "MMR", "NPL", "NIC",
-    "NER", "NGA", "PAK", /*"PSE",*/ "PNG", "PRY", "LAO", "PHL", "COG", "RWA",
-    "WSM", "STP", "SEN", "SLE", "SLB", "SOM", /*"SSD",*/ "LKA", "SDN", "SWZ",
-    "SYR", "TJK", "TZA", "TLS", "TGO", "TON", "TKM", "TUV", "UGA", "UKR", "UZB",
-    "VUT", "VNM", "YEM", "ZMB", "ZWE"];
+import {loadArrayFromJSONFile, loadObjectFromJSONFile} from "./Utils";
 
+export const countries: string[] = loadObjectFromJSONFile("./countryCodes.json");
+export const touchstones: string[] = loadObjectFromJSONFile("./touchstones.json");
+export const supportTypes: string[] = loadObjectFromJSONFile("./support.json");
+export const activityTypes: string[] = loadObjectFromJSONFile("./activities.json");
+
+export const disVac = loadObjectFromJSONFile("./diseaseVaccines.json");
+export const diseases: string[] = [];
+export const vaccines: string[] = [];
+for (const k in disVac) {
+    diseases.push(k);
+    vaccines.concat(disVac[k]);
+}
+
+export const dates: {[code: string]: number[]} = loadObjectFromJSONFile("./dates.json");
+
+// These can't be infered from the data so we have to hard code them somewhere
 export const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
 
 const notDove94 = ["ALB", "BIH", "CHN", "TUN"];
@@ -35,20 +40,6 @@ const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
     "VUT", "WSM", "XK"];
 export const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
 
-export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA", "PCV",
-    "Rota", "Rubella", "YF"];
-
-export const vaccines = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1", "MCV2",
-    "Measles", "MenA", "PCV3", "Rota", "RCV2", "Rubella", "YF"];
-
-export const activityTypes = ["routine", "campaign", "combined"];
-
 export const plottingVariables = ["year", "country", "continent", "region",
-    "cofinance_status_2018", "activity_type", "disease", "vaccine", "touchstone", "support_type"];
-
-export const touchstones = ["201710gavi", "201710gavi-201810gavi", "201510gavi",
-                            "201310gavi-201810gavi", "201310gavi",
-                            "201310gavi-201403gavi", "201510gavi-201810gavi",
-                            "201210gavi-201810gavi", "201210gavi-201303gavi"];
-
-export const supportTypes = ["gavi", "other"];
+    "cofinance_status_2018", "activity_type", "disease", "vaccine",
+    "touchstone", "support_type"];
