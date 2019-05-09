@@ -1,5 +1,5 @@
 import {countries, touchstones, activityTypes, diseases, vaccines} from "../src/Data";
-import {DataFilterer, DataFiltererOptions} from "../src/DataFilterer";
+import {DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
 import {ImpactDataRow} from "../src/ImpactDataRow";
 import {expect} from "chai";
 
@@ -38,9 +38,9 @@ describe("DataFilterer", () => {
                                 "is_focal": randomNumber(0, 1) > 0.5,
                                 "support_type": randomNumber(0, 1) > 0.5 ? "gavi" : "other",
                                 "vaccine": v,
-                                "isGavi": true,
+                                "is_gavi": true,
                                 "country": c,
-                                "countryName": `c-fullname`,
+                                "country_name": `c-fullname`,
                                 "year": y,
                                 "coverage": randomNumber(0, 1),
                                 "target_population": randomNumber(100000, 200000),
@@ -65,12 +65,12 @@ describe("DataFilterer", () => {
     it("filterByCompare", () => {
         const max: number = 2;
 
-        const out: [ImpactDataRow[], any[]] = testObject.filterByCompare(max,
-                                                                         "disease",
-                                                                         "deaths_averted",
-                                                                         fakeImpactData);
-        const filteredData = out[0];
-        const compVars = out[1];
+        const out: UniqueData = testObject.filterByxAxis(max,
+                                                         "disease",
+                                                         "deaths_averted",
+                                                         fakeImpactData);
+        const filteredData = out.data;
+        const compVars = out.xAxisVals;
 
         // because of the random numbers in the fake data we can't put exact bounds on the length
         expect(filteredData).to.have.lengthOf.below(fakeImpactData.length);
@@ -89,10 +89,10 @@ describe("DataFilterer", () => {
                                                     "cases_averted",
                                                     "continent",
                                                     "country",
-                                                    "countryName",
+                                                    "country_name",
                                                     "deaths_averted",
                                                     "disease",
-                                                    "isGavi",
+                                                    "is_gavi",
                                                     "is_focal",
                                                     "rate_type",
                                                     "support_type",
@@ -249,5 +249,20 @@ describe("DataFilterer", () => {
 
         const out4 = testObject.meanVariables("fish");
         expect(out4).to.include({top: "fish"});
+    })
+
+
+    it("ArrangeSplitData", () => {
+        const out = testObject.ArrangeSplitData("year", "disease",
+                                                diseases.slice(0, 5),
+                                                fakeImpactData);
+        for (const d of diseases.slice(0, 5)) {
+            for (const y of [2010, 2011, 2012, 2013, 2014]) {
+                for (const idr of out[d][y.toString()]) {
+                    expect(idr.disease).to.equal(d)
+                    expect(idr.year).to.equal(y)
+                }
+            }
+        }
     })
 });

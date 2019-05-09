@@ -23,6 +23,9 @@ export interface ListFilterSettings extends FilterSettings {
 export interface CountryFilterSettings extends ListFilterSettings {
 
 }
+export interface DiseaseFilterSettings extends FilterSettings {
+    vaccineFilters: ListFilter[];
+}
 
 export class Filter {
     public isOpen = ko.observable<boolean>(false);
@@ -119,7 +122,7 @@ export class DiseaseFilter extends Filter {
     public selectedOptions = ko.observableArray([]);
     private vaccineFilters: ListFilter[] = [];
 
-    constructor(settings: any) {
+    constructor(settings: DiseaseFilterSettings) {
         super(settings);
         this.vaccineFilters = settings.vaccineFilters;
         this.updateSelectedOptions();

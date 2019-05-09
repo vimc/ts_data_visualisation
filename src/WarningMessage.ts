@@ -8,7 +8,7 @@ a message here.
 export class WarningMessageManager {
     public getError(filterOptions: DataFiltererOptions): string {
         if ((filterOptions.selectedTouchstones.length > 1) &&
-            (filterOptions.compare !== "touchstone")) {
+            (filterOptions.xAxis !== "touchstone")) {
           return "Multiple touchstones have been selected, Compare across should " +
                  "be set to touchstone otherwise the data shown will be meaningless";
         }

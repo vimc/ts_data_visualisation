@@ -2,19 +2,19 @@ import {FilteredRow} from "./FilteredRow";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {niceColours} from "./PlotColours";
 
-interface ImpactDataByCountry {
+interface SplitImpactData {
     [country: string]: ImpactDataRow[];
 }
 
-interface ImpactDataByVaccineAndThenCountry {
-    [vaccine: string]: ImpactDataByCountry;
+interface ArrangedSplitImpactData {
+    [vaccine: string]: SplitImpactData;
 }
 
 export interface DataFiltererOptions {
     metric: string;
     maxPlot: number;
-    compare: string;
-    disagg: string;
+    xAxis: string;
+    yAxis: string;
     yearLow: number;
     yearHigh: number;
     activityTypes: string[];
@@ -27,19 +27,49 @@ export interface DataFiltererOptions {
     timeSeries: boolean;
 }
 
+/**
+ * This objects contains the filtered data to be passed to the plot functions
+ * @interface
+ */
 export interface FilteredData {
+    /**
+     * An array of to be used as the dataset in a chartjs plot
+     * @abstract
+     */
     datasets: FilteredRow[];
-    compVars: any[];
+    /**
+     * An array of string containing he names of the x axis variables
+     * @abstract
+     */
+    xAxisVals: string[];
+    /**
+     * An array of numbers containing the totals of the datasets for each
+     * element of XAxisVals. Strictly this is redundent as we could always
+     * calculate it when needed. But there's no harm in doing once an passing it
+     * around.
+     * @abstract
+     */
     totals: number[];
 }
 
-export interface MeanData {
-    datasets: FilteredRow[];
-    compVarsTop: any[];
+export interface UniqueData {
+    data: ImpactDataRow[];
+    xAxisVals: string[];
 }
 
 export class DataFilterer {
-    // this function rounds DOWN to n significant figures
+   /**
+    * The function rounds DOWN to n siginificant figure
+    *
+    * @remarks
+    * This is has been a point of contention between the funders and science
+    * team.
+    *
+    * @param value - The number to be rounded
+    * @param sigFigs - The number of significant figures (should be an integer
+    *                  but we don't check)
+    * @returns `value` rounded down to `sigFigs` significant figures
+    */
     public roundDown(value: number, sigFigs: number): number {
         // this should never be hit (negative deaths shouldn't happen)
         // so we're not going to try anything clever
@@ -47,12 +77,29 @@ export class DataFilterer {
             return value;
         }
 
-        const n: number = Math.ceil(Math.log(value + 1) / Math.log(10)); // log10 is not a standard Math function!
+        const n: number = Math.ceil(Math.log(value + 1) / Math.log(10));
+        // This calculate log10, whihc is not a standard Math function.
         const m: number = n - sigFigs; // this number is definitely positive
 
         return Math.floor(value / (Math.pow(10, m))) * (Math.pow(10, m));
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based on some
+    * parameters and returns a FilteredData object used by chartjs to produce
+    * the plot
+    *
+    * @remarks
+    *
+    * @param filterOptions - A DataFiltererOptions object that contains the
+    *                        filters that will be applied to the data
+    * @param impactData - The data as an array of ImpactDataRows
+    * @param plotColours - A dictionary of colours to be assigned to filtered
+    *                      datasets
+    *
+    * @returns A FilteredData object containing the datasets (for a charjs
+    *          plot), the names of the x-axis variables and the totals.
+    */
     public filterData(filterOptions: DataFiltererOptions,
                       impactData: ImpactDataRow[],
                       plotColours: { [p: string]: string }): FilteredData {
@@ -60,58 +107,63 @@ export class DataFilterer {
 
         // now we filter by the compare variable
         const maxCompare = filterOptions.timeSeries ? -1 : filterOptions.maxPlot;
-        const temp = this.filterByCompare(maxCompare, filterOptions.compare, filterOptions.metric, filtData);
-        const compVars: any[] = temp[1]; // these are the values that go along the x-axis
-        const filteredData: ImpactDataRow[] = temp[0];
+        const temp: UniqueData = this.filterByxAxis(maxCompare, filterOptions.xAxis,
+                                                    filterOptions.metric, filtData);
+        // these are the values that go along the x-axis
+        const xAxisVals: string[] = temp.xAxisVals;
+        const filteredData: ImpactDataRow[] = temp.data;
 
-        // get an array of all the remaining disagg values
-        const aggVars: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg,
-                                                           filterOptions.metric, filteredData)];
-        const dataByAggregate = this.groupDataByDisaggAndThenCompare(filterOptions.compare,
-                                                                     filterOptions.disagg,
-                                                                     aggVars,
-                                                                     filteredData);
+        // get an array of all the remaining y axis values
+        const yAxisVars: string[] =
+            [...this.getUniqueVariables(-1, filterOptions.yAxis,
+                                            filterOptions.metric,
+                                            filteredData)];
+        // recombine the split data by y axis values
+        const organisedData: ArrangedSplitImpactData =
+            this.ArrangeSplitData(filterOptions.xAxis, filterOptions.yAxis,
+                                  yAxisVars, filteredData);
 
         const datasets: FilteredRow[] = [];
-        for (const aggVar of aggVars) {
-            let summedMetricForDisagg: number[] = this.reduceSummary(dataByAggregate,
-                                                                     aggVar,
-                                                                     compVars,
-                                                                     filterOptions.metric);
+        for (const yAxisVal of yAxisVars) {
+            let summedMetricByYAxis: number[] =
+                this.reduceSummary(organisedData, yAxisVal, xAxisVals,
+                                   filterOptions.metric);
             // we're doing a cumulative plot
-            if (filterOptions.compare === "year" && filterOptions.cumulative) {
-                summedMetricForDisagg = summedMetricForDisagg
-                    .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i - 1] || 0)], []);
+            if (filterOptions.xAxis === "year" && filterOptions.cumulative) {
+                summedMetricByYAxis = summedMetricByYAxis
+                    .reduce((a: number[], x: number, i: number) =>
+                                            [...a, (+x) + (a[i - 1] || 0)], []);
             }
-            // code here to convert sum to average
+            // make sure we have colours for each yAxisVal
+            this.getColour(yAxisVal, plotColours, niceColours);
 
-            this.getColour(aggVar, plotColours, niceColours);
-
+            // construct the relevant object for chartjs
             if (filterOptions.timeSeries) {
                 const fRow: FilteredRow = { backgroundColor: "transparent",
-                                            borderColor: plotColours[aggVar],
-                                            data: summedMetricForDisagg,
-                                            label: aggVar,
-                                            lineTension: 0.1,
-                                            pointBackgroundColor: "plotColours[aggVar]",
-                                            pointHitRadius: 15,
-                                            pointHoverRadius: 7.5,
-                                            pointRadius: 2.5,
-                                            pointStyle: "circle",
-                                        };
-
+                        borderColor: plotColours[yAxisVal],
+                        data: summedMetricByYAxis,
+                        label: yAxisVal,
+                        lineTension: 0.1,
+                        pointBackgroundColor: "plotColours[yAxisVal]",
+                        pointHitRadius: 15,
+                        pointHoverRadius: 7.5,
+                        pointRadius: 2.5,
+                        pointStyle: "circle",
+                    };
                 datasets.push(fRow);
             } else {
-                const fRow: FilteredRow = { backgroundColor: plotColours[aggVar],
-                                            data: summedMetricForDisagg,
-                                            label: aggVar,
-                                        };
+                const fRow: FilteredRow = {
+                        backgroundColor: plotColours[yAxisVal],
+                        data: summedMetricByYAxis,
+                        label: yAxisVal,
+                    };
                 datasets.push(fRow);
             }
         }
-        // while we're here we might as well calculate the sum for each compare variable as we need them later
+        // while we're here we might as well calculate the sum for each
+        // x axis variable as we need them later
         const totals: number[] = [];
-        for (let i = 0; i < compVars.length; ++i) {
+        for (let i = 0; i < xAxisVals.length; ++i) {
             let total: number = 0;
             for (const ds of datasets) {
                 total += (+ds.data[i]);
@@ -119,53 +171,73 @@ export class DataFilterer {
             totals.push(total);
         }
 
-        return {datasets, compVars, totals};
+        return {datasets, xAxisVals, totals};
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based on some
+    * parameters and calculate ratios (to obtain e.g. death rates) then
+    * returns a FilteredData object used by chartjs to produce the plot.
+    *
+    * @remarks
+    * This function will only be called when filterOptions.xAxis === "year".
+    * There probably should be some check (and fail state) that this is true.
+    *
+    * @param filterOptions - A DataFiltererOptions object that contains the
+    *                        filters that will be applied to the data
+    * @param impactData - The data as an array of ImpactDataRows
+    * @param plotColours - A dictionary of colours to be assigned to filtered
+    *                      datasets
+    *
+    * @returns A FilteredData object containing the datasets (for a charjs
+    *          plot), the names of the x-axis variables and the totals.filterByCompare
+    */
     public calculateMean(filterOptions: DataFiltererOptions,
                          impactData: ImpactDataRow[],
-                         plotColours: { [p: string]: string }): MeanData {
-        // compare will always be year!
+                         plotColours: { [p: string]: string }): FilteredData {
+        // x axis will always be year!
         const filtData = this.filterByAll(filterOptions, impactData);
 
+        // based on the metric get the top and bottom of the ratio
+        // death_rate = death / population
         const meanVars = this.meanVariables(filterOptions.metric);
-        const top = meanVars.top;
-        const bottom = meanVars.bottom;
-        const tempTop = this.filterByCompare(-1, "year", top, filtData);
-        const compVarsTop: any[] = tempTop[1];
-        const filteredDataTop: ImpactDataRow[] = tempTop[0];
-        // get an array of all the remaining disagg values
-        const aggVarsTop: any[] = [...this.getUniqueVariables(-1, filterOptions.disagg, top, filteredDataTop)];
-        const dataByAggregateTop = this.groupDataByDisaggAndThenCompare("year",
-                                                                        filterOptions.disagg,
-                                                                        aggVarsTop,
-                                                                        filteredDataTop);
+        const top: string = meanVars.top;
+        const bottom: string = meanVars.bottom;
+
+        // get data for the top of the ratio
+        const tempTop: UniqueData = this.filterByxAxis(-1, "year", top, filtData);
+        const xAxisVals: string[] = tempTop.xAxisVals;
+        const filteredDataTop: ImpactDataRow[] = tempTop.data;
+
+        // get an array of all the remaining y axis values
+        const yAxisVarsTop: string[] =
+            [...this.getUniqueVariables(-1, filterOptions.yAxis, top,
+                                        filteredDataTop)];
+        const dataByYAxisTop: ArrangedSplitImpactData =
+            this.ArrangeSplitData("year", filterOptions.yAxis, yAxisVarsTop,
+                                  filteredDataTop);
         const datasets: FilteredRow[] = [];
-        for (const aggVar of aggVarsTop) {
-            let summedMetricForDisagg: number[] = this.reduceSummary(dataByAggregateTop,
-                                                                     aggVar,
-                                                                     compVarsTop,
-                                                                     top);
+        for (const yVar of yAxisVarsTop) {
+            let summedMetricByYAxis: number[] =
+                this.reduceSummary(dataByYAxisTop, yVar, xAxisVals, top);
             if (bottom != null) {
-                const tempBottom = this.filterByCompare(-1, "year", bottom, filtData);
-                const compVarsBottom: any[] = tempBottom[1];
-                const filteredDataVottom: ImpactDataRow[] = tempBottom[0];
-                // get an array of all the remaining disagg values
-                const aggVarsBottom: any[] = [...this.getUniqueVariables(-1,
-                                                                         filterOptions.disagg,
-                                                                         bottom,
-                                                                         filteredDataVottom)];
-                const dataByAggregateBottom = this.groupDataByDisaggAndThenCompare("year",
-                                                                                   filterOptions.disagg,
-                                                                                   aggVarsBottom,
-                                                                                   filteredDataVottom);
-                const summedMetricForDisaggBottom: number[] = this.reduceSummary(dataByAggregateBottom,
-                                                                                 aggVar,
-                                                                                 compVarsBottom,
-                                                                                 bottom);
-                summedMetricForDisagg = summedMetricForDisagg.map( (x, i) => {
-                    if (summedMetricForDisaggBottom[i] !== 0) {
-                        return (x / summedMetricForDisaggBottom[i]);
+                const tempBottom: UniqueData =
+                    this.filterByxAxis(-1, "year", bottom, filtData);
+                const xValsBottom: string[] = tempBottom.xAxisVals;
+                const filteredDataVottom: ImpactDataRow[] = tempBottom.data;
+                // get an array of all the remaining Y Axis values
+                const yAxisVarsBottom: string[] =
+                    [...this.getUniqueVariables(-1, filterOptions.yAxis,
+                                                bottom, filteredDataVottom)];
+                const dataByYAxisBottom: ArrangedSplitImpactData =
+                    this.ArrangeSplitData("year", filterOptions.yAxis,
+                                          yAxisVarsBottom, filteredDataVottom);
+                const summedMetricByYAxisBottom: number[] =
+                    this.reduceSummary(dataByYAxisBottom, yVar,
+                                       xValsBottom, bottom);
+                summedMetricByYAxis = summedMetricByYAxis.map( (x, i) => {
+                    if (summedMetricByYAxisBottom[i] !== 0) {
+                        return (x / summedMetricByYAxisBottom[i]);
                     } else {
                         return 0;
                     }
@@ -173,133 +245,312 @@ export class DataFilterer {
             }
             // we're doing a cumulative plot
             if (filterOptions.cumulative) {
-                summedMetricForDisagg = summedMetricForDisagg
+                summedMetricByYAxis = summedMetricByYAxis
                     .reduce((a: number[], x: number, i: number) => [...a, (+x) + (a[i - 1] || 0)], []);
             }
 
-            this.getColour(aggVar, plotColours, niceColours);
+            // make sure we have colours for each yVar
+            this.getColour(yVar, plotColours, niceColours);
 
-            const fRow: FilteredRow = { backgroundColor: "transparent",
-                                        borderColor: plotColours[aggVar],
-                                        data: summedMetricForDisagg,
-                                        label: aggVar,
-                                        lineTension: 0.1,
-                                        pointBackgroundColor: "plotColours[aggVar]",
-                                        pointHitRadius: 15,
-                                        pointHoverRadius: 7.5,
-                                        pointRadius: 2.5,
-                                        pointStyle: "circle",
-                                    };
+            const fRow: FilteredRow = {
+                            backgroundColor: "transparent",
+                            borderColor: plotColours[yVar],
+                            data: summedMetricByYAxis,
+                            label: yVar,
+                            lineTension: 0.1,
+                            pointBackgroundColor: "plotColours[yVar]",
+                            pointHitRadius: 15,
+                            pointHoverRadius: 7.5,
+                            pointRadius: 2.5,
+                            pointStyle: "circle",
+                        };
 
             datasets.push(fRow);
         }
-        return {datasets, compVarsTop};
+
+        // We never use totals but as with filterData we might as well sum them
+        const totals: number[] = [];
+        for (let i = 0; i < xAxisVals.length; ++i) {
+            let total: number = 0;
+            for (const ds of datasets) {
+                total += (+ds.data[i]);
+            }
+            totals.push(total);
+        }
+        return {datasets, xAxisVals, totals};
     }
-
-    public groupDataByDisaggAndThenCompare(compareName: string, disaggName: string, disaggVars: string[],
-                                           filteredData: ImpactDataRow[]): ImpactDataByVaccineAndThenCountry {
-        const dataByDisagg: ImpactDataByVaccineAndThenCountry = {};
-        disaggVars.map((disagg: string) => { dataByDisagg[disagg] = {}; } );
-
+   /**
+    * The function takes data (as an array of ImpactDataRows) and organises it
+    * into a dictionary of dictionary. Index first by yAxisName, then by
+    * xAxisName.
+    *
+    * @remark This function relies on the Javascript behaviour for making copies
+    * of arrays and objects. (Twice!)
+    * let a = []
+    * let b = a
+    * b.push("test")
+    * \\ b[0] = "test"
+    *
+    * @param xAxisName - The variable that goes along the x-axis
+    * @param yAxisName - The variable that we will be arranging by
+    * @param yAxisVars - The different values for yAxisName
+    * @param filteredData - The data that will organsied
+    *
+    * @returns A AggregatedSplitImpactData object
+    */
+    public ArrangeSplitData(xAxisName: string, yAxisName: string,
+                            yAxisVars: string[],
+                            filteredData: ImpactDataRow[]): ArrangedSplitImpactData {
+        // create a dictionary of empty dictionaries
+        const dataByYAxis: ArrangedSplitImpactData = {};
+        yAxisVars.map((y: string) => { dataByYAxis[y] = {}; } );
+        // now fill 'em in
         for (const row of filteredData) {
-            let dataByCompare = dataByDisagg[row[disaggName]];
+            let dataByCompare = dataByYAxis[row[yAxisName]];
             if (!dataByCompare) {
-                dataByCompare = dataByDisagg[row[disaggName]] = {};
+                dataByCompare = dataByYAxis[row[yAxisName]] = {};
             }
 
-            let list = dataByCompare[row[compareName]];
+            let list = dataByCompare[row[xAxisName]];
             if (!list) {
-                list = dataByCompare[row[compareName]] = [];
+                list = dataByCompare[row[xAxisName]] = [];
             }
 
+            // At this line of code `dataByCompare` is pointing at the
+            // object with key `row[yAxisName]` in `dataByYAxis`,
+            // And `list` is pointing to the array in `dataByCompare`
+            // with key row[xAxisName]. Which itself points at an object in
+            // `dataByYAxis`.
+            // So when we push we are pushing row into the array in the object
+            // `dataByYAxis` via two levels of redirection!
             list.push(row);
         }
-        return dataByDisagg;
+        return dataByYAxis;
     }
 
-    // This function calls getUniqueVariables to find the largest compare variables wrt to metric
-    // Then it calculates the maxPlot largest compare variables and filters out the rest from the original dataset
-    // It will return an array of the largest compare variables and
-    // the original dataset with all but the largest removed
-    public filterByCompare(maxPlot: number,
-                           compare: string,
-                           metric: string,
-                           impactData: ImpactDataRow[]): [ImpactDataRow[], any[]] {
-        const uniqueCompare: any[] = this.getUniqueVariables(maxPlot, compare, metric, impactData);
-        const filteredData = impactData.filter((d) => (uniqueCompare.indexOf(d[compare]) > -1));
-        return [filteredData, uniqueCompare];
+   /**
+    * This function is mainly a wrapper to getUniqueVariables to find the
+    * largest xAxisVar variables wrt to metric
+    * Then it calculates the maxPlot largest compare variables and filters
+    * out the rest from the original dataset
+    *
+    * @param maxPlot - We return the largest N... (if this is -1 we return all)
+    * @param xAxisVar - ...x Axis variables...
+    * @param metric - ...with repect to this metric
+    * @param impactData - The data that will be filtered
+    *
+    * @returns An UniqueData object consist of of the largest compare
+    * variables and the original dataset with all but the largest maxPlot
+    * removed
+    */
+    public filterByxAxis(maxPlot: number,
+                         xAxisVar: string,
+                         metric: string,
+                         impactData: ImpactDataRow[]): UniqueData {
+        const uniqueCompare: string[] =
+            this.getUniqueVariables(maxPlot, xAxisVar, metric, impactData);
+        const filteredData = impactData.filter((d) =>
+                                      (uniqueCompare.indexOf(d[xAxisVar]) > -1));
+        return {data: filteredData, xAxisVals: uniqueCompare};
     }
 
-    // TODO Tidy this up!
-    // This function groups the data by the compare variable, then sums by the metric variable
-    // It returns an array of the largest maxPlot compare variables wrt metric
+   /**
+    * This function calls getUniqueVariables to find the largest xAxisVar
+    * variables wrt to metric
+    * Then it calculates the maxPlot largest compare variables and filters
+    * out the rest from the original dataset
+    *
+    * @param maxPlot - We return the largest N...
+    * @param xAxisVar - ...x Axis variables...
+    * @param metric - ...with repect to this metric
+    * @param impactData - The data that will be filtered
+    *
+    * @returns An array of strings with the N largest x axis variables
+    */
     public getUniqueVariables(maxPlot: number,
-                              compare: string,
+                              xAxisVar: string,
                               metric: string,
-                              impactData: ImpactDataRow[]): any[] {
+                              impactData: ImpactDataRow[]): string[] {
         if (maxPlot > 0) {
             // this is taken from https://stackoverflow.com/a/49717936
             const groupedSummed = new Map<string, number>();
             impactData.map((row) => {
-                 groupedSummed.set(row[compare],
-                                   (groupedSummed.get(row[compare]) || 0) + (row[metric] === "NA" ? 0 : row[metric]),
+                 groupedSummed.set(row[xAxisVar],
+                                   (groupedSummed.get(row[xAxisVar]) || 0) +
+                                   (row[metric] === "NA" ? 0 : row[metric]),
                                   );
             });
-            if (compare !== "year") {
-                const sortedGroupSummed = [...groupedSummed].sort((a, b) => a[1] < b[1] ? 1 : -1 );
+            if (xAxisVar !== "year") {
+                const sortedGroupSummed =
+                    [...groupedSummed].sort((a, b) => a[1] < b[1] ? 1 : -1 );
                 const sortedCompares = sortedGroupSummed.map((d) => d[0]);
                 return sortedCompares.slice(0, maxPlot);
             } else {
-                const unsortedGroupSummed =  [...groupedSummed].map((d) => d[0] );
+                const unsortedGroupSummed = [...groupedSummed].map((d) => d[0]);
                 return unsortedGroupSummed.slice(0, maxPlot).sort();
             }
         } else {
-            return [...new Set((impactData.map((x) => x[compare])))].sort();
+            return [...new Set((impactData.map((x) => x[xAxisVar])))].sort();
         }
     }
 
-    public filterByFocality(impactData: ImpactDataRow[], isFocal: boolean): ImpactDataRow[] {
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the focality of the model
+    *
+    * @param impactData - The data that will be filtered
+    * @param isFocal - Removes any ImpactDataRow where is_focal does not
+    * match this argument
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
+    public filterByFocality(impactData: ImpactDataRow[],
+                            isFocal: boolean): ImpactDataRow[] {
         return impactData.filter((row) => row.is_focal === isFocal );
     }
 
-    public filterBySupport(impactData: ImpactDataRow[], supportType: string[]): ImpactDataRow[] {
-        return impactData.filter((row) => supportType.indexOf(row.support_type) > -1 );
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the focality of the model
+    *
+    * @param impactData - The data that will be filtered
+    * @param isFocal - Removes any ImpactDataRow where is_focal does not
+    * match this argument
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
+    public filterBySupport(impactData: ImpactDataRow[],
+                           supportType: string[]): ImpactDataRow[] {
+        return impactData.filter((row) =>
+            supportType.indexOf(row.support_type) > -1 );
     }
 
-    public filterByTouchstone(impactData: ImpactDataRow[], touchStone: string[]): ImpactDataRow[] {
-        return impactData.filter((row) => touchStone.indexOf(row.touchstone) > -1 );
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the touchstone
+    *
+    * @param impactData - The data that will be filtered
+    * @param isFocal - Removes any ImpactDataRow where touchstone does not
+    * match at least one element of this array
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
+    public filterByTouchstone(impactData: ImpactDataRow[],
+                              touchStone: string[]): ImpactDataRow[] {
+        return impactData.filter((row) =>
+            touchStone.indexOf(row.touchstone) > -1 );
     }
 
-    public filterByVaccine(impactData: ImpactDataRow[], vaccineSet: string[]): ImpactDataRow[] {
-        return impactData.filter((row) => vaccineSet.indexOf(row.vaccine) > -1 );
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the vaccine
+    *
+    * @param impactData - The data that will be filtered
+    * @param vaccineSet - Removes any ImpactDataRow where vaccine does not
+    * match at least one element of this array
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
+    public filterByVaccine(impactData: ImpactDataRow[],
+                           vaccineSet: string[]): ImpactDataRow[] {
+        return impactData.filter((row) =>
+            vaccineSet.indexOf(row.vaccine) > -1 );
     }
 
-    public filterByCountrySet(impactData: ImpactDataRow[], countrySet: string[]): ImpactDataRow[] {
-        return impactData.filter((row) => countrySet.indexOf(row.country) > -1 );
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the country
+    *
+    * @param impactData - The data that will be filtered
+    * @param countrySet - Removes any ImpactDataRow where country does not
+    * match at least one element of this array
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
+    public filterByCountrySet(impactData: ImpactDataRow[],
+                              countrySet: string[]): ImpactDataRow[] {
+        return impactData.filter((row) =>
+            countrySet.indexOf(row.country) > -1 );
     }
 
-    public filterByActivityType(impactData: ImpactDataRow[], selectedActivityType: string[]): ImpactDataRow[] {
-        return impactData.filter((row) => selectedActivityType.indexOf(row.activity_type) > -1 );
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the activity_type
+    *
+    * @param impactData - The data that will be filtered
+    * @param activitySet - Removes any ImpactDataRow where activity_type does not
+    * match at least one element of this array
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
+    public filterByActivityType(impactData: ImpactDataRow[],
+                                activitySet: string[]): ImpactDataRow[] {
+        return impactData.filter((row) =>
+            activitySet.indexOf(row.activity_type) > -1 );
     }
 
-    public filterByYear(impactData: ImpactDataRow[], yearLow: number, yearHigh: number) {
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the year
+    *
+    * @param impactData - The data that will be filtered
+    * @param yearLow - Removes any ImpactDataRow where year is below this
+    * @param yearHigh - Removes any ImpactDataRow where year is above this
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
+    public filterByYear(impactData: ImpactDataRow[], yearLow: number,
+                        yearHigh: number) {
         return impactData.filter((row) => row.year >= yearLow )
                          .filter((row) => row.year <= yearHigh );
     }
 
+   /**
+    * The function filters a dataset (an array of ImpactDataRows) based
+    * on the the parameters in a DataFiltererOptions object
+    *
+    * @remark This function essentiall calls all the filterByXYZ functions
+    * above in order. The order was vaguely chosen to be as fast as possible
+    * i.e. do the biggest filter first. I may have got this wrong. it was
+    * based on guess work.
+    *
+    * @param impactData - The data that will be filtered
+    * @param filterOptions - A DataFiltererOptions object
+    *
+    * @returns An array of ImpactDataRow with all the invalid rows removed
+    */
     public filterByAll(filterOptions: DataFiltererOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
-        let filtData = this.filterByFocality(impactData, true); // filter focal model
-        filtData = this.filterBySupport(filtData, filterOptions.supportType); // filter so that support = gavi
-        filtData = this.filterByYear(filtData, filterOptions.yearLow, filterOptions.yearHigh); // filter by years
-        filtData = this.filterByTouchstone(filtData, filterOptions.selectedTouchstones); // filter by touchstone
-        filtData = this.filterByActivityType(filtData, filterOptions.activityTypes); // filter by activity type
-        filtData = this.filterByCountrySet(filtData, filterOptions.selectedCountries); // filter by activity type
-        filtData = this.filterByVaccine(filtData, filterOptions.selectedVaccines); // filter by vaccine
-
+         // filter focal model
+        let filtData = this.filterByFocality(impactData, true);
+        // filter so that support = gavi
+        filtData = this.filterBySupport(filtData, filterOptions.supportType);
+        // filter by years
+        filtData = this.filterByYear(filtData, filterOptions.yearLow,
+                                     filterOptions.yearHigh);
+        // filter by touchstone
+        filtData = this.filterByTouchstone(filtData,
+                                           filterOptions.selectedTouchstones);
+        // filter by activity type
+        filtData = this.filterByActivityType(filtData,
+                                             filterOptions.activityTypes);
+        // filter by activity type
+        filtData = this.filterByCountrySet(filtData,
+                                           filterOptions.selectedCountries);
+        // filter by vaccine
+        filtData = this.filterByVaccine(filtData,
+                                        filterOptions.selectedVaccines);
         return filtData;
     }
 
+   /**
+    * A simple look up that given a ratio metric, returns the top and bottom
+    * of the ratio.
+    *
+    * @param compareVariable - The metric
+    *
+    * @returns An object with top and bottom members
+    */
     public meanVariables(compareVariable: string): { [fracPart: string]: string } {
         switch (compareVariable) {
             case "coverage":
@@ -320,27 +571,48 @@ export class DataFilterer {
         }
     }
 
-    public reduceSummary(aggregatedData: ImpactDataByVaccineAndThenCountry,
-                         aggVar: string, compVars: any[],
+   /**
+    * Sums and rounds down the organised data (any other simple post
+    * processing to data should be done here)
+    *
+    * @param aggregatedData - The organised data
+    * @param yAxisVar - The Y axis value that we are summing
+    * @param xAxisVar - An array of the X axis values
+    * @param metric - The metric
+    *
+    * @returns A array of numbers, the same length as the xAxisVar
+    */
+    public reduceSummary(organisedData: ArrangedSplitImpactData,
+                         yAxisVar: string, xAxisVar: string[],
                          metric: string): number[] {
-        const dataByCompare = aggregatedData[aggVar];
-        const summedMetricForDisagg: number[] = compVars.map((compare: string) => {
-            const data: ImpactDataRow[] = dataByCompare[compare];
-            if (typeof data !== "undefined") {
-                // this is necessary to prevent errors when this compare / aggregate combo is empty
-                const summedData =  data.map((x) => x[metric])
-                                        .filter((x) => !isNaN(x))
-                                        .reduce((acc, x) => acc + x, 0);
-                return this.roundDown(summedData, 3);
-            } else {
-                return 0;
-            }
+        const dataByYAxis = organisedData[yAxisVar];
+        const summedMetricByYAxis: number[] =
+            xAxisVar.map((xVar: string) => {
+                const data: ImpactDataRow[] = dataByYAxis[xVar];
+                if (typeof data !== "undefined") {
+                    // this is necessary to prevent errors when this yAxisVar +
+                    // xAxisVar combo is empty
+                    const summedData =  data.map((x) => x[metric])
+                                            .filter((x) => !isNaN(x))
+                                            .reduce((acc, x) => acc + x, 0);
+                    return this.roundDown(summedData, 3);
+                } else {
+                    return 0;
+                }
         }, this);
-        return summedMetricForDisagg;
+        return summedMetricByYAxis;
     }
 
-    // This is a slightly hacky way to dynamically assign colours to keys that don't have them
-    // This should never be hit, if it is we should add the missing colours to ./PlotColours.ts
+   /**
+    * Dynamically assign colours to keys that don't have them. This should
+    * never be hit, if it is we should add the missing colours to ./PlotColours.ts
+    *
+    * @param key - The value that we want a colour for
+    * @param colourDict - A dictionary of predefined colours
+    * @param bonusColours - An array on nice extra colours
+    *
+    * @returns Nothing, modifies colourDict.
+    */
     private getColour(key: string, colourDict: { [key: string]: string },
                       bonusColours: { [key: string]: string }): void {
         // check if this key is in the dictionary...
@@ -351,14 +623,15 @@ export class DataFilterer {
                 // convert niceColours to an array
                 const extraCNames = Object.keys(bonusColours);
                 // pick one at random
-                const colourName: string = extraCNames[Math.floor(Math.random() * extraCNames.length)];
+                const colourName: string =
+                    extraCNames[Math.floor(Math.random() * extraCNames.length)];
                 // add it to the colourDictionary
                 $.extend(colourDict, { [key]: bonusColours[colourName]});
                 // delete it from the list of available colours
                 delete bonusColours[colourName];
             } else {
                 console.log("Additional warning: We have run out of nice colours");
-                // if there are no colours, so add a neutral grey colour so that it
+                // if there are no colours, so add a neutral grey colour so that
                 // it should be obvious when we've run out of colours.
                 $.extend(colourDict, { [key]: "#999999"});
             }

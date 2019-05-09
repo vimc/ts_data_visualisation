@@ -7,7 +7,7 @@ import * as ko from "knockout";
 import "select2/dist/css/select2.min.css";
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
-import {TableMaker} from "./CreateDataTable";
+import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, diseases, plottingVariables, supportTypes, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
@@ -101,7 +101,7 @@ class DataVisModel {
     }));
 
     private xAxisOptions = plottingVariables;
-    private disaggregationOptions = ko.computed(() => {
+    private yAxisOptions = ko.computed(() => {
         switch (this.currentPlot()) {
             case "Impact":
                 return plottingVariables;
@@ -115,8 +115,8 @@ class DataVisModel {
     private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
     private maxBars = ko.observable<number>(5);
 
-    private compare = ko.observable<string>(this.xAxisOptions[1]);
-    private disaggregateBy = ko.observable<string>("disease");
+    private xAxis = ko.observable<string>(this.xAxisOptions[1]);
+    private yAxis = ko.observable<string>("disease");
     private cumulativePlot = ko.observable<boolean>(false);
 
     private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
@@ -129,7 +129,7 @@ class DataVisModel {
 
     private humanReadableBurdenOutcome = ko.observable("deaths");
 
-    private compareNames = ko.observableArray<string>([]);
+    private xAxisNames = ko.observableArray<string>([]);
 
     private canvas: any;
     private ctx: any;
@@ -139,9 +139,8 @@ class DataVisModel {
     private ctxTS: any;
     private chartObjectTS: Chart;
 
-    private filteredTable: KnockoutObservableArray<any>;
-    private gridViewModel: any;
-    private filteredTSTable: KnockoutObservableArray<any>;
+    private filteredTable: KnockoutObservableArray<WideTableRow>;
+    private filteredTSTable: KnockoutObservableArray<WideTableRow>;
 
     private burdenOutcome = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
@@ -194,9 +193,9 @@ class DataVisModel {
     private chartOptions = ko.computed<CustomChartOptions>(() => {
         return {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
-            compare: this.compare(), // variable we are comparing across
+            xAxis: this.xAxis(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
-            disagg: this.disaggregateBy(), // variable we are disaggregating by
+            yAxis: this.yAxis(), // variable we are disaggregating by
             hideLabels: this.hideLabels(),
             maxPlot: this.maxBars(), // How many bars on the plot
             metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
@@ -243,7 +242,7 @@ class DataVisModel {
         this.ctx = this.canvas.getContext("2d");
         this.ctxTS = this.canvasTS.getContext("2d");
 
-        this.compare.subscribe(() => {
+        this.xAxis.subscribe(() => {
             this.updateXAxisOptions();
         });
         this.yearFilter().selectedLow.subscribe(() => {
@@ -292,16 +291,16 @@ class DataVisModel {
         }
 
         const filterData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
-        const {datasets, compVars} = filterData;
+        const {datasets, xAxisVals} = filterData;
 
-        let compareNames: string[] = [...compVars];
+        let xAxisNames: string[] = [...xAxisVals];
         // when we put countries along convert the names to human readable
-        if (chartOptions.compare === "country") {
-            compareNames = compareNames.map(countryCodeToName);
+        if (chartOptions.xAxis === "country") {
+            xAxisNames = xAxisNames.map(countryCodeToName);
         }
 
-        this.filteredTable = new TableMaker().createWideTable(datasets, compareNames);
-        this.chartObject = new Chart(this.ctx, impactChartConfig(filterData, compareNames, chartOptions));
+        this.filteredTable = new TableMaker().createWideTable(datasets, xAxisNames);
+        this.chartObject = new Chart(this.ctx, impactChartConfig(filterData, xAxisNames, chartOptions));
     }
 
     public renderTimeSeries() {
@@ -316,10 +315,10 @@ class DataVisModel {
         }
 
         const filterData = new DataFilterer().calculateMean(chartOptions, impactData, plotColours);
-        const {datasets, compVarsTop} = filterData;
+        const {datasets, xAxisVals} = filterData;
 
-        this.filteredTSTable = new TableMaker().createWideTable(datasets, compVarsTop);
-        this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, compVarsTop, chartOptions));
+        this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
+        this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, xAxisVals, chartOptions));
     }
 
     private selectPlot(plotName: string) {
@@ -364,9 +363,9 @@ class DataVisModel {
         // refilter the data
         const chartOptions = {...this.chartOptions(), maxPlot: -1};
         const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
-        this.compareNames(filteredData.compVars);
-        this.maxPlotOptions(createRangeArray(1, this.compareNames().length));
-        this.maxBars(this.compareNames().length);
+        this.xAxisNames(filteredData.xAxisVals);
+        this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
+        this.maxBars(this.xAxisNames().length);
     }
 
     private defaultTitle() {
