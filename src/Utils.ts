@@ -1,22 +1,4 @@
-export function loadArrayFromJSONFile(path: string): any {
-    let newData: string[] = []; // fail safe in case the file can't be read
-    $.ajax({
-        async: false,
-        contentType: "text/plain",
-        data: { request: "", target: "arrange_url", method: "method_target" },
-        dataType: "text",
-        global: false,
-        success(data: string) {
-            // eval is awful but we have to parse text files to variable
-            // there might be a way around this
-            newData = eval(data);
-            return;
-        },
-        type: "GET",
-        url: path,
-    });
-    return newData;
-}
+import * as $ from "jquery";
 
 export function loadObjectFromJSONFile(path: string): any {
     let newData: {[code: string]: string[]} = {}; // fail safe in case the file can't be read
