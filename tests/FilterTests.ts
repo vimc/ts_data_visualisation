@@ -1,5 +1,5 @@
 import {CountryFilter, DiseaseFilter, Filter, ListFilter, RangeFilter} from "../src/Filter";
-import {countries, dove94, dove96, gavi77, pineCountries, gavi68, gavi72} from "../src/Data";
+import {countries, dove94, dove96, gavi77, pineCountries, gavi68, gavi72} from "../scripts/fakeVariables";
 import {countryCodeToName, countryDict,} from "../src/Dictionaries"
 import {expect} from "chai";
 
@@ -68,10 +68,10 @@ describe("CountryFilter", () => {
     it("Check CountryFilter member variables are set correctly", () => {
 
         const sut = new CountryFilter({name: "whatever",
-                                    options: countries,
-                                    selected: ["KIR"],
-                                    humanNames: countryDict
-                                  });
+                                       options: countries,
+                                       selected: ["KIR"],
+                                       humanNames: countryDict
+                                      });
 
         expect(sut.options()).to.have.members(countries);
 

@@ -1,4 +1,4 @@
-import {countries, touchstones, activityTypes, diseases, vaccines} from "../src/Data";
+import {countries, touchstones, activityTypes, diseases, vaccines} from "../scripts/fakeVariables";
 import {DataFilterer, DataFiltererOptions} from "../src/DataFilterer";
 import {ImpactDataRow} from "../src/ImpactDataRow";
 import {expect} from "chai";
