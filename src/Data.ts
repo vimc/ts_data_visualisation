@@ -1,9 +1,13 @@
-import {loadArrayFromJSONFile, loadObjectFromJSONFile} from "./Utils";
+import {loadObjectFromJSONFile} from "./Utils";
 
-export const countries: string[] = loadObjectFromJSONFile("./countryCodes.json");
-export const touchstones: string[] = loadObjectFromJSONFile("./touchstones.json");
-export const supportTypes: string[] = loadObjectFromJSONFile("./support.json");
-export const activityTypes: string[] = loadObjectFromJSONFile("./activities.json");
+export const countries: string[] =
+    loadObjectFromJSONFile("./countryCodes.json");
+export const touchstones: string[] =
+    loadObjectFromJSONFile("./touchstones.json");
+export const supportTypes: string[] =
+    loadObjectFromJSONFile("./support.json");
+export const activityTypes: string[] =
+    loadObjectFromJSONFile("./activities.json");
 
 export const disVac = loadObjectFromJSONFile("./diseaseVaccines.json");
 export const diseases: string[] = [];
@@ -13,7 +17,8 @@ for (const k in disVac) {
     vaccines.concat(disVac[k]);
 }
 
-export const dates: {[code: string]: number[]} = loadObjectFromJSONFile("./dates.json");
+export const dates: {[code: string]: number[]} =
+    loadObjectFromJSONFile("./dates.json");
 
 // These can't be infered from the data so we have to hard code them somewhere
 export const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];

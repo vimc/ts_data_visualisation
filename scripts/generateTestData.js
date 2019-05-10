@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-import {countries, touchstones, activityTypes, diseases, supportTypes} from "../src/Data.ts"
+import {countries, touchstones, activityTypes, diseases, supportTypes} from "./fakeVariables.ts"
 
 for (let i in touchstones) {
     var tsName = touchstones[i];
