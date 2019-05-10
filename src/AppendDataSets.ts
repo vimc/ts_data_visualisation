@@ -1,5 +1,6 @@
 import * as $ from "jquery";
 import {ImpactDataRow} from "./ImpactDataRow";
+import {loadObjectFromJSONFile} from "./Utils";
 
 export interface DataSetUpdate {
     newDataSet: ImpactDataRow[];
@@ -17,23 +18,8 @@ export function appendToDataSet(touchstones: string[],
             // WARNING This file needs to be in same directory otherwise
             // it will break the report on the portal
             const filename = "./impactData_" + touchstone + ".js";
-
-            let newData: ImpactDataRow[] = []; // fail safe in case the file can't be read
-            $.ajax({
-                async: false,
-                contentType: "text/plain",
-                data: { request: "", target: "arrange_url", method: "method_target" },
-                dataType: "text",
-                global: false,
-                success: (data: string) => {
-                    // eval is awful but we have to parse text files to variable
-                    // there might be a way around this
-                    newData = eval(data);
-                    return;
-                },
-                type: "GET",
-                url: filename,
-            });
+            const newData: ImpactDataRow[] =
+                    loadObjectFromJSONFile(filename);
 
             curDataset = curDataset.concat(newData);
             seenDataSets.push(touchstone);
