@@ -1,4 +1,28 @@
-import {countryCodeToName, vaccineCodeToName, diseaseCodeToName, diseaseVaccineLookup} from "../src/Dictionaries";
+import * as ut from "../src/Utils"
+import * as sinon from "sinon";
+// mock here
+const stub = sinon.stub(ut, 'loadObjectFromJSONFile');
+stub.returns([
+    {"country":"FJI","country_name":"Fiji"},
+    {"country":"GMB","country_name":"Gambia"},
+    {"country":"GEO","country_name":"Georgia"},
+    {"country":"GHA","country_name":"Ghana"},
+    {"country":"GTM","country_name":"Guatemala"},
+    {"country":"GIN","country_name":"Guinea"},
+    {"country":"GNB","country_name":"Guinea-Bissau"},
+    {"country":"GUY","country_name":"Guyana"},
+    {"country":"HTI","country_name":"Haiti"},
+    {"country":"HND","country_name":"Honduras"},
+    {"country":"IND","country_name":"India"},
+    {"country":"COD","country_name":"DR Congo"},
+    {"country":"MMR","country_name":"Myanmar"},
+    {"country":"BIH","country_name":"Bosnia and Herzegovina"},
+    {"country":"KGZ","country_name":"Kyrgyzstan"},
+    {"country":"PNG","country_name":"Papua New Guinea"},
+    {"country":"PAK","country_name":"Pakistan"},
+]);
+
+import {countryDict, countryCodeToName, vaccineCodeToName, diseaseCodeToName, diseaseVaccineLookup} from "../src/Dictionaries";
 import {expect} from "chai";
 
 describe("countryCodeToName", () => {
@@ -60,3 +84,5 @@ describe("diseaseCodeToName", () => {
         expect(name4).to.be.undefined;
     })
 });
+
+stub.restore();

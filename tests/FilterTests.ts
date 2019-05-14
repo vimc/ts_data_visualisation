@@ -1,3 +1,20 @@
+import * as ut from "../src/Utils";
+import * as sinon from "sinon";
+
+const stub = sinon.stub(ut, 'loadObjectFromJSONFile');
+stub.returns([
+    "AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
+    "BEN", "BTN", "BOL", "BIH", "BFA", "BDI", "KHM", "CMR", "CPV", "CAF", "TCD",
+    "CHN", "COM", "CIV", "CUB", "DJI", "PRK", "COD", "EGY", "SLV", "ERI", "ETH",
+    "FJI", "GMB", "GEO", "GHA", "GTM", "GIN", "GNB", "GUY", "HTI", "HND", "IND",
+    "IDN", "IRQ", "KEN", "KIR", /*"XK",*/ "KGZ", "LSO", "LBR", "MDG", "MWI",
+    "MLI", "MHL", "MRT", "FSM", "MDA", "MNG", "MAR", "MOZ", "MMR", "NPL", "NIC",
+    "NER", "NGA", "PAK", /*"PSE",*/ "PNG", "PRY", "LAO", "PHL", "COG", "RWA",
+    "WSM", "STP", "SEN", "SLE", "SLB", "SOM", /*"SSD",*/ "LKA", "SDN", "SWZ",
+    "SYR", "TJK", "TZA", "TLS", "TGO", "TON", "TKM", "TUV", "UGA", "UKR", "UZB",
+    "VUT", "VNM", "YEM", "ZMB", "ZWE"
+]);
+
 import {CountryFilter, DiseaseFilter, Filter, ListFilter, RangeFilter} from "../src/Filter";
 import {countries, dove94, dove96, gavi77, pineCountries, gavi68, gavi72} from "../scripts/fakeVariables";
 import {countryCodeToName, countryDict,} from "../src/Dictionaries"
@@ -117,3 +134,5 @@ describe("CountryFilter", () => {
         expect(sut.selectedOptions()).to.have.members(pineCountries);
     })
 });
+
+stub.restore();

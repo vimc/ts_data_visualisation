@@ -1,7 +1,9 @@
+import * as ut from "../src/Utils";
+import * as sinon from "sinon";
+
 import {MetaDataDisplay, toPlural} from "../src/MetaDataDisplay";
 import {CustomChartOptions} from "../src/Chart";
 import {expect} from "chai";
-
 
 describe("MetaDataDisplay", () => {
     it("Check meta data", () => {
