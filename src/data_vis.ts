@@ -9,7 +9,7 @@ import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker} from "./CreateDataTable";
 import {activityTypes, countries, dates, diseases, plottingVariables,
-        supportTypes, touchstones, vaccines} from "./Data";
+        supportTypes, reportInfo, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
@@ -24,8 +24,6 @@ export let addedDataSets: string[] = [];
 const update = appendToDataSet([initTouchstone], addedDataSets, []);
 addedDataSets = update.newSeenList;
 export let impactData = update.newDataSet;
-
-declare const reportInfo: any;
 
 require("./index.html");
 require("./image/logo-dark-drop.png");

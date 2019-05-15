@@ -68,6 +68,21 @@ fs.writeFile(
     }
 );
 
+// dates.json
+fs.writeFile(
+    "data/test/reportInfo.json",
+    JSON.stringify({
+        "rep_id": ["test-fake-id"],
+        "dep_id": ["test-another-fake-id"],
+        "git_id": ["some-fake-git-id"]
+    }),
+    function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    }
+);
+
 // support.json
 fs.writeFile(
     "data/test/support.json",
