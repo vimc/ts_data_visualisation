@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate-fake-data": "babel-node scripts/generateTestData  --presets es2015",
+    "generate-fake-data": "mkdir -p data/test/ babel-node scripts/generateTestData  --presets es2015",
     "build": "mkdir -p out && cp -R data/. out/ && webpack",
     "build-dev-watch": "mkdir -p {out,data/test/} && cp -R data/test/. out/ &&  webpack --watch",
     "build-dev": "mkdir -p {out,data/test/} && cp -R data/test/. out/ && webpack",
