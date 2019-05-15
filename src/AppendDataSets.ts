@@ -17,7 +17,7 @@ export function appendToDataSet(touchstones: string[],
             // ...if not add it
             // WARNING This file needs to be in same directory otherwise
             // it will break the report on the portal
-            const filename = "./impactData_" + touchstone + ".js";
+            const filename = "./impactData_" + touchstone + ".json";
             const newData: ImpactDataRow[] =
                     loadObjectFromJSONFile(filename);
 

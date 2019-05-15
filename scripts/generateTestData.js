@@ -6,7 +6,7 @@ import {countryDict, countries, touchstones, activityTypes, diseases, diseaseVac
 // Impact data
 for (let i in touchstones) {
     var tsName = touchstones[i];
-    var fileName = "data/test/impactData_" + tsName + ".js";
+    var fileName = "data/test/impactData_" + tsName + ".json";
     fs.writeFile(fileName, generateData(tsName), function (err) {
     if (err) {
         return console.log(err);
