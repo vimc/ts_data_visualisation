@@ -15,9 +15,9 @@ describe("WarningMessageManager", () => {
         const chartOptions: CustomChartOptions
             = <CustomChartOptions>{
                 activityTypes: ["at1", "at2"],
-                compare: "cofinance_status_2018",
+                xAxis: "cofinance_status_2018",
                 cumulative: true,
-                disagg: "DIS",
+                yAxis: "DIS",
                 hideLabels: false,
                 maxPlot: 163,
                 metric: "METRIC",
@@ -37,7 +37,7 @@ describe("WarningMessageManager", () => {
     expect(errmsg).to.have.string("Multiple touchstones have been selected, Compare across should " +
                                   "be set to touchstone otherwise the data shown will be meaningless");
 
-    chartOptions["compare"] = "touchstone";
+    chartOptions["xAxis"] = "touchstone";
     const errmsg_2: string = wmm.getError(chartOptions);
     expect(errmsg_2).to.have.string("");
   });
@@ -46,9 +46,9 @@ describe("WarningMessageManager", () => {
         const chartOptions: CustomChartOptions
             = <CustomChartOptions>{
                 activityTypes: ["at1", "at2"],
-                compare: "cofinance_status_2018",
+                xAxis: "cofinance_status_2018",
                 cumulative: true,
-                disagg: "DIS",
+                yAxis: "DIS",
                 hideLabels: false,
                 maxPlot: 163,
                 metric: "METRIC",

@@ -1,5 +1,5 @@
 import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
-import {DataFilterer, DataFiltererOptions, FilteredData, MeanData} from "./DataFilterer";
+import {DataFilterer, DataFiltererOptions, FilteredData} from "./DataFilterer";
 import {touchstoneYears} from "./Dictionaries";
 import {plotColours} from "./PlotColours";
 
@@ -35,8 +35,22 @@ export function rescaleLabel(value: number, scale: number): string {
     return value.toString();
 }
 
-// At some point need to write a typedef for the return class
-function annotationHelper(touchstone: string, year: number, colour: string): any {
+export interface BaseAnnotation {
+    drawTime: string;
+    type: string;
+    mode: string;
+    scaleID: string;
+    value: number;
+    borderWidth: number;
+    borderColor: string;
+    label: {
+        content: string;
+        enabled: boolean;
+        position: string;
+    };
+}
+
+export function annotationHelper(touchstone: string, year: number, colour: string): BaseAnnotation {
     const a =   {
                     drawTime: "afterDatasetsDraw",
                     type: "line",
@@ -54,12 +68,11 @@ function annotationHelper(touchstone: string, year: number, colour: string): any
     return a;
 }
 
-function dateToAnnotation(touchstones: string[]): any[] {
-    const anno = touchstones.map( (tch: string): any => {
+export function dateToAnnotation(touchstones: string[]): BaseAnnotation[] {
+    const anno = touchstones.map( (tch: string): BaseAnnotation => {
                     return annotationHelper(tch, touchstoneYears[tch],
                                             plotColours[tch]);
                 });
-
     return anno;
 }
 
@@ -117,6 +130,7 @@ export function impactChartConfig(filterData: FilteredData,
                 },
             },
             animation: {
+                // this has to be a methodName() and not a () => or else it breaks chart.js!
                 onComplete() {
                     const chart = this.chart;
                     const context = chart.ctx;
@@ -138,10 +152,10 @@ export function impactChartConfig(filterData: FilteredData,
     };
 }
 
-export function timeSeriesChartConfig(filterData: MeanData,
+export function timeSeriesChartConfig(filterData: FilteredData,
                                       compareNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
-    const anno: any[] = dateToAnnotation(chartOptions.selectedTouchstones);
+    const anno: BaseAnnotation[] = dateToAnnotation(chartOptions.selectedTouchstones);
 
     return {
         type: "line",

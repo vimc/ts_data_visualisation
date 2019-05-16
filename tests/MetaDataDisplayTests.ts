@@ -11,9 +11,9 @@ describe("MetaDataDisplay", () => {
         const chartOptions: CustomChartOptions
             = <CustomChartOptions>{
                 activityTypes: ["at1", "at2"],
-                compare: "cofinance_status_2018",
+                xAxis: "cofinance_status_2018",
                 cumulative: true,
-                disagg: "DIS",
+                yAxis: "DIS",
                 hideLabels: false,
                 maxPlot: 163,
                 metric: "METRIC",
@@ -50,7 +50,7 @@ describe("MetaDataDisplay", () => {
         expect(md2).to.include("163");
 
         chartOptions["plotType"] = "Time series";
-        chartOptions["compare"] = "country";
+        chartOptions["xAxis"] = "country";
         chartOptions["maxPlot"] = 1;
         chartOptions['selectedCountries'] = ["FJI", "GMB", "GEO", "GHA", "GTM", "GIN", "GNB", "GUY", "HTI", "HND", "IND"];
         chartOptions['selectedTouchstones'] = ["ts1", "ts2"];
