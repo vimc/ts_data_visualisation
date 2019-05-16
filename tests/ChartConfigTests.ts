@@ -1,8 +1,14 @@
+import * as ut from "../src/Utils"
+import * as sinon from "sinon";
+const touchstones = ["201710gavi", "201710gavi-201810gavi", "201510gavi",
+                            "201310gavi-201810gavi", "201310gavi",
+                            "201310gavi-201403gavi", "201510gavi-201810gavi",
+                            "201210gavi-201810gavi", "201210gavi-201303gavi"];
+
 import {ChartConfiguration} from "chart.js";
 import {annotationHelper, dateToAnnotation, impactChartConfig,
         timeSeriesChartConfig, AnnotatedChartConfiguration,
         BaseAnnotation, CustomChartOptions} from "../src/Chart";
-import {touchstones} from "../src/Data";
 import {FilteredData} from "../src/DataFilterer";
 import {expect} from "chai";
 
