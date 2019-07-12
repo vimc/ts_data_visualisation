@@ -1,10 +1,12 @@
 const fs = require('fs');
 
-import {countries, touchstones, activityTypes, diseases, supportTypes} from "../src/Data.ts"
+import {countryDict, countries, touchstones, activityTypes, diseases, diseaseVaccines, 
+        supportTypes} from "./fakeVariables.ts"
 
+// Impact data
 for (let i in touchstones) {
     var tsName = touchstones[i];
-    var fileName = "data/test/impactData_" + tsName + ".js";
+    var fileName = "data/test/impactData_" + tsName + ".json";
     fs.writeFile(fileName, generateData(tsName), function (err) {
     if (err) {
         return console.log(err);
@@ -13,6 +15,95 @@ for (let i in touchstones) {
     console.log("Fake data saved to " + fileName)
 });
 }
+
+// activities.json
+fs.writeFile("data/test/activities.json",
+             JSON.stringify(activityTypes),
+             function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+             }
+);
+
+// countryCodes.json
+fs.writeFile("data/test/countryCodes.json",
+             JSON.stringify(countries),
+             function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+             }
+);
+
+// countryCodes.json
+fs.writeFile("data/test/countryDictionary.json",
+             JSON.stringify(countryDict),
+             function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+             }
+);
+
+// dates.json
+fs.writeFile(
+    "data/test/dates.json",
+    JSON.stringify({"min":[2010],"max":[2020]}), 
+    function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    }
+);
+
+// dates.json
+fs.writeFile(
+    "data/test/diseaseVaccines.json",
+    JSON.stringify(diseaseVaccines), 
+    function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    }
+);
+
+// dates.json
+fs.writeFile(
+    "data/test/reportInfo.json",
+    JSON.stringify({
+        "rep_id": ["test-fake-id"],
+        "dep_id": ["test-another-fake-id"],
+        "git_id": ["some-fake-git-id"]
+    }),
+    function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    }
+);
+
+// support.json
+fs.writeFile(
+    "data/test/support.json",
+    JSON.stringify(supportTypes), 
+    function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    }
+);
+
+// touchstones.json
+fs.writeFile(
+    "data/test/touchstones.json",
+    JSON.stringify(touchstones), 
+    function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    }
+);
 
 function generateData(touchstone) {
     const touchstoneSubset = touchstones.slice(0, 3);

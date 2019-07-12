@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 
-import {countries, dove94, dove96, gavi68, gavi72, gavi77, pineCountries} from "./Data";
+import {dove94, dove96, gavi68, gavi72, gavi77, pineCountries} from "./Data";
 import {diseaseDict} from "./Dictionaries";
 
 export interface FilterSettings {
@@ -62,8 +62,6 @@ export class CountryFilter extends ListFilter {
         super(settings);
         this.options(settings.options);
         this.selectedOptions(settings.selected || settings.options);
-
-        this.selectCountryGroup("pine");
     }
 
     public selectCountryGroup(selectedGroup: string) {
