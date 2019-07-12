@@ -1,4 +1,4 @@
-/* 
+/*
 The country groups were to be used in the function generateCountryGroup
 is Data.ts. See the comment on that function explaining why it is not used.
 */

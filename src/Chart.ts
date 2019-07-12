@@ -1,6 +1,5 @@
 import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
 import {DataFilterer, DataFiltererOptions, FilteredData} from "./DataFilterer";
-//import {touchstoneYears} from "./Dictionaries";
 import {plotColours} from "./PlotColours";
 
 export const touchstoneYears: { [code: string]: number} = {
