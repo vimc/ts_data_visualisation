@@ -90,10 +90,8 @@ describe("CountryFilter", () => {
                                        humanNames: countryDict
                                       });
 
+        expect(sut.selectedOptions()).to.have.members(["KIR"]);
         expect(sut.options()).to.have.members(countries);
-
-        // initialises to PINE countries
-        expect(sut.selectedOptions()).to.have.members(pineCountries);
 
         expect(sut.makeHumanreadable("PAK")).to.equal("Pakistan");
 
@@ -104,21 +102,6 @@ describe("CountryFilter", () => {
 
         sut.selectCountryGroup("none");
         expect(sut.selectedOptions()).to.have.members([]);
-
-        sut.selectCountryGroup("gavi72");
-        expect(sut.selectedOptions()).to.have.members(gavi72);
-
-        sut.selectCountryGroup("gavi68");
-        expect(sut.selectedOptions()).to.have.members(gavi68);
-
-        sut.selectCountryGroup("dove94");
-        expect(sut.selectedOptions()).to.have.members(dove94);
-
-        sut.selectCountryGroup("dove96");
-        expect(sut.selectedOptions()).to.have.members(dove96);
-
-        sut.selectCountryGroup("gavi77");
-        expect(sut.selectedOptions()).to.have.members(gavi77);
 
         sut.selectCountryGroup("FISH");
         expect(sut.selectedOptions()).to.have.members([]);
@@ -131,7 +114,7 @@ describe("CountryFilter", () => {
                                        humanNames: countryDict
                                       });
 
-        expect(sut.selectedOptions()).to.have.members(pineCountries);
+        expect(sut.selectedOptions()).to.have.members(countries);
     })
 });
 

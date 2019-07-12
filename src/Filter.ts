@@ -63,7 +63,7 @@ export class CountryFilter extends ListFilter {
         this.options(settings.options);
         this.selectedOptions(settings.selected || settings.options);
 
-        this.selectCountryGroup("pine");
+        //this.selectCountryGroup("pine");
     }
 
     public selectCountryGroup(selectedGroup: string) {

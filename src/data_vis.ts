@@ -8,7 +8,7 @@ import "select2/dist/css/select2.min.css";
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
-import {activityTypes, countries, dates, diseases, plottingVariables,
+import {activityTypes, countries, dates, diseases, pineCountries, plottingVariables,
         reportInfo, supportTypes, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
@@ -80,6 +80,7 @@ class DataVisModel {
         humanNames: countryDict,
         name: "Country",
         options: countries,
+        selected: pineCountries,
     }));
 
     private diseaseFilter = ko.observable(new DiseaseFilter({
