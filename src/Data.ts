@@ -1,3 +1,4 @@
+import {ImpactDataRow} from "./ImpactDataRow";
 import {loadObjectFromJSONFile} from "./Utils";
 
 export const countries: string[] =
@@ -20,30 +21,30 @@ for (const k in disVac) {
 export const dates: {[code: string]: number[]} =
     loadObjectFromJSONFile("./dates.json");
 
-// These can't be infered from the data so we have to hard code them somewhere
-export const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
+/*
+This function is not used - the idea was to generate country groups (e.g. pine5)
+from the dataset rather than reading them from a file. However we use the
+country group before we fully load the data set and we can get into a mess.
 
-const notDove94 = ["ALB", "BIH", "CHN", "TUN"];
-export const dove94 = countries.filter((x) => notDove94.indexOf(x) < 0 );
+Se also the commented out line in ImpactDataRow
 
-const notDove96 = ["TUN", "XK"];
-export const dove96 = countries.filter((x) => notDove96.indexOf(x) < 0 );
+There probably is a way to do this, but I'm not sure what it is yet.
 
-const notGavi68 = ["ALB", "BIH", "BLZ", "BTN", "CHN", "CPV", "EGY",
-    "FJI", "FSM", "GTM", "HND", "IRQ", "LKA", "MAR", "MHL", "MNG", "PHL", "PRY",
-    "PSE", "SLV", "SWZ", "SYR", "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM",
-    "XK"];
-export const gavi68 = countries.filter((x) => notGavi68.indexOf(x) < 0 );
+function generateCountryGroup(impactData: ImpactDataRow[],
+                              id: string): string[] {
+    const countries: string[] = impactData.filter((row) => row[id])
+                                          .map((row) => row.country);
+    return [...new Set(countries)];
+}
+*/
 
-const notGavi72 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
-    "FSM", "GTM", "IRQ", "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR",
-    "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM", "XK"];
-export const gavi72 = countries.filter((x) => notGavi72.indexOf(x) < 0 );
-
-const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
-    "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR", "TON", "TUN", "TUV",
-    "VUT", "WSM", "XK"];
-export const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
+// read in the country groups from files
+export const pineCountries: string[] = loadObjectFromJSONFile("./pine5.json");
+export const dove94: string[] = loadObjectFromJSONFile("./dove94.json");
+export const dove96: string[] = loadObjectFromJSONFile("./dove96.json");
+export const gavi68: string[] = loadObjectFromJSONFile("./gavi68.json");
+export const gavi72: string[] = loadObjectFromJSONFile("./gavi72.json");
+export const gavi77: string[] = loadObjectFromJSONFile("./gavi77.json");
 
 export const plottingVariables = ["year", "country", "continent", "region",
     "cofinance_status_2018", "activity_type", "disease", "vaccine",

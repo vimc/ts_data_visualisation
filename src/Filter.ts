@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 
-import {countries, dove94, dove96, gavi68, gavi72, gavi77, pineCountries} from "./Data";
+import {dove94, dove96, gavi68, gavi72, gavi77, pineCountries} from "./Data";
 import {diseaseDict} from "./Dictionaries";
 
 export interface FilterSettings {
