@@ -58,10 +58,11 @@ export const activityTypes = ["routine", "campaign", "combined"];
 export const plottingVariables = ["year", "country", "continent", "region",
     "cofinance_status_2018", "activity_type", "disease", "vaccine", "touchstone", "support_type"];
 
-export const touchstones = ["201710gavi", "201710gavi-201810gavi", "201510gavi",
-                            "201310gavi-201810gavi", "201310gavi",
-                            "201310gavi-201403gavi", "201510gavi-201810gavi",
-                            "201210gavi-201810gavi", "201210gavi-201303gavi"];
+export const touchstones = ["201210gavi-201303gavi", "201210gavi-201907wue",
+                            "201310gavi", "201310gavi-201403gavi",
+                            "201310gavi-201907wue", "201510gavi",
+                            "201510gavi-201907wue", "201710gavi",
+                            "201710gavi-201907wue"];
 
 export const supportTypes = ["gavi", "other"];
 
