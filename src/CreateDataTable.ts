@@ -15,7 +15,7 @@ export type WideTableRow = BaseRow & {
 };
 
 export class TableMaker {
-    public createTable(dataSets: FilteredRow[], compareNames: string[]): KnockoutObservableArray<TableRow> {
+    public createTable(dataSets: FilteredRow[], compareNames: string[]): ko.ObservableArray<TableRow> {
         const returnData = ko.observableArray<TableRow>([]);
         for (const ds of dataSets) {
             const lbl = ds.label;
@@ -28,7 +28,7 @@ export class TableMaker {
         return returnData;
     }
 
-    public createWideTable(dataSets: FilteredRow[], compareNames: string[]): KnockoutObservableArray<WideTableRow> {
+    public createWideTable(dataSets: FilteredRow[], compareNames: string[]): ko.ObservableArray<WideTableRow> {
         const returnData = ko.observableArray([]);
         const key = "label"; // this is a hack, eventually dataset needs an interface
         const disAggVars = dataSets.map((x) => x[key]);

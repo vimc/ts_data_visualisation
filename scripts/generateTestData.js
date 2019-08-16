@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 import {countryDict, countries, touchstones, activityTypes, diseases, diseaseVaccines, 
-        supportTypes} from "./fakeVariables.ts"
+        supportTypes, pineCountries, dove94, dove96, gavi68, gavi72, gavi77} from "./fakeVariables.ts"
 
 // Impact data
 for (let i in touchstones) {
@@ -16,94 +16,36 @@ for (let i in touchstones) {
 });
 }
 
-// activities.json
-fs.writeFile("data/test/activities.json",
-             JSON.stringify(activityTypes),
-             function (err) {
-                if (err) {
-                    return console.log(err);
-                }
-             }
-);
+function writeToFile(path, data) {
+    fs.writeFile(path, JSON.stringify(data),
+                 function (err) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                 }
+    );
+}
 
-// countryCodes.json
-fs.writeFile("data/test/countryCodes.json",
-             JSON.stringify(countries),
-             function (err) {
-                if (err) {
-                    return console.log(err);
-                }
-             }
-);
+writeToFile("data/test/activities.json", activityTypes);
+writeToFile("data/test/countryCodes.json", countries);
+writeToFile("data/test/countryDictionary.json", countryDict);
+writeToFile("data/test/dates.json", {"min":[2010],"max":[2020]});
+writeToFile("data/test/diseaseVaccines.json", diseaseVaccines);
+writeToFile("data/test/reportInfo.json",
+            { "rep_id": ["test-fake-id"],
+              "dep_id": ["test-another-fake-id"],
+              "git_id": ["some-fake-git-id"]
+            }
+           );
+writeToFile("data/test/support.json", supportTypes);
+writeToFile("data/test/dove94.json", dove94);
+writeToFile("data/test/dove96.json", dove96);
+writeToFile("data/test/gavi68.json", gavi68);
+writeToFile("data/test/gavi72.json", gavi72);
+writeToFile("data/test/gavi77.json", gavi77);
+writeToFile("data/test/pine5.json", pineCountries);
+writeToFile("data/test/touchstones.json", touchstones);
 
-// countryCodes.json
-fs.writeFile("data/test/countryDictionary.json",
-             JSON.stringify(countryDict),
-             function (err) {
-                if (err) {
-                    return console.log(err);
-                }
-             }
-);
-
-// dates.json
-fs.writeFile(
-    "data/test/dates.json",
-    JSON.stringify({"min":[2010],"max":[2020]}), 
-    function (err) {
-        if (err) {
-            return console.log(err);
-        }
-    }
-);
-
-// dates.json
-fs.writeFile(
-    "data/test/diseaseVaccines.json",
-    JSON.stringify(diseaseVaccines), 
-    function (err) {
-        if (err) {
-            return console.log(err);
-        }
-    }
-);
-
-// dates.json
-fs.writeFile(
-    "data/test/reportInfo.json",
-    JSON.stringify({
-        "rep_id": ["test-fake-id"],
-        "dep_id": ["test-another-fake-id"],
-        "git_id": ["some-fake-git-id"]
-    }),
-    function (err) {
-        if (err) {
-            return console.log(err);
-        }
-    }
-);
-
-// support.json
-fs.writeFile(
-    "data/test/support.json",
-    JSON.stringify(supportTypes), 
-    function (err) {
-        if (err) {
-            return console.log(err);
-        }
-    }
-);
-
-// touchstones.json
-fs.writeFile(
-    "data/test/touchstones.json",
-    JSON.stringify(touchstones), 
-    function (err) {
-        if (err) {
-            return console.log(err);
-        }
-    }
-);
 
 function generateData(touchstone) {
     const touchstoneSubset = touchstones.slice(0, 3);

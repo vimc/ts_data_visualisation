@@ -1,6 +1,7 @@
 import {countries, touchstones, activityTypes, diseases, vaccines} from "../scripts/fakeVariables";
 import {DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
 import {ImpactDataRow} from "../src/ImpactDataRow";
+import {plotColours} from "../src/PlotColours";
 import {expect} from "chai";
 
 function randomNumber(floor: number, ceiling: number) : number {
@@ -264,5 +265,36 @@ describe("DataFilterer", () => {
                 }
             }
         }
+    })
+
+    it("filterData", () => {
+        let fakeOptions: DataFiltererOptions = {
+            metric: "deaths_averted",
+            maxPlot: 10,
+            xAxis: "continent",
+            yAxis: "year",
+            yearLow: 2005,
+            yearHigh: 2025,
+            activityTypes: ["routine","campaign"],
+            selectedCountries: countries.slice(0, 5),
+            selectedVaccines: ["HepB_BD", "MCV2", "Rota"],
+            selectedTouchstones: touchstones.slice(0, 2),
+            plotType: "Impact",
+            supportType: ["gavi"],
+            cumulative: true,
+            timeSeries: true,
+        }
+        // the functionality of this function covered in the unit testing above
+        // all these tests do is make sure the main function runs without an
+        // error
+        let out = testObject.filterData(fakeOptions, fakeImpactData,
+                                          plotColours);
+
+        fakeOptions.metric = "deaths_averted_rate",
+        fakeOptions.xAxis = "year";
+        fakeOptions.yAxis = "continent";
+
+        out = testObject.calculateMean(fakeOptions, fakeImpactData,
+                                          plotColours);
     })
 });
