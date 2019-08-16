@@ -7,8 +7,7 @@ require("select2");
 // ./node_modules/@types/knockout/index.d.ts
 // As of 15/08/2019 We are no longer using @types/knockout
 // because it leads to compiler errors, we might restore it when someone fixes it!
-interface AllBindingsAccessor {
-    (): any;
+export interface AllBindingsAccessor {
     get(name: string): any;
     has(name: string): boolean;
 }
