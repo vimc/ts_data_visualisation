@@ -18,6 +18,7 @@ export let plotColours: { [vaccine: string]: string } = {
     "Rubella": "#D9D9D9",
     "YF":      "#BC80BD",
     // years
+    "2010":    "#FFFFFF",
     "2011":    "#0022E5",
     "2012":    "#0620DF",
     "2013":    "#0D1FD9",
