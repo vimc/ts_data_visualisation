@@ -354,6 +354,16 @@ class DataVisModel {
         });
     }
 
+    private exportAllData() {
+        jsonexport(impactData, (err: any, csv: any) => {
+            if (err) {
+                return; // probably do something else here
+            }
+            const blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "alldata.csv");
+        });
+    }
+
     private changeBurden(burden: string) {
         this.humanReadableBurdenOutcome(burden);
         this.plotTitle(this.defaultTitle());
