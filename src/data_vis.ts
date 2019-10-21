@@ -356,7 +356,7 @@ class DataVisModel {
 
     private exportAllData() {
         const warnMsg : string = "Warning the dataset is quite large and can take several minutes to download";
-        const fileName : string = this.reportId() + "_dataset.csv"
+        const fileName : string = reportInfo.rep_id + "_dataset.csv"
         if (confirm(warnMsg)) {
             jsonexport(impactData, (err: any, csv: any) => {
                 if (err) {
