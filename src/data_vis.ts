@@ -355,13 +355,19 @@ class DataVisModel {
     }
 
     private exportAllData() {
-        jsonexport(impactData, (err: any, csv: any) => {
-            if (err) {
-                return; // probably do something else here
-            }
-            const blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, "alldata.csv");
-        });
+        const warnMsg : string = "Warning the dataset is quite large and can take several minutes to download";
+        const fileName : string = this.reportId() + "_dataset.csv"
+        if (confirm(warnMsg)) {
+            jsonexport(impactData, (err: any, csv: any) => {
+                if (err) {
+                    return; // probably do something else here
+                }
+                const blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, fileName);
+            });
+        } else {
+            // do nothing
+        }
     }
 
     private changeBurden(burden: string) {
