@@ -34,6 +34,7 @@ writeToFile("data/test/diseaseVaccines.json", diseaseVaccines);
 writeToFile("data/test/reportInfo.json",
             { "rep_id": ["test-fake-id"],
               "dep_id": ["test-another-fake-id"],
+              "dep_name": ["report-name"],
               "git_id": ["some-fake-git-id"]
             }
            );

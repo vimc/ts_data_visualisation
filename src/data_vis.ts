@@ -122,6 +122,9 @@ class DataVisModel {
     private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
     private dataId = ko.observable<string>("Data id: " + reportInfo.dep_id);
     private appId = ko.observable<string>("App. id: " + reportInfo.git_id);
+    private dataLink = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"
+                                             + reportInfo.dep_name + "/"
+                                             + reportInfo.dep_id + "/");
 
     private hideLabels = ko.observable<boolean>(false);
     private hideLegend = ko.observable<boolean>(false);
