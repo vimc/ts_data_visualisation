@@ -362,7 +362,7 @@ class DataVisModel {
         parseAsync(impactData, opts)
           .then(csv => { console.log(csv)
                          const blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
-                         saveAs(blob, "data.csv");})
+                         saveAs(blob, fileName);})
           .catch(err => console.error(err))
     }
 
