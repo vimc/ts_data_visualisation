@@ -35,8 +35,8 @@ file.remove("temporary.json")
 
 ## Quick start:
 This method is ideal for UI development where the data does not matter at all.
-1. Generate completely fake data by running `npm run generate-fake-data`
 1. `npm install`
+1. Generate completely fake data by running `npm run generate-fake-data`
 1. `npm run build-dev` or `npm run build-dev-watch`
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
