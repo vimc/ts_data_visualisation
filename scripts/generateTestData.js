@@ -1,4 +1,5 @@
 const fs = require('fs');
+import JSZip from 'jszip';
 
 import {countryDict, countries, touchstones, activityTypes, diseases, diseaseVaccines, 
         supportTypes, pineCountries, dove94, dove96, gavi68, gavi72, gavi77} from "./fakeVariables.ts"
@@ -26,6 +27,21 @@ function writeToFile(path, data) {
     );
 }
 
+function writeToZipFile(path, lines) {
+    const  t = Array(lines).fill(0).map(() => {
+        const a = randomNumber(0, 10000) + "";
+        return a;
+    });
+    const str = t.join();
+    let zip = new JSZip();
+    const zipfile = zip.file("data_set.csv", str);
+    zip.generateNodeStream({type:'nodebuffer', streamFiles:true})
+       .pipe(fs.createWriteStream(path))
+       .on('finish', function () {
+           console.log("Zip file saved to " + path + ".");
+        });
+}
+
 writeToFile("data/test/activities.json", activityTypes);
 writeToFile("data/test/countryCodes.json", countries);
 writeToFile("data/test/countryDictionary.json", countryDict);
@@ -45,6 +61,7 @@ writeToFile("data/test/gavi72.json", gavi72);
 writeToFile("data/test/gavi77.json", gavi77);
 writeToFile("data/test/pine5.json", pineCountries);
 writeToFile("data/test/touchstones.json", touchstones);
+writeToZipFile("data/test/data_set.zip", 100);
 
 
 function generateData(touchstone) {

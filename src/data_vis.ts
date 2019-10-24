@@ -36,7 +36,6 @@ require("./css/styles.css");
 require("./select2Binding");
 
 const jsonexport = require("jsonexport");
-import { parseAsync }  from 'json2csv';
 
 function createRangeArray(min: number = 1, max: number): number[] {
     const a: number[] = [];
@@ -356,14 +355,16 @@ class DataVisModel {
     }
 
     private exportAllData() {
-        const warnMsg : string = "Warning the dataset is quite large and can take several minutes to download";
-        const fileName : string = reportInfo.rep_id + "_dataset.csv"
-        const opts = {  };
-        parseAsync(impactData, opts)
-          .then(csv => { console.log(csv)
-                         const blob = new Blob([csv], {type: "text/plain;charset=utf-8"});
-                         saveAs(blob, fileName);})
-          .catch(err => console.error(err))
+        const fileName : string = reportInfo.rep_id + "_dataset.zip"
+        $.ajax({
+            url: "data_set.zip",
+            processData: false,
+            dataType: 'text',
+            type: "GET",
+            }).done(function(data) {
+                var blob = new Blob([data], { type: "text/plain; encoding=utf8" });
+                saveAs(blob, fileName);
+        });
     }
 
     private changeBurden(burden: string) {
