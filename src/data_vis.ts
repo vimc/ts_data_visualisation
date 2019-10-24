@@ -355,16 +355,13 @@ class DataVisModel {
     }
 
     private exportAllData() {
-        const fileName : string = reportInfo.rep_id + "_dataset.zip"
-        $.ajax({
-            url: "data_set.zip",
-            processData: false,
-            dataType: 'text',
-            type: "GET",
-            }).done(function(data) {
-                var blob = new Blob([data], { type: "text/plain; encoding=utf8" });
-                saveAs(blob, fileName);
-        });
+        const fileName : string = reportInfo.dep_id + "_data_set.zip"
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = "data_set.zip";
+        a.download = fileName;
+        a.click();
+        document.body.removeChild(a);
     }
 
     private changeBurden(burden: string) {
