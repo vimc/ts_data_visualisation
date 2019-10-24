@@ -34,7 +34,8 @@ function writeToZipFile(path, lines) {
     });
     const str = t.join();
     let zip = new JSZip();
-    const zipfile = zip.file("data_set.csv", str);
+    zip.file("data_set.csv", str);
+    zip.file("report_id.txt", "test-another-fake-id");
     zip.generateNodeStream({type:'nodebuffer', streamFiles:true})
        .pipe(fs.createWriteStream(path))
        .on('finish', function () {
