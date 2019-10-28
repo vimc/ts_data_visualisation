@@ -419,6 +419,20 @@ class DataVisModel {
             saveAs(blob, "data.csv");
         });
     }
+
+    // Modal Help Window
+    private modalHelpVisible = ko.observable(false);
+    private headerHelp = ko.observable('Some header text');
+    private bodyTemplate = ko.observable('Modal Body Template');
+    private bodyHelp = ko.observable('Modal Help Body');
+    private helpOkText = ko.observable();
+
+    private modelShow() {
+        console.log("modelShow");
+        console.log(this.modalHelpVisible());
+        this.modalHelpVisible(true);
+        console.log(this.modalHelpVisible());
+    }
 }
 
 $(document).ready(() => {
