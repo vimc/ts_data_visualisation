@@ -5,7 +5,7 @@ import {saveAs} from "file-saver";
 import * as $ from "jquery";
 import * as ko from "knockout";
 import "select2/dist/css/select2.min.css";
-import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
+import {appendToDataSet, getSingleDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, dates, diseases, pineCountries, plottingVariables,
@@ -24,6 +24,9 @@ export let addedDataSets: string[] = [];
 const update = appendToDataSet([initTouchstone], addedDataSets, []);
 addedDataSets = update.newSeenList;
 export let impactData = update.newDataSet;
+
+export let method_0_Data = getSingleDataSet("./impactData_201710gavi_method_0.json");
+export let method_1_Data = getSingleDataSet("./impactData_201710gavi_method_1.json");
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
