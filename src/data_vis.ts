@@ -23,10 +23,30 @@ const initTouchstone: string = "201710gavi-201907wue";
 export let addedDataSets: string[] = [];
 const update = appendToDataSet([initTouchstone], addedDataSets, []);
 addedDataSets = update.newSeenList;
-export let impactData = update.newDataSet;
-
+export let method_2_Data = update.newDataSet;
 export let method_0_Data = getSingleDataSet("./impactData_201710gavi_method_0.json");
 export let method_1_Data = getSingleDataSet("./impactData_201710gavi_method_1.json");
+
+export let dataSets = {
+    method_2 : {
+        data : update.newDataSet,
+        seen : update.newSeenList,
+        options : ["focality", "support", "year", "touchstone", "activityType",
+                   "country", "vaccine"]
+    },
+    method_0 : {
+        data : method_0_Data,
+        seen : ["201710gavi"],
+        options : ["focality", "support", "year", "touchstone", "activityType",
+                   "country", "vaccine"]
+    },
+    method_1 : {
+        data : method_1_Data,
+        seen : ["201710gavi"],
+        options : ["focality", "support", "year", "touchstone", "activityType",
+                   "country", "vaccine"]
+    }
+}
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -64,6 +84,9 @@ class DataVisModel {
                         "coverage" ],
     };
     private currentPlot = ko.observable("Impact");
+
+    private impactData = ko.observable(method_2_Data);
+    private yearMethod = ko.observable(2);
 
     private showSidebar = ko.observable(true);
     private yearFilter = ko.observable(new RangeFilter({
@@ -270,9 +293,9 @@ class DataVisModel {
         this.touchstoneFilter().selectedOptions.subscribe(() => {
             const newUpdate: DataSetUpdate =
                 appendToDataSet(this.touchstoneFilter().selectedOptions(),
-                                addedDataSets, impactData);
+                                addedDataSets, method_2_Data);
             addedDataSets = newUpdate.newSeenList;
-            impactData = newUpdate.newDataSet;
+            method_2_Data = newUpdate.newDataSet;
             this.updateXAxisOptions();
         });
 
@@ -293,7 +316,7 @@ class DataVisModel {
             this.chartObject.destroy();
         }
 
-        const filterData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
+        const filterData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
         const {datasets, xAxisVals} = filterData;
 
         let xAxisNames: string[] = [...xAxisVals];
@@ -317,7 +340,7 @@ class DataVisModel {
             this.chartObjectTS.destroy();
         }
 
-        const filterData = new DataFilterer().calculateMean(chartOptions, impactData, plotColours);
+        const filterData = new DataFilterer().calculateMean(chartOptions, this.impactData(), plotColours);
         const {datasets, xAxisVals} = filterData;
 
         this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
@@ -372,10 +395,31 @@ class DataVisModel {
         this.plotTitle(this.defaultTitle());
     }
 
+    private changeMethod(method: number) {
+        console.log("changeMethod")
+        switch (method) {
+            case 0:
+                this.impactData(method_0_Data);
+                this.yearMethod(0);
+                break;
+            case 1:
+                this.impactData(method_1_Data);
+                this.yearMethod(1);
+                break;
+            case 2:
+                this.impactData(method_2_Data);
+                this.yearMethod(2);
+                break;
+        }
+        console.log(this.yearMethod())
+        console.log(this.impactData()[0])
+
+    }
+
     private updateXAxisOptions() {
         // refilter the data
         const chartOptions = {...this.chartOptions(), maxPlot: -1};
-        const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
+        const filteredData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
         this.xAxisNames(filteredData.xAxisVals);
         this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
         this.maxBars(this.xAxisNames().length);

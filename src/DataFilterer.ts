@@ -197,7 +197,7 @@ export class DataFilterer {
                          plotColours: { [p: string]: string }): FilteredData {
         // x axis will always be year!
         const filtData = this.filterByAll(filterOptions, impactData);
-
+console.log(filtData.length)
         // based on the metric get the top and bottom of the ratio
         // death_rate = death / population
         const meanVars = this.meanVariables(filterOptions.metric);
@@ -521,7 +521,7 @@ export class DataFilterer {
     */
     public filterByAll(filterOptions: DataFiltererOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
-         // filter focal model
+        // filter focal model
         let filtData = this.filterByFocality(impactData, true);
         // filter so that support = gavi
         filtData = this.filterBySupport(filtData, filterOptions.supportType);
