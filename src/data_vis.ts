@@ -5,7 +5,7 @@ import {saveAs} from "file-saver";
 import * as $ from "jquery";
 import * as ko from "knockout";
 import "select2/dist/css/select2.min.css";
-import {appendToDataSet, getSingleDataSet, DataSetUpdate} from "./AppendDataSets";
+import {appendToDataSet, appendToDataSet2, getSingleDataSet, DataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, dates, diseases, pineCountries, plottingVariables,
@@ -27,26 +27,50 @@ export let method_2_Data = update.newDataSet;
 export let method_0_Data = getSingleDataSet("./impactData_201710gavi_method_0.json");
 export let method_1_Data = getSingleDataSet("./impactData_201710gavi_method_1.json");
 
-export let dataSets = {
-    method_2 : {
-        data : update.newDataSet,
-        seen : update.newSeenList,
-        options : ["focality", "support", "year", "touchstone", "activityType",
-                   "country", "vaccine"]
+
+// const montaguDataSets: DataSet[] = [
+//     {
+//         name : "method_2",
+//         data : update.newDataSet,
+//         seen : update.newSeenList,
+//     },
+//     {
+//         name : "method_0",
+//         data : method_0_Data,
+//         seen : ["201710gavi"],
+//     },
+//     {
+//         name : "method_1",
+//         data : method_1_Data,
+//         seen : ["201710gavi"],
+//     }
+// ]
+
+const montaguDataSets: DataSet[] = [
+    {
+        name : "method_2",
+        data : [],
+        seen : [],
     },
-    method_0 : {
-        data : method_0_Data,
-        seen : ["201710gavi"],
-        options : ["focality", "support", "year", "touchstone", "activityType",
-                   "country", "vaccine"]
+    {
+        name : "method_0",
+        data : [],
+        seen : [],
     },
-    method_1 : {
-        data : method_1_Data,
-        seen : ["201710gavi"],
-        options : ["focality", "support", "year", "touchstone", "activityType",
-                   "country", "vaccine"]
+    {
+        name : "method_1",
+        data : [],
+        seen : [],
     }
-}
+]
+
+appendToDataSet2([initTouchstone], "method_2", montaguDataSets)
+console.log(montaguDataSets)
+appendToDataSet2(["201710gavi"], "method_0", montaguDataSets)
+console.log(montaguDataSets)
+appendToDataSet2(["201710gavi"], "method_1", montaguDataSets)
+console.log(montaguDataSets)
+
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
