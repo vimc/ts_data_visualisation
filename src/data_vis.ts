@@ -5,7 +5,7 @@ import {saveAs} from "file-saver";
 import * as $ from "jquery";
 import * as ko from "knockout";
 import "select2/dist/css/select2.min.css";
-import {appendToDataSet, appendToDataSet2, getSingleDataSet, DataSet, DataSetUpdate} from "./AppendDataSets";
+import {getDataSet, appendToDataSet, DataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, dates, diseases, pineCountries, plottingVariables,
@@ -20,55 +20,15 @@ import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201907wue";
-export let addedDataSets: string[] = [];
-const update = appendToDataSet([initTouchstone], addedDataSets, []);
-addedDataSets = update.newSeenList;
-export let method_2_Data = update.newDataSet;
-export let method_0_Data = getSingleDataSet("./impactData_201710gavi_method_0.json");
-export let method_1_Data = getSingleDataSet("./impactData_201710gavi_method_1.json");
-
-
-// const montaguDataSets: DataSet[] = [
-//     {
-//         name : "method_2",
-//         data : update.newDataSet,
-//         seen : update.newSeenList,
-//     },
-//     {
-//         name : "method_0",
-//         data : method_0_Data,
-//         seen : ["201710gavi"],
-//     },
-//     {
-//         name : "method_1",
-//         data : method_1_Data,
-//         seen : ["201710gavi"],
-//     }
-// ]
-
 const montaguDataSets: DataSet[] = [
-    {
-        name : "method_2",
-        data : [],
-        seen : [],
-    },
-    {
-        name : "method_0",
-        data : [],
-        seen : [],
-    },
-    {
-        name : "method_1",
-        data : [],
-        seen : [],
-    }
+    { name : "method_2", data : [], seen : [], },
+    { name : "method_0", data : [], seen : [], },
+    { name : "method_1", data : [], seen : [], }
 ]
 
-appendToDataSet2([initTouchstone], "method_2", montaguDataSets)
-console.log(montaguDataSets)
-appendToDataSet2(["201710gavi"], "method_0", montaguDataSets)
-console.log(montaguDataSets)
-appendToDataSet2(["201710gavi"], "method_1", montaguDataSets)
+appendToDataSet([initTouchstone], "method_2", montaguDataSets)
+appendToDataSet(["201710gavi"], "method_0", montaguDataSets)
+appendToDataSet(["201710gavi"], "method_1", montaguDataSets)
 console.log(montaguDataSets)
 
 
@@ -109,7 +69,7 @@ class DataVisModel {
     };
     private currentPlot = ko.observable("Impact");
 
-    private impactData = ko.observable(method_2_Data);
+    private impactData = ko.observable(getDataSet("method_2", montaguDataSets));
     private yearMethod = ko.observable(2);
 
     private showSidebar = ko.observable(true);
@@ -315,11 +275,10 @@ class DataVisModel {
         });
 
         this.touchstoneFilter().selectedOptions.subscribe(() => {
-            const newUpdate: DataSetUpdate =
-                appendToDataSet(this.touchstoneFilter().selectedOptions(),
-                                addedDataSets, method_2_Data);
-            addedDataSets = newUpdate.newSeenList;
-            method_2_Data = newUpdate.newDataSet;
+            const appendTo: string = "method_" + this.yearMethod();
+            appendToDataSet(this.touchstoneFilter().selectedOptions(),
+                            appendTo, montaguDataSets);
+
             this.updateXAxisOptions();
         });
 
@@ -339,7 +298,7 @@ class DataVisModel {
         if (this.chartObject) {
             this.chartObject.destroy();
         }
-
+console.log(this.impactData().length)
         const filterData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
         const {datasets, xAxisVals} = filterData;
 
@@ -420,24 +379,8 @@ class DataVisModel {
     }
 
     private changeMethod(method: number) {
-        console.log("changeMethod")
-        switch (method) {
-            case 0:
-                this.impactData(method_0_Data);
-                this.yearMethod(0);
-                break;
-            case 1:
-                this.impactData(method_1_Data);
-                this.yearMethod(1);
-                break;
-            case 2:
-                this.impactData(method_2_Data);
-                this.yearMethod(2);
-                break;
-        }
-        console.log(this.yearMethod())
-        console.log(this.impactData()[0])
-
+        this.impactData(getDataSet("method_" + method, montaguDataSets));
+        this.yearMethod(method);
     }
 
     private updateXAxisOptions() {
