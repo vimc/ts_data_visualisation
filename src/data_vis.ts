@@ -5,7 +5,7 @@ import {saveAs} from "file-saver";
 import * as $ from "jquery";
 import * as ko from "knockout";
 import "select2/dist/css/select2.min.css";
-import {getDataSet, appendToDataSet, DataSet, DataSetUpdate} from "./AppendDataSets";
+import {appendToDataSet, DataSet, DataSetUpdate, getDataSet} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, dates, diseases, pineCountries, plottingVariables,
@@ -23,12 +23,12 @@ const initTouchstone: string = "201710gavi-201907wue";
 const montaguDataSets: DataSet[] = [
     { name : "method_2", data : [], seen : [], prev: [] },
     { name : "method_0", data : [], seen : [], prev: [] },
-    { name : "method_1", data : [], seen : [], prev: [] }
-]
+    { name : "method_1", data : [], seen : [], prev: [] },
+];
 
-appendToDataSet([initTouchstone], "method_2", montaguDataSets, true)
-appendToDataSet(["201710gavi"], "method_0", montaguDataSets, true)
-appendToDataSet(["201710gavi"], "method_1", montaguDataSets, true)
+appendToDataSet([initTouchstone], "method_2", montaguDataSets, true);
+appendToDataSet(["201710gavi"], "method_0", montaguDataSets, true);
+appendToDataSet(["201710gavi"], "method_1", montaguDataSets, true);
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -362,8 +362,8 @@ class DataVisModel {
     }
 
     private exportAllData() {
-        const fileName : string = reportInfo.dep_id + "_data_set.zip"
-        let a = document.createElement("a");
+        const fileName : string = reportInfo.dep_id + "_data_set.zip";
+        const a = document.createElement("a");
         document.body.appendChild(a);
         a.href = "data_set.zip";
         a.download = fileName;

@@ -8,27 +8,27 @@ export interface DataSetUpdate {
 }
 
 export interface DataSet {
-    name: string,
-    data: ImpactDataRow[],
-    seen: string[],
-    prev: string[]
+    name: string;
+    data: ImpactDataRow[];
+    seen: string[];
+    prev: string[];
 }
 
 export function getDataSet(name: string,
                            sets: DataSet[]): DataSet {
-    const ds = sets.find(x => { return x.name == name } )
+    const ds = sets.find((x) => x.name === name);
     if (ds === null) {
-        console.log("WTF!")
+        console.log("No dataset with this name");
     }
-    return ds
+    return ds;
 }
 
 export function appendToDataSet(toAdd: string[],
                                 appendTo: string,
                                 dataSets: DataSet[],
-                                setPrev: boolean = false
-                                ){
-    const ds = dataSets.find(x => { return x.name == appendTo } )
+                                setPrev: boolean = false,
+                                ) {
+    const ds = getDataSet(appendTo, dataSets);
     // for each selected touchstone...
     for (const touchstone of toAdd) {
         // ...check if we've already added this data set...
