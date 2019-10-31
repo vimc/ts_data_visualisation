@@ -258,31 +258,30 @@
         <div id="impact" class="container tab-pane" data-bind="css: {'active': currentPlot() == 'Impact'}">
             <div class="row">
                 <div class="col-12 p-5">
-
-<form class="mb-0">
-    <div class="form-group row">
-        <div class="col-9">
-            <div class="btn-group mt-1 mb-5" role="group">
-                    <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(0),
-                     css: {active: yearMethod() == 0}">Cross-sectional
-                    </button>
-                    <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(1),
-                     css: {active: yearMethod() == 1}">Lifetime
-                    </button>
-                    <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod(2),
-                     css: {active: yearMethod() == 2}">Year of vaccination
-                    </button>
-            </div>
-        </div>
-        <div class="col-3">
-            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#methodModal">
-                <i class="fa fa-question-circle"></i>
-                Help
-            </button>
-        </div>
-    </div>
-</form>
-<hr/>
+                    <form class="mb-0">
+                        <div class="form-group row">
+                            <div class="col-9">
+                                <div class="btn-group mt-1 mb-5" role="group">
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(0),
+                                         css: {active: yearMethod() == 0}">Cross-sectional
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(1),
+                                         css: {active: yearMethod() == 1}">Lifetime
+                                        </button>
+                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod(2),
+                                         css: {active: yearMethod() == 2}">Year of vaccination
+                                        </button>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#methodModal">
+                                    <i class="fa fa-question-circle"></i>
+                                    Help
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr/>
                     <form class="mb-5">
                         <div class="form-group row">
                             <div class="col-4">
@@ -317,8 +316,6 @@
                             </div>
                         </div>
                     </form>
-                    <hr/>
-
 
                     <div class="btn-group mt-1 mb-5" role="group">
                         <button type="button" class="btn btn-primary active" data-bind="click: () => changeBurden('deaths'),
@@ -334,7 +331,6 @@
                          css: {active: humanReadableBurdenOutcome() == 'fvps'}">FVPS
                         </button>
                     </div>
-                    <hr/>
 
                     <p style="font-weight:bold;color:red"
                         data-bind="text: warningMessage, visible: showWarning">
@@ -377,6 +373,30 @@
         <div id="timeseries" class="container tab-pane" data-bind="css: {'active': currentPlot() == 'Time series'}">
             <div class="row">
                 <div class="col-12 p-5">
+                    <form class="mb-0">
+                        <div class="form-group row">
+                            <div class="col-9">
+                                <div class="btn-group mt-1 mb-5" role="group">
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(0),
+                                         css: {active: yearMethod() == 0}">Cross-sectional
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(1),
+                                         css: {active: yearMethod() == 1}">Lifetime
+                                        </button>
+                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod(2),
+                                         css: {active: yearMethod() == 2}">Year of vaccination
+                                        </button>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#methodModal">
+                                    <i class="fa fa-question-circle"></i>
+                                    Help
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr/>
                     <form class="mb-5">
                         <div class="form-group row">
                             <div class="col-4">
@@ -397,19 +417,6 @@
                             </div>
                         </div>
                     </form>
-
-                    <div class="btn-group mt-1 mb-5" role="group">
-                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(0),
-                         css: {active: yearMethod() == 0}">Method 0
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(1),
-                         css: {active: yearMethod() == 1}">Method 1
-                        </button>
-                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod(2),
-                         css: {active: yearMethod() == 2}">Method 2
-                        </button>
-                    </div>
-
                     <div class="btn-group mt-1 mb-6" role="group">
                         <button type="button" class="btn btn-primary active" data-bind="click: () => changeBurden('deaths'),
                          css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
