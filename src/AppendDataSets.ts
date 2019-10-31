@@ -14,12 +14,12 @@ export interface DataSet {
 }
 
 export function getDataSet(name: string,
-                           sets: DataSet[]): ImpactDataRow[] {
+                           sets: DataSet[]): DataSet {
     const ds = sets.find(x => { return x.name == name } )
     if (ds === null) {
         console.log("WTF!")
     }
-    return ds.data
+    return ds
 }
 
 export function appendToDataSet(toAdd: string[],
