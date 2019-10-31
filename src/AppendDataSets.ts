@@ -17,8 +17,9 @@ export interface DataSet {
 export function getDataSet(name: string,
                            sets: DataSet[]): DataSet {
     const ds = sets.find((x) => x.name === name);
-    if (ds === null) {
-        console.log("No dataset with this name");
+    if (ds === undefined) {
+        console.log("No dataset named " + name);
+        return null;
     }
     return ds;
 }
@@ -29,6 +30,9 @@ export function appendToDataSet(toAdd: string[],
                                 setPrev: boolean = false,
                                 ) {
     const ds = getDataSet(appendTo, dataSets);
+    if (ds === null) {
+        return;
+    }
     // for each selected touchstone...
     for (const touchstone of toAdd) {
         // ...check if we've already added this data set...
