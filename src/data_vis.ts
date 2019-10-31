@@ -68,7 +68,7 @@ class DataVisModel {
     private currentPlot = ko.observable("Impact");
 
     private impactData = ko.observable(getDataSet("method_2", montaguDataSets).data);
-    private yearMethod = ko.observable(2);
+    private yearMethod = ko.observable("method_2");
 
     private showSidebar = ko.observable(true);
     private yearFilter = ko.observable(new RangeFilter({
@@ -273,7 +273,7 @@ class DataVisModel {
         });
 
         this.touchstoneFilter().selectedOptions.subscribe(() => {
-            const appendTo: string = "method_" + this.yearMethod();
+            const appendTo: string = this.yearMethod();
             appendToDataSet(this.touchstoneFilter().selectedOptions(),
                             appendTo, montaguDataSets);
 
@@ -376,8 +376,8 @@ class DataVisModel {
         this.plotTitle(this.defaultTitle());
     }
 
-    private changeMethod(method: number) {
-        const data: DataSet = getDataSet("method_" + method, montaguDataSets);
+    private changeMethod(method: string) {
+        const data: DataSet = getDataSet(method, montaguDataSets);
         this.impactData(data.data);
         this.yearMethod(method);
         this.touchstoneFilter().selectedOptions(data.prev);

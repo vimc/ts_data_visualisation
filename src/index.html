@@ -262,14 +262,14 @@
                         <div class="form-group row">
                             <div class="col-9">
                                 <div class="btn-group mt-1 mb-5" role="group">
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(0),
-                                         css: {active: yearMethod() == 0}">Cross-sectional
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_0'),
+                                         css: {active: yearMethod() == 'method_0'}">Cross-sectional
                                         </button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(1),
-                                         css: {active: yearMethod() == 1}">Lifetime
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_1'),
+                                         css: {active: yearMethod() == 'method_1'}">Lifetime
                                         </button>
-                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod(2),
-                                         css: {active: yearMethod() == 2}">Year of vaccination
+                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('method_2'),
+                                         css: {active: yearMethod() == 'method_2'}">Year of vaccination
                                         </button>
                                 </div>
                             </div>
@@ -328,7 +328,7 @@
                          css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
                         </button>
                         <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
-                         css: {active: humanReadableBurdenOutcome() == 'fvps'}">FVPS
+                         css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
                         </button>
                     </div>
 
@@ -377,14 +377,14 @@
                         <div class="form-group row">
                             <div class="col-9">
                                 <div class="btn-group mt-1 mb-5" role="group">
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(0),
-                                         css: {active: yearMethod() == 0}">Cross-sectional
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_0'),
+                                         css: {active: yearMethod() == 'method_0'}">Cross-sectional
                                         </button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod(1),
-                                         css: {active: yearMethod() == 1}">Lifetime
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_1'),
+                                         css: {active: yearMethod() == 'method_1'}">Lifetime
                                         </button>
-                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod(2),
-                                         css: {active: yearMethod() == 2}">Year of vaccination
+                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('method_2'),
+                                         css: {active: yearMethod() == 'method_2'}">Year of vaccination
                                         </button>
                                 </div>
                             </div>
@@ -428,16 +428,16 @@
                          css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
                         </button>
                         <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
-                         css: {active: humanReadableBurdenOutcome() == 'fvps'}">FVPS
+                         css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
                         </button>
                         <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('coverage'),
-                         css: {active: humanReadableBurdenOutcome() == 'coverage'}">Coverage
+                         css: {active: humanReadableBurdenOutcome() == 'coverage'}, enable: yearMethod() == 'method_2'">Coverage
                         </button>
                         <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('deathsRate'),
-                         css: {active: humanReadableBurdenOutcome() == 'deathsRate'}">Deaths (rate)
+                         css: {active: humanReadableBurdenOutcome() == 'deathsRate'}, enable: yearMethod() == 'method_2'">Deaths (rate)
                         </button>
                         <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('casesRate'),
-                         css: {active: humanReadableBurdenOutcome() == 'casesRate'}">Cases (rate)
+                         css: {active: humanReadableBurdenOutcome() == 'casesRate'}, enable: yearMethod() == 'method_2'">Cases (rate)
                         </button>
                     </div>
 
