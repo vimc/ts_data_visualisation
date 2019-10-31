@@ -21,14 +21,14 @@ import {WarningMessageManager} from "./WarningMessage";
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201907wue";
 const montaguDataSets: DataSet[] = [
-    { name : "method_2", data : [], seen : [], },
-    { name : "method_0", data : [], seen : [], },
-    { name : "method_1", data : [], seen : [], }
+    { name : "method_2", data : [], seen : [], prev: [] },
+    { name : "method_0", data : [], seen : [], prev: [] },
+    { name : "method_1", data : [], seen : [], prev: [] }
 ]
 
-appendToDataSet([initTouchstone], "method_2", montaguDataSets)
-appendToDataSet(["201710gavi"], "method_0", montaguDataSets)
-appendToDataSet(["201710gavi"], "method_1", montaguDataSets)
+appendToDataSet([initTouchstone], "method_2", montaguDataSets, true)
+appendToDataSet(["201710gavi"], "method_0", montaguDataSets, true)
+appendToDataSet(["201710gavi"], "method_1", montaguDataSets, true)
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -380,7 +380,7 @@ class DataVisModel {
         const data: DataSet = getDataSet("method_" + method, montaguDataSets);
         this.impactData(data.data);
         this.yearMethod(method);
-        this.touchstoneFilter().selectedOptions(data.seen);
+        this.touchstoneFilter().selectedOptions(data.prev);
     }
 
     private updateXAxisOptions() {

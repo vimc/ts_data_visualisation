@@ -10,7 +10,8 @@ export interface DataSetUpdate {
 export interface DataSet {
     name: string,
     data: ImpactDataRow[],
-    seen: string[]
+    seen: string[],
+    prev: string[]
 }
 
 export function getDataSet(name: string,
@@ -25,7 +26,8 @@ export function getDataSet(name: string,
 export function appendToDataSet(toAdd: string[],
                                 appendTo: string,
                                 dataSets: DataSet[],
-                                 ){
+                                setPrev: boolean = false
+                                ){
     const ds = dataSets.find(x => { return x.name == appendTo } )
     // for each selected touchstone...
     for (const touchstone of toAdd) {
@@ -41,5 +43,9 @@ export function appendToDataSet(toAdd: string[],
             ds.data = ds.data.concat(newData);
             ds.seen.push(touchstone);
         }
+    }
+
+    if (setPrev) {
+        ds.prev = toAdd;
     }
 }
