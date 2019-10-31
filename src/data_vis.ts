@@ -29,8 +29,6 @@ const montaguDataSets: DataSet[] = [
 appendToDataSet([initTouchstone], "method_2", montaguDataSets)
 appendToDataSet(["201710gavi"], "method_0", montaguDataSets)
 appendToDataSet(["201710gavi"], "method_1", montaguDataSets)
-console.log(montaguDataSets)
-
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -299,7 +297,6 @@ class DataVisModel {
         if (this.chartObject) {
             this.chartObject.destroy();
         }
-console.log(this.impactData().length)
         const filterData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
         const {datasets, xAxisVals} = filterData;
 
