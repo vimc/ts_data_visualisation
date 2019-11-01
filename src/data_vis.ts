@@ -13,6 +13,7 @@ import {activityTypes, countries, dates, diseases, pineCountries, plottingVariab
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
+import {generatedHelpBody, generatedHelpTitle} from "./Help";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetaDataDisplay} from "./MetaDataDisplay";
 import {plotColours} from "./PlotColours";
@@ -421,18 +422,8 @@ class DataVisModel {
     }
 
     // Modal Help Window
-    private modalHelpVisible = ko.observable(false);
-    private headerHelp = ko.observable('Some header text');
-    private bodyTemplate = ko.observable('Modal Body Template');
-    private bodyHelp = ko.observable('Modal Help Body');
-    private helpOkText = ko.observable();
-
-    private modelShow() {
-        console.log("modelShow");
-        console.log(this.modalHelpVisible());
-        this.modalHelpVisible(true);
-        console.log(this.modalHelpVisible());
-    }
+    private modelHelpTitle = ko.observable(generatedHelpTitle());
+    private modelHelpMain = ko.observable(generatedHelpBody());
 }
 
 $(document).ready(() => {
