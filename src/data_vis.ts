@@ -355,6 +355,16 @@ class DataVisModel {
         });
     }
 
+    private exportAllData() {
+        const fileName : string = reportInfo.dep_id + "_data_set.zip"
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = "data_set.zip";
+        a.download = fileName;
+        a.click();
+        document.body.removeChild(a);
+    }
+
     private changeBurden(burden: string) {
         this.humanReadableBurdenOutcome(burden);
         this.plotTitle(this.defaultTitle());
