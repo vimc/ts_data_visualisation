@@ -13,7 +13,7 @@ import {activityTypes, countries, dates, diseases, pineCountries, plottingVariab
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
-import {generatedHelpBody, generatedHelpTitle} from "./Help";
+import {filterHelp, generatedHelpBody, generatedHelpTitle, generatedMetricsHelp} from "./Help";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetaDataDisplay} from "./MetaDataDisplay";
 import {plotColours} from "./PlotColours";
@@ -421,9 +421,15 @@ class DataVisModel {
         });
     }
 
-    // Modal Help Window
-    private modelHelpTitle = ko.observable(generatedHelpTitle());
-    private modelHelpMain = ko.observable(generatedHelpBody());
+    // Modal Help Windows
+    private modalHelpTitle
+        = ko.computed<string>(() => generatedHelpTitle(this.currentPlot()));
+    private modalHelpMain
+        = ko.computed<string>(() => generatedHelpBody(this.currentPlot()));
+    private modalFilterHelpMain
+        = ko.observable(filterHelp);
+    private modalMetricsHelpMain
+        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
 }
 
 $(document).ready(() => {

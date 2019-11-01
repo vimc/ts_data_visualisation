@@ -251,6 +251,10 @@
             </div>
         </li>
     </ul>
+    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#helpFilterModal">
+        <i class="fa fa-question-circle"></i>
+        Help
+    </button>
 </div>
 
 <div class="contents container-fluid">
@@ -276,7 +280,7 @@
                                 </div>
                             </div>
                             <div class="col-4">
-                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#helpModal">
+                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#helpPlotModal">
                                     <i class="fa fa-question-circle"></i>
                                     Help
                                 </button>
@@ -313,6 +317,11 @@
                          css: {active: humanReadableBurdenOutcome() == 'fvps'}">FVPS
                         </button>
                     </div>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#helpMetricModal">
+                                    <i class="fa fa-question-circle"></i>
+                                    Help
+                    </button>
+
 
                     <p style="font-weight:bold;color:red"
                         data-bind="text: warningMessage, visible: showWarning">
@@ -372,6 +381,12 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#helpPlotModal">
+                                    <i class="fa fa-question-circle"></i>
+                                    Help
+                                </button>
+                            </div>
                         </div>
                     </form>
 
@@ -398,6 +413,10 @@
                          css: {active: humanReadableBurdenOutcome() == 'casesRate'}">Cases (rate)
                         </button>
                     </div>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#helpMetricModal">
+                                    <i class="fa fa-question-circle"></i>
+                                    Help
+                    </button>
 
                     <p style="font-weight:bold;color:red"
                         data-bind="text: warningMessage, visible: showWarning">
@@ -434,19 +453,63 @@
 </div>
 
 <!-- Help Modal -->
-<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+<div class="modal fade" id="helpPlotModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="helpModalLabel">
-                   <span data-bind="text: modelHelpTitle"></span> 
+                   <span data-bind="text: modalHelpTitle"></span>
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <span data-bind="text: modelHelpMain"></span> 
+                <span data-bind="html: modalHelpMain"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="helpFilterModal" tabindex="-1" role="dialog" aria-labelledby="helFilterLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpFilterLabel">
+                    Filter Options
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span data-bind="html: modalFilterHelpMain"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Metrics Modal -->
+<div class="modal fade" id="helpMetricModal" tabindex="-1" role="dialog" aria-labelledby="helpMetricLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpMetricLabel">
+                    Metrics
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span data-bind="html: modalMetricsHelpMain"></span>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
