@@ -7,7 +7,7 @@ const impactOptionsHelp: string = "<p><h3>Impact Options</h3></p>" +
     "<p><h4>Export as...</h4>BLAH BLAH BLAH</p>" +
     "<p><h4>Title</h4>BLAH BLAH BLAH</p>";
 
-export const filterHelp: string = "<p><h3>Filter Options</h3></p>" +
+export const filterHelp: string =
     "<p><h4>Years</h4>BLAH BLAH BLAH</p>" +
     "<p><h4>Activity</h4>BLAH BLAH BLAH</p>" +
     "<p><h4>Country</h4>BLAH BLAH BLAH</p>" +
@@ -15,7 +15,7 @@ export const filterHelp: string = "<p><h3>Filter Options</h3></p>" +
     "<p><h4>Touchstone</h4>BLAH BLAH BLAH</p>" +
     "<p><h4>Support Type</h4>BLAH BLAH BLAH</p>";
 
-const metricBaseHelp: string = "<p><h3>Metrics</h3></p>" +
+const metricBaseHelp: string =
     "<p><h4>Deaths</h4>BLAH BLAH BLAH</p>" +
     "<p><h4>Dalys</h4>BLAH BLAH BLAH</p>" +
     "<p><h4>Cases</h4>BLAH BLAH BLAH</p>" +
