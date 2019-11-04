@@ -37,9 +37,9 @@
         VIMC Data Visualisation Tool
     </div>
     <div class="float-right small" style="color: #0056b3; white-space: pre-wrap;">
-        <span data-bind="text: reportId"/></span>
-        <span data-bind="text: dataId"/></span>
-        <span data-bind="text: appId"/></span>
+        <a data-bind="text: reportId"/></a>
+        <a data-bind="attr: { href: dataLink, title: 'The source of the data' }, text: dataId"/></a>
+        <a data-bind="text: appId"/></a>
     </div>
 </nav>
 
