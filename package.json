@@ -69,7 +69,6 @@
     "jsonexport": "^2.4.1",
     "jszip": "^3.2.2",
     "knockout": "^3.4.2",
-    "knockstrap": "^1.4.0",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
     "popper.js": "^1.15.0",
