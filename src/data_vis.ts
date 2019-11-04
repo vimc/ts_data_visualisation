@@ -49,6 +49,8 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
         name: d,
         options: diseaseVaccineLookup[d],
         humanNames: diseaseDict,
+        selected: diseaseVaccineLookup[d].
+          filter((x) => -1 !== ["Rota", "Rubella"].indexOf(x)),
     },
 );
 
@@ -355,8 +357,8 @@ class DataVisModel {
     }
 
     private exportAllData() {
-        const fileName : string = reportInfo.dep_id + "_data_set.zip"
-        let a = document.createElement("a");
+        const fileName: string = reportInfo.dep_id + "_data_set.zip";
+        const a = document.createElement("a");
         document.body.appendChild(a);
         a.href = "data_set.zip";
         a.download = fileName;
