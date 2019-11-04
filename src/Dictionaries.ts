@@ -20,10 +20,6 @@ export const vaccineDict: {[code: string]: string} = {
     YF: "Yellow Fever",
 };
 
-// export function vaccineCodeToName(vaccCode: string) {
-//     return vaccineDict[vaccCode];
-// }
-
 export const diseaseDict: { [code: string]: string} = {
     HPV: "HPV",
     HepB: "Hepatitis B",
@@ -36,10 +32,6 @@ export const diseaseDict: { [code: string]: string} = {
     Rubella: "Rubella",
     YF: "Yellow Fever",
 };
-
-// export function diseaseCodeToName(disCode: string) {
-//     return diseaseDict[disCode];
-// }
 
 export const diseaseVaccineLookup: {[code: string]: string[]} =
                         loadObjectFromJSONFile("./diseaseVaccines.json");

@@ -62,7 +62,7 @@ export const diseaseVaccines = {
 export const vaccines = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1", "MCV2",
 "Measles", "MenA", "PCV3", "Rota", "RCV2", "Rubella", "YF"];
 
-export const vaccineDict: {[code: string]: string} = {
+export const vaccineDict = {
     HPV: "HPV",
     HepB: "Hepatitis B",
     HepB_BD: "HepB_BD",
