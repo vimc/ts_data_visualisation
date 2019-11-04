@@ -75,7 +75,7 @@ export class CountryFilter extends ListFilter {
         } else if (this.groups[selectedGroup] !== undefined) {
             this.selectedOptions(this.groups[selectedGroup]);
         } else {
-            console.log("Warning: Country group " + selectedGroup + " does not exist") 
+            console.log("Warning: Country group " + selectedGroup + " does not exist");
             this.selectedOptions([]);
         }
     }

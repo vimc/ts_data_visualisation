@@ -39,21 +39,14 @@ function generateCountryGroup(impactData: ImpactDataRow[],
 */
 
 // read in the country groups from files
-const pineCountries: string[] = loadObjectFromJSONFile("./pine5.json");
-const dove94: string[] = loadObjectFromJSONFile("./dove94.json");
-const dove96: string[] = loadObjectFromJSONFile("./dove96.json");
-const gavi68: string[] = loadObjectFromJSONFile("./gavi68.json");
-const gavi72: string[] = loadObjectFromJSONFile("./gavi72.json");
-const gavi77: string[] = loadObjectFromJSONFile("./gavi77.json");
-
 export const countryGroups: { [code: string]: string[] } = {
-    pine: pineCountries,
-    dove94: dove94,
-    dove96: dove96,
-    gavi68: gavi68,
-    gavi72: gavi72,
-    gavi77: gavi77
-}
+    pine: loadObjectFromJSONFile("./pine5.json"),
+    dove94: loadObjectFromJSONFile("./dove94.json"),
+    dove96: loadObjectFromJSONFile("./dove96.json"),
+    gavi68: loadObjectFromJSONFile("./gavi68.json"),
+    gavi72: loadObjectFromJSONFile("./gavi72.json"),
+    gavi77: loadObjectFromJSONFile("./gavi77.json"),
+};
 
 export const plottingVariables = ["year", "country", "continent", "region",
     "cofinance_status_2018", "activity_type", "disease", "vaccine",
