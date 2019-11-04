@@ -35,7 +35,7 @@ const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
     "VUT", "WSM", "XK"];
 const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
 
-export const countryGroups: { [code: string]: string[] } = {
+export const countryGroups = {
     pine: pineCountries,
     dove94: dove94,
     dove96: dove96,
