@@ -36,7 +36,7 @@ export function generatedHelpTitle(plot: string): string {
 // generate help body
 export function generatedHelpBody(plot: string): string {
     if (plot === "Impact") {
-        return "The Impact plot is bar chart showing the impact of vaccines" + impactOptionsHelp
+        return "The impact plot is bar chart showing the impact of vaccines" + impactOptionsHelp
     }
 
     if (plot === "Time series") {
