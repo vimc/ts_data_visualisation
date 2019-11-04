@@ -35,3 +35,7 @@ export function parseIntoDictionary(arrOfObjects: ParseDict[], lhs: string,
     }
     return outDict;
 }
+
+export function dictLookup(key: string, dict: any) {
+    return dict[key];
+}

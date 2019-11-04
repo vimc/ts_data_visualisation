@@ -11,29 +11,38 @@ export const countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
     "SYR", "TJK", "TZA", "TLS", "TGO", "TON", "TKM", "TUV", "UGA", "UKR", "UZB",
     "VUT", "VNM", "YEM", "ZMB", "ZWE"];
 
-export const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
+const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
 
 const notDove94 = ["ALB", "BIH", "CHN", "TUN"];
-export const dove94 = countries.filter((x) => notDove94.indexOf(x) < 0 );
+const dove94 = countries.filter((x) => notDove94.indexOf(x) < 0 );
 
 const notDove96 = ["TUN", "XK"];
-export const dove96 = countries.filter((x) => notDove96.indexOf(x) < 0 );
+const dove96 = countries.filter((x) => notDove96.indexOf(x) < 0 );
 
 const notGavi68 = ["ALB", "BIH", "BLZ", "BTN", "CHN", "CPV", "EGY",
     "FJI", "FSM", "GTM", "HND", "IRQ", "LKA", "MAR", "MHL", "MNG", "PHL", "PRY",
     "PSE", "SLV", "SWZ", "SYR", "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM",
     "XK"];
-export const gavi68 = countries.filter((x) => notGavi68.indexOf(x) < 0 );
+const gavi68 = countries.filter((x) => notGavi68.indexOf(x) < 0 );
 
 const notGavi72 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
     "FSM", "GTM", "IRQ", "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR",
     "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM", "XK"];
-export const gavi72 = countries.filter((x) => notGavi72.indexOf(x) < 0 );
+const gavi72 = countries.filter((x) => notGavi72.indexOf(x) < 0 );
 
 const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
     "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR", "TON", "TUN", "TUV",
     "VUT", "WSM", "XK"];
-export const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
+const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
+
+export const countryGroups: { [code: string]: string[] } = {
+    pine: pineCountries,
+    dove94: dove94,
+    dove96: dove96,
+    gavi68: gavi68,
+    gavi72: gavi72,
+    gavi77: gavi77
+}
 
 export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA", "PCV",
     "Rota", "Rubella", "YF"];
@@ -53,6 +62,23 @@ export const diseaseVaccines = {
 export const vaccines = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1", "MCV2",
 "Measles", "MenA", "PCV3", "Rota", "RCV2", "Rubella", "YF"];
 
+export const vaccineDict: {[code: string]: string} = {
+    HPV: "HPV",
+    HepB: "Hepatitis B",
+    HepB_BD: "HepB_BD",
+    Hib3: "Hib3",
+    JE: "Japanese encephalitis",
+    MCV1: "MCV1",
+    MCV2: "MCV2",
+    Measles: "Measles",
+    MenA: "MenA",
+    PCV3: "PCV3",
+    RCV2: "RCV2",
+    Rota: "Rotavirus",
+    Rubella: "Rubella",
+    YF: "Yellow Fever",
+};
+
 export const activityTypes = ["routine", "campaign", "combined"];
 
 export const plottingVariables = ["year", "country", "continent", "region",
@@ -66,7 +92,7 @@ export const touchstones = ["201210gavi-201303gavi", "201210gavi-201907wue",
 
 export const supportTypes = ["gavi", "other"];
 
-export const countryDict = [
+export const fakeCountryDict = [
     {"country":"AFG","country_name":"Afghanistan"},
     {"country":"ALB","country_name":"Albania"},
     {"country":"AGO","country_name":"Angola"},
@@ -76,7 +102,7 @@ export const countryDict = [
     {"country":"BLZ","country_name":"Belize"},
     {"country":"BEN","country_name":"Benin"},
     {"country":"BTN","country_name":"Bhutan"},
-    {"country":"BOL","country_name":"Bolivia, Plurinational State of"},
+    {"country":"BOL","country_name":"Bolivia"},
     {"country":"BIH","country_name":"Bosnia and Herzegovina"},
     {"country":"BFA","country_name":"Burkina Faso"},
     {"country":"BDI","country_name":"Burundi"},
@@ -88,7 +114,7 @@ export const countryDict = [
     {"country":"CHN","country_name":"China"},
     {"country":"COM","country_name":"Comoros"},
     {"country":"COG","country_name":"Congo"},
-    {"country":"COD","country_name":"Congo, the Democratic Republic of the"},
+    {"country":"COD","country_name":"DR Congo"},
     {"country":"CIV","country_name":"Cote d'Ivoire"},
     {"country":"CUB","country_name":"Cuba"},
     {"country":"DJI","country_name":"Djibouti"},
@@ -111,10 +137,10 @@ export const countryDict = [
     {"country":"IRQ","country_name":"Iraq"},
     {"country":"KEN","country_name":"Kenya"},
     {"country":"KIR","country_name":"Kiribati"},
-    {"country":"PRK","country_name":"Korea, Democratic People's Republic of"},
+    {"country":"PRK","country_name":"North Korea"},
     {"country":"XK","country_name":"Kosovo"},
     {"country":"KGZ","country_name":"Kyrgyzstan"},
-    {"country":"LAO","country_name":"Lao People's Democratic Republic"},
+    {"country":"LAO","country_name":"Laos"},
     {"country":"LSO","country_name":"Lesotho"},
     {"country":"LBR","country_name":"Liberia"},
     {"country":"MDG","country_name":"Madagascar"},
@@ -122,8 +148,8 @@ export const countryDict = [
     {"country":"MLI","country_name":"Mali"},
     {"country":"MHL","country_name":"Marshall Islands"},
     {"country":"MRT","country_name":"Mauritania"},
-    {"country":"FSM","country_name":"Micronesia, Federated States of"},
-    {"country":"MDA","country_name":"Moldova, Republic of"},
+    {"country":"FSM","country_name":"Micronesia"},
+    {"country":"MDA","country_name":"Moldova"},
     {"country":"MNG","country_name":"Mongolia"},
     {"country":"MAR","country_name":"Morocco"},
     {"country":"MOZ","country_name":"Mozambique"},
@@ -133,7 +159,7 @@ export const countryDict = [
     {"country":"NER","country_name":"Niger"},
     {"country":"NGA","country_name":"Nigeria"},
     {"country":"PAK","country_name":"Pakistan"},
-    {"country":"PSE","country_name":"Palestine, State of"},
+    {"country":"PSE","country_name":"Palestine"},
     {"country":"PNG","country_name":"Papua New Guinea"},
     {"country":"PRY","country_name":"Paraguay"},
     {"country":"PHL","country_name":"Philippines"},
@@ -148,9 +174,9 @@ export const countryDict = [
     {"country":"LKA","country_name":"Sri Lanka"},
     {"country":"SDN","country_name":"Sudan"},
     {"country":"SWZ","country_name":"Swaziland"},
-    {"country":"SYR","country_name":"Syrian Arab Republic"},
+    {"country":"SYR","country_name":"Syria"},
     {"country":"TJK","country_name":"Tajikistan"},
-    {"country":"TZA","country_name":"Tanzania, United Republic of"},
+    {"country":"TZA","country_name":"Tanzania"},
     {"country":"TLS","country_name":"Timor-Leste"},
     {"country":"TGO","country_name":"Togo"},
     {"country":"TON","country_name":"Tonga"},

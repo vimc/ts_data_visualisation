@@ -8,10 +8,10 @@ import "select2/dist/css/select2.min.css";
 import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
-import {activityTypes, countries, dates, diseases, pineCountries, plottingVariables,
+import {activityTypes, countries, countryGroups, dates, diseases, plottingVariables,
         reportInfo, supportTypes, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
-import {countryCodeToName, countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
+import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetaDataDisplay} from "./MetaDataDisplay";
@@ -79,10 +79,11 @@ class DataVisModel {
     }));
 
     private countryFilter = ko.observable(new CountryFilter({
+        groups: countryGroups,
         humanNames: countryDict,
         name: "Country",
         options: countries,
-        selected: pineCountries,
+        selected: countryGroups["pine"],
     }));
 
     private diseaseFilter = ko.observable(new DiseaseFilter({
@@ -215,7 +216,7 @@ class DataVisModel {
     }, this).extend({rateLimit: 250});
 
     private metaData = ko.computed<string>(() => {
-        return MetaDataDisplay(this.chartOptions());
+        return MetaDataDisplay(this.chartOptions(), countryDict, vaccineDict);
     }, this);
 
     private warningMessage = ko.computed<string>(() => {
@@ -298,7 +299,7 @@ class DataVisModel {
         let xAxisNames: string[] = [...xAxisVals];
         // when we put countries along convert the names to human readable
         if (chartOptions.xAxis === "country") {
-            xAxisNames = xAxisNames.map(countryCodeToName);
+            xAxisNames = xAxisNames.map((x) => countryDict[x]);
         }
 
         this.filteredTable = new TableMaker().createWideTable(datasets, xAxisNames);
@@ -333,10 +334,6 @@ class DataVisModel {
         }
 
         this.currentPlot(plotName);
-    }
-
-    private countryCodeToName(countryCode: string) {
-        return countryDict[countryCode];
     }
 
     private exportPlot() {

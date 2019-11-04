@@ -3,10 +3,6 @@ import {loadObjectFromJSONFile, parseIntoDictionary} from "./Utils";
 const countryStuff = loadObjectFromJSONFile("./countryDictionary.json");
 export const countryDict = parseIntoDictionary(countryStuff, "country", "country_name");
 
-export function countryCodeToName(countryCode: string) {
-    return countryDict[countryCode];
-}
-
 export const vaccineDict: {[code: string]: string} = {
     HPV: "HPV",
     HepB: "Hepatitis B",
@@ -24,9 +20,9 @@ export const vaccineDict: {[code: string]: string} = {
     YF: "Yellow Fever",
 };
 
-export function vaccineCodeToName(vaccCode: string) {
-    return vaccineDict[vaccCode];
-}
+// export function vaccineCodeToName(vaccCode: string) {
+//     return vaccineDict[vaccCode];
+// }
 
 export const diseaseDict: { [code: string]: string} = {
     HPV: "HPV",
@@ -41,9 +37,9 @@ export const diseaseDict: { [code: string]: string} = {
     YF: "Yellow Fever",
 };
 
-export function diseaseCodeToName(disCode: string) {
-    return diseaseDict[disCode];
-}
+// export function diseaseCodeToName(disCode: string) {
+//     return diseaseDict[disCode];
+// }
 
 export const diseaseVaccineLookup: {[code: string]: string[]} =
                         loadObjectFromJSONFile("./diseaseVaccines.json");
