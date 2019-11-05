@@ -251,9 +251,8 @@
             </div>
         </li>
     </ul>
-    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#helpFilterModal">
+    <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpFilterModal">
         <i class="fa fa-question-circle"></i>
-        Help
     </button>
 </div>
 
@@ -279,12 +278,6 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#helpPlotModal">
-                                    <i class="fa fa-question-circle"></i>
-                                    Help
-                                </button>
-                            </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-4">
@@ -301,7 +294,15 @@
                                         data-bind="options: maxPlotOptions, value: maxBars"></select>
                             </div>
                         </div>
+
+                        <div>
+                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpPlotModal">
+                            <i class="fa fa-question-circle"></i>
+                        </button>
+                        </div>
+
                     </form>
+
                     <div class ="btn-toolbar">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths'),
@@ -317,15 +318,12 @@
                              css: {active: humanReadableBurdenOutcome() == 'fvps'}">FVPs
                             </button>
                         </div>
-
-                        <div>
-                        <button type="button" class="btn btn-info btn-sm pull-right" data-toggle="modal" data-target="#helpMetricModal">
-                                        <i class="fa fa-question-circle"></i>
-                                        Help
-                        </button>
-                        </div>
                     </div>
-
+                    <div>
+                        <button type="button" class="btn btn-info btn-circle pull-left" data-toggle="modal" data-target="#helpMetricModal">
+                                        <i class="fa fa-question-circle"></i>
+                        </button>
+                    </div>
 
 
                     <p style="font-weight:bold;color:red"
@@ -387,13 +385,12 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#helpPlotModal">
-                                    <i class="fa fa-question-circle"></i>
-                                    Help
-                                </button>
-                            </div>
                         </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpPlotModal">
+                                <i class="fa fa-question-circle"></i>
+                        </button>
+                    </div>
                     </form>
                     <div class ="btn-toolbar">
                         <div class="btn-group mt-1 mb-6" role="group">
@@ -420,11 +417,11 @@
                             </button>
                         </div>
 
-                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#helpMetricModal">
-                                        <i class="fa fa-question-circle"></i>
-                                        Help
-                        </button>
+
                     </div>
+                    <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpMetricModal">
+                        <i class="fa fa-question-circle"></i>
+                    </button>
 
                     <p style="font-weight:bold;color:red"
                         data-bind="text: warningMessage, visible: showWarning">
