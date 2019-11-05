@@ -10,7 +10,7 @@ describe("filterHelp", () => {
 
         const help_2 = generatedHelpBody("Impact");
 
-        expect(help_2).to.have.string("impact plot is bar chart");
+        expect(help_2).to.have.string("The impact plot is a bar chart");
 
         const help_3 = generatedHelpBody("Time series");
 
@@ -40,7 +40,7 @@ describe("filterHelp", () => {
 
         const help_3 = generatedMetricsHelp("Time series");
 
-        expect(help_3).to.have.string("The proportion of the population who die");
+        expect(help_3).to.have.string("The proportion of the vaccinated population who die");
 
     })
 
