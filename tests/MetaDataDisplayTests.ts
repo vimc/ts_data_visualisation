@@ -102,5 +102,3 @@ describe("MetaDataDisplay", () => {
         expect(toPlural("Fish", false)).to.equal("ERROR!");
     })
 });
-
-// stub.restore();

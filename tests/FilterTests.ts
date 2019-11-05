@@ -122,8 +122,30 @@ describe("CountryFilter", () => {
     })
 });
 
-describe("CountryFilter", () => {
+describe("Disease-Vaccine filter", () => {
+        const f1 = new ListFilter({name: "filter1",
+                                    options: ["aa", "ab", "ac"],
+                                    humanNames: {"aa": "cat", "ab": "dog", "ac": "fish"},
+                                    selected: ["aa"]
+                          });
+        const f2 = new ListFilter({name: "filter2",
+                            options: ["bb"],
+                            humanNames: {"bb": "filter3"},
+                            selected: ["bb"]
+                          });
+        const f3 = new ListFilter({name: "disease3",
+                    options: ["ca", "cb"],
+                    humanNames: {"ca": "frog", "cb": "camel"}
+                  });
 
+        const filterArray = [f1, f2, f3];
+
+        const sut = new DiseaseFilter({name: "whatever",
+                                       vaccineFilters: filterArray
+                                     });
+
+    it("make sure initial selection is correct", () => {
+        expect(sut.selectedOptions()).to.have.members(["aa", "bb", "ca", "cb"]);
+    })
+        
 });
-
-// stub.restore();
