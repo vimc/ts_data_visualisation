@@ -21,9 +21,9 @@ import {WarningMessageManager} from "./WarningMessage";
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201907wue";
 const montaguDataSets: DataSet[] = [
-    { name : "method_2", data : [], seen : [], prev: [] },
-    { name : "method_0", data : [], seen : [], prev: [] },
-    { name : "method_1", data : [], seen : [], prev: [] },
+    { name : "method_2", data : [], seen : [], selectedTouchstones: [] },
+    { name : "method_0", data : [], seen : [], selectedTouchstones: [] },
+    { name : "method_1", data : [], seen : [], selectedTouchstones: [] },
 ];
 
 appendToDataSet([initTouchstone], "method_2", montaguDataSets, true);
@@ -380,7 +380,7 @@ class DataVisModel {
         const data: DataSet = getDataSet(method, montaguDataSets);
         this.impactData(data.data);
         this.yearMethod(method);
-        this.touchstoneFilter().selectedOptions(data.prev);
+        this.touchstoneFilter().selectedOptions(data.selectedTouchstones);
     }
 
     private updateXAxisOptions() {

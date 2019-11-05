@@ -11,7 +11,7 @@ export interface DataSet {
     name: string;
     data: ImpactDataRow[];
     seen: string[];
-    prev: string[];
+    selectedTouchstones: string[];
 }
 
 export function getDataSet(name: string,
@@ -50,6 +50,6 @@ export function appendToDataSet(toAdd: string[],
     }
 
     if (setPrev) {
-        ds.prev = toAdd;
+        ds.selectedTouchstones = toAdd;
     }
 }
