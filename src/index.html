@@ -261,7 +261,7 @@
                     <form class="mb-0">
                         <div class="form-group row">
                             <div class="col-9">
-                                <div class="btn-group mt-1 mb-5" role="group">
+                                <div class="btn-group mt-1" role="group">
                                         <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_0'),
                                          css: {active: yearMethod() == 'method_0'}">Cross-sectional
                                         </button>
@@ -273,13 +273,10 @@
                                         </button>
                                 </div>
                             </div>
-                            <div class="col-3">
-                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#methodModal">
-                                    <i class="fa fa-question-circle"></i>
-                                    Help
-                                </button>
-                            </div>
                         </div>
+                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
+                            <i class="fa fa-question-circle"></i>
+                        </button>
                     </form>
                     <hr/>
                     <form class="mb-5">
