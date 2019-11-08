@@ -142,35 +142,28 @@
                 <div class="nav-item nav-option">
                     <div class="nav-link">
                         <button type="button" class="btn btn-primary mt-1 btn-sm" 
-                                data-bind="click: selectCountryGroup('all')">
-                            All
+                                data-bind="click: () => selectCountryGroup('all')"> All
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('none')">None
+                                data-bind="click: () => selectCountryGroup('none')">None
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi77')">
-                            Gavi77
+                                data-bind="click: () => selectCountryGroup('gavi77')">Gavi77
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi72')">
-                            Gavi72
+                                data-bind="click: () => selectCountryGroup('gavi72')">Gavi72
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi68')">
-                            Gavi68
+                                data-bind="click: () => selectCountryGroup('gavi68')">Gavi68
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('dove94')">
-                            Dove94
+                                data-bind="click: () => selectCountryGroup('dove94')">Dove94
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('dove96')">
-                            Dove96
+                                data-bind="click: () => selectCountryGroup('dove96')">Dove96
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('pine')">
-                            pine5
+                                data-bind="click: () => selectCountryGroup('pine')">Pine5
                         </button>
                     </div>
                 </div>
@@ -196,7 +189,21 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: vaccineFilters">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+<!--  -->
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        <button type="button" class="btn btn-primary mt-1 btn-sm" 
+                                data-bind="click: selectAllVaccines">All
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1 btn-sm"
+                                data-bind="click: selectNoVaccines">None
+                        </button>
+                    </div>
+                </div>
+                <hr>
+<!--  -->                
+                <div data-bind="foreach: vaccineFilters">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
                         <label data-bind="attr: {for: name}">
@@ -207,6 +214,7 @@
                             </select>
                         </label>
                     </div>
+                </div>
                 </div>
             </div>
         </li>

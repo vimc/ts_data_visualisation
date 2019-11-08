@@ -118,20 +118,38 @@ export class RangeFilter extends Filter {
 
 export class DiseaseFilter extends Filter {
     public selectedOptions = ko.observableArray([]);
-    private vaccineFilters: ListFilter[] = [];
+    // private vaccineFilters: ListFilter[] = [];
+    private vaccineFilters = ko.observableArray([]);
 
     constructor(settings: DiseaseFilterSettings) {
         super(settings);
-        this.vaccineFilters = settings.vaccineFilters;
+        // this.vaccineFilters = settings.vaccineFilters;
+        this.vaccineFilters(settings.vaccineFilters);
         this.updateSelectedOptions();
-        this.vaccineFilters.map((f) => {
+        this.vaccineFilters().map((f) => {
             f.selectedOptions.subscribe(() => {
                 this.updateSelectedOptions();
             });
         });
     }
 
+    public selectNoVaccines() {
+        console.log("selectNoVaccines")
+        this.selectedOptions(
+            this.vaccineFilters().map((v) => v.selectedOptions([])));
+console.log(this)
+        this.updateSelectedOptions();
+    }
+
+    public selectAllVaccines() {
+        console.log("selectAllVaccines")
+        this.selectedOptions(this.vaccineFilters()
+            .map((v) => v.selectedOptions(v.options())));
+console.log(this)
+        this.updateSelectedOptions();
+    }
+
     private updateSelectedOptions = () => {
-         this.selectedOptions(this.vaccineFilters.map((v) => v.selectedOptions()).reduce((x, y) => x.concat(y), []));
+         this.selectedOptions(this.vaccineFilters().map((v) => v.selectedOptions()).reduce((x, y) => x.concat(y), []));
     }
 }
