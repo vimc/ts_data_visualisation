@@ -69,7 +69,7 @@ export class CountryFilter extends ListFilter {
 
     public selectCountryGroup(selectedGroup: string) {
         if (selectedGroup === "all") {
-            this.selectedOptions([...this.options()]);
+            this.selectedOptions(this.options());
         } else if (selectedGroup === "none") {
             this.selectedOptions([]);
         } else if (this.groups[selectedGroup] !== undefined) {
