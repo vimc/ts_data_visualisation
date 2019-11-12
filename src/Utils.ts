@@ -13,7 +13,7 @@ export function loadObjectFromJSONFile(path: string): any {
             return;
         },
         error(jqXHR, text, errorThrown) {
-            console.log(jqXHR + " " + text + " " + errorThrown);
+            console.log(jqXHR + " " + text + " " + errorThrown + "[" + path + "]");
         },
         type: "GET",
         url: path,

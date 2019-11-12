@@ -5,7 +5,7 @@ import {saveAs} from "file-saver";
 import * as $ from "jquery";
 import * as ko from "knockout";
 import "select2/dist/css/select2.min.css";
-import {appendToDataSet, DataSetUpdate} from "./AppendDataSets";
+import {appendToDataSet, DataSet, DataSetUpdate, getDataSet} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, dates, diseases, pineCountries, plottingVariables,
@@ -20,10 +20,15 @@ import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201907wue";
-export let addedDataSets: string[] = [];
-const update = appendToDataSet([initTouchstone], addedDataSets, []);
-addedDataSets = update.newSeenList;
-export let impactData = update.newDataSet;
+const montaguDataSets: DataSet[] = [
+    { name : "method_2", data : [], seen : [], selectedTouchstones: [] },
+    { name : "method_0", data : [], seen : [], selectedTouchstones: [] },
+    { name : "method_1", data : [], seen : [], selectedTouchstones: [] },
+];
+
+appendToDataSet([initTouchstone], "method_2", montaguDataSets, true);
+appendToDataSet(["201710gavi"], "method_0", montaguDataSets, true);
+appendToDataSet(["201710gavi"], "method_1", montaguDataSets, true);
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -61,6 +66,9 @@ class DataVisModel {
                         "coverage" ],
     };
     private currentPlot = ko.observable("Impact");
+
+    private impactData = ko.observable(getDataSet("method_2", montaguDataSets).data);
+    private yearMethod = ko.observable("method_2");
 
     private showSidebar = ko.observable(true);
     private yearFilter = ko.observable(new RangeFilter({
@@ -268,11 +276,11 @@ class DataVisModel {
         });
 
         this.touchstoneFilter().selectedOptions.subscribe(() => {
-            const newUpdate: DataSetUpdate =
-                appendToDataSet(this.touchstoneFilter().selectedOptions(),
-                                addedDataSets, impactData);
-            addedDataSets = newUpdate.newSeenList;
-            impactData = newUpdate.newDataSet;
+            const appendTo: string = this.yearMethod();
+            appendToDataSet(this.touchstoneFilter().selectedOptions(),
+                            appendTo, montaguDataSets);
+
+            this.impactData(getDataSet(appendTo, montaguDataSets).data);
             this.updateXAxisOptions();
         });
 
@@ -292,8 +300,7 @@ class DataVisModel {
         if (this.chartObject) {
             this.chartObject.destroy();
         }
-
-        const filterData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
+        const filterData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
         const {datasets, xAxisVals} = filterData;
 
         let xAxisNames: string[] = [...xAxisVals];
@@ -317,7 +324,7 @@ class DataVisModel {
             this.chartObjectTS.destroy();
         }
 
-        const filterData = new DataFilterer().calculateMean(chartOptions, impactData, plotColours);
+        const filterData = new DataFilterer().calculateMean(chartOptions, this.impactData(), plotColours);
         const {datasets, xAxisVals} = filterData;
 
         this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
@@ -358,8 +365,8 @@ class DataVisModel {
     }
 
     private exportAllData() {
-        const fileName : string = reportInfo.dep_id + "_data_set.zip"
-        let a = document.createElement("a");
+        const fileName : string = reportInfo.dep_id + "_data_set.zip";
+        const a = document.createElement("a");
         document.body.appendChild(a);
         a.href = "data_set.zip";
         a.download = fileName;
@@ -372,10 +379,17 @@ class DataVisModel {
         this.plotTitle(this.defaultTitle());
     }
 
+    private changeMethod(method: string) {
+        const data: DataSet = getDataSet(method, montaguDataSets);
+        this.impactData(data.data);
+        this.yearMethod(method);
+        this.touchstoneFilter().selectedOptions(data.selectedTouchstones);
+    }
+
     private updateXAxisOptions() {
         // refilter the data
         const chartOptions = {...this.chartOptions(), maxPlot: -1};
-        const filteredData = new DataFilterer().filterData(chartOptions, impactData, plotColours);
+        const filteredData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
         this.xAxisNames(filteredData.xAxisVals);
         this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
         this.maxBars(this.xAxisNames().length);
