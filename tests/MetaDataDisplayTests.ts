@@ -1,8 +1,7 @@
-import * as ut from "../src/Utils";
-import * as sinon from "sinon";
-
-import {MetaDataDisplay, toPlural} from "../src/MetaDataDisplay";
 import {CustomChartOptions} from "../src/Chart";
+import {fakeCountryDict, vaccineDict} from "../scripts/fakeVariables";
+import {parseIntoDictionary} from "../src/Utils";
+import {MetaDataDisplay, toPlural} from "../src/MetaDataDisplay";
 import {expect} from "chai";
 
 describe("MetaDataDisplay", () => {
@@ -27,12 +26,13 @@ describe("MetaDataDisplay", () => {
                 yearHigh: 1066,
                 yearLow: 2525,
             };
-        const md1 = MetaDataDisplay(chartOptions);
+        const dict = parseIntoDictionary(fakeCountryDict, "country", "country_name");
+        const md1 = MetaDataDisplay(chartOptions, dict, vaccineDict);
         expect(md1).to.be.a("string");
         expect(md1).to.include("ERROR!");
 
         chartOptions["plotType"] = "Impact";
-        const md2 = MetaDataDisplay(chartOptions);
+        const md2 = MetaDataDisplay(chartOptions, dict, vaccineDict);
         expect(md2).to.be.a("string");
         expect(md2).to.include("This plot shows the");
         expect(md2).to.include("METRIC");
@@ -55,7 +55,7 @@ describe("MetaDataDisplay", () => {
         chartOptions['selectedCountries'] = ["FJI", "GMB", "GEO", "GHA", "GTM", "GIN", "GNB", "GUY", "HTI", "HND", "IND"];
         chartOptions['selectedTouchstones'] = ["ts1", "ts2"];
         chartOptions['selectedVaccines'] = ["HepB", "HepB_BD"];
-        const md3 = MetaDataDisplay(chartOptions);
+        const md3 = MetaDataDisplay(chartOptions, dict, vaccineDict);
         expect(md3).to.be.a("string");
         expect(md3).to.include("This plot shows the");
         expect(md2).to.include("METRIC");

@@ -85,7 +85,6 @@ describe("DataFilterer", () => {
         expect(diseases).to.include.members(compVars);
 
         expect(filteredData).to.be.an("array");
-        //console.log(filteredData)
         expect(filteredData[0]).to.be.have.all.keys("activity_type",
                                                     "cases_averted",
                                                     "continent",

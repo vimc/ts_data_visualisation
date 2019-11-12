@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 
-import {dove94, dove96, gavi68, gavi72, gavi77, pineCountries} from "./Data";
 import {diseaseDict} from "./Dictionaries";
 
 export interface FilterSettings {
@@ -21,8 +20,9 @@ export interface ListFilterSettings extends FilterSettings {
 }
 
 export interface CountryFilterSettings extends ListFilterSettings {
-
+    groups?: { [code: string]: string[] };
 }
+
 export interface DiseaseFilterSettings extends FilterSettings {
     vaccineFilters: ListFilter[];
 }
@@ -58,41 +58,25 @@ export class ListFilter extends Filter {
 }
 
 export class CountryFilter extends ListFilter {
+    private groups: { [code: string]: string[] };
+
     constructor(settings: CountryFilterSettings) {
         super(settings);
-        this.options(settings.options);
+        this.groups = settings.groups;
+        this.options(settings.options || []);
         this.selectedOptions(settings.selected || settings.options);
     }
 
     public selectCountryGroup(selectedGroup: string) {
-        switch (selectedGroup) {
-            case "all":
-                this.selectedOptions([...this.options()]);
-                break;
-            case "none":
-                this.selectedOptions([]);
-                break;
-            case "pine":
-                this.selectedOptions([...pineCountries]);
-                break;
-            case "dove94":
-                this.selectedOptions([...dove94]);
-                break;
-            case "dove96":
-                this.selectedOptions([...dove96]);
-                break;
-            case "gavi77":
-                this.selectedOptions([...gavi77]);
-                break;
-            case "gavi72":
-                this.selectedOptions([...gavi72]);
-                break;
-            case "gavi68":
-                this.selectedOptions([...gavi68]);
-                break;
-            default:
-                this.selectedOptions([]);
-                break;
+        if (selectedGroup === "all") {
+            this.selectedOptions(this.options());
+        } else if (selectedGroup === "none") {
+            this.selectedOptions([]);
+        } else if (this.groups[selectedGroup] !== undefined) {
+            this.selectedOptions(this.groups[selectedGroup]);
+        } else {
+            console.log("Warning: Country group " + selectedGroup + " does not exist");
+            this.selectedOptions([]);
         }
     }
 }

@@ -7,14 +7,29 @@ import {countryDict, countries, touchstones, activityTypes, diseases, diseaseVac
 // Impact data
 for (let i in touchstones) {
     var tsName = touchstones[i];
-    var fileName = "data/test/impactData_" + tsName + ".json";
-    fs.writeFile(fileName, generateData(tsName), function (err) {
-    if (err) {
-        return console.log(err);
-    }
+    var fileName0 = "data/test/impactData_" + tsName + "_method_0.json";
+    fs.writeFile(fileName0, generateData(tsName), function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
 
-    console.log("Fake data saved to " + fileName)
-});
+    var fileName1 = "data/test/impactData_" + tsName + "_method_1.json";
+        fs.writeFile(fileName1, generateData(tsName), function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
+
+    var fileName2 = "data/test/impactData_" + tsName + "_method_2.json";
+    fs.writeFile(fileName2, generateData(tsName), function (err) {
+        if (err) {
+            return console.log(err);
+        };
+    })
+    console.log("Fake data saved to " + fileName0);
+    console.log("Fake data saved to " + fileName1);
+    console.log("Fake data saved to " + fileName2);
 }
 
 function writeToFile(path, data) {
@@ -51,6 +66,7 @@ writeToFile("data/test/diseaseVaccines.json", diseaseVaccines);
 writeToFile("data/test/reportInfo.json",
             { "rep_id": ["test-fake-id"],
               "dep_id": ["test-another-fake-id"],
+              "dep_name": ["report-name"],
               "git_id": ["some-fake-git-id"]
             }
            );

@@ -11,29 +11,38 @@ export const countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
     "SYR", "TJK", "TZA", "TLS", "TGO", "TON", "TKM", "TUV", "UGA", "UKR", "UZB",
     "VUT", "VNM", "YEM", "ZMB", "ZWE"];
 
-export const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
+const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
 
 const notDove94 = ["ALB", "BIH", "CHN", "TUN"];
-export const dove94 = countries.filter((x) => notDove94.indexOf(x) < 0 );
+const dove94 = countries.filter((x) => notDove94.indexOf(x) < 0 );
 
 const notDove96 = ["TUN", "XK"];
-export const dove96 = countries.filter((x) => notDove96.indexOf(x) < 0 );
+const dove96 = countries.filter((x) => notDove96.indexOf(x) < 0 );
 
 const notGavi68 = ["ALB", "BIH", "BLZ", "BTN", "CHN", "CPV", "EGY",
     "FJI", "FSM", "GTM", "HND", "IRQ", "LKA", "MAR", "MHL", "MNG", "PHL", "PRY",
     "PSE", "SLV", "SWZ", "SYR", "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM",
     "XK"];
-export const gavi68 = countries.filter((x) => notGavi68.indexOf(x) < 0 );
+const gavi68 = countries.filter((x) => notGavi68.indexOf(x) < 0 );
 
 const notGavi72 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
     "FSM", "GTM", "IRQ", "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR",
     "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM", "XK"];
-export const gavi72 = countries.filter((x) => notGavi72.indexOf(x) < 0 );
+const gavi72 = countries.filter((x) => notGavi72.indexOf(x) < 0 );
 
 const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
     "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR", "TON", "TUN", "TUV",
     "VUT", "WSM", "XK"];
-export const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
+const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
+
+export const countryGroups = {
+    pine: pineCountries,
+    dove94: dove94,
+    dove96: dove96,
+    gavi68: gavi68,
+    gavi72: gavi72,
+    gavi77: gavi77
+}
 
 export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA", "PCV",
     "Rota", "Rubella", "YF"];
@@ -53,6 +62,23 @@ export const diseaseVaccines = {
 export const vaccines = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1", "MCV2",
 "Measles", "MenA", "PCV3", "Rota", "RCV2", "Rubella", "YF"];
 
+export const vaccineDict = {
+    HPV: "HPV",
+    HepB: "Hepatitis B",
+    HepB_BD: "HepB_BD",
+    Hib3: "Hib3",
+    JE: "Japanese encephalitis",
+    MCV1: "MCV1",
+    MCV2: "MCV2",
+    Measles: "Measles",
+    MenA: "MenA",
+    PCV3: "PCV3",
+    RCV2: "RCV2",
+    Rota: "Rotavirus",
+    Rubella: "Rubella",
+    YF: "Yellow Fever",
+};
+
 export const activityTypes = ["routine", "campaign", "combined"];
 
 export const plottingVariables = ["year", "country", "continent", "region",
@@ -66,7 +92,7 @@ export const touchstones = ["201210gavi-201303gavi", "201210gavi-201907wue",
 
 export const supportTypes = ["gavi", "other"];
 
-export const countryDict = [
+export const fakeCountryDict = [
     {"country":"AFG","country_name":"Afghanistan"},
     {"country":"ALB","country_name":"Albania"},
     {"country":"AGO","country_name":"Angola"},
