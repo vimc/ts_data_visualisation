@@ -251,6 +251,9 @@
             </div>
         </li>
     </ul>
+    <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpFilterModal">
+        <i class="fa fa-question-circle"></i>
+    </button>
 </div>
 
 <div class="contents container-fluid">
@@ -312,22 +315,37 @@
                                         data-bind="options: maxPlotOptions, value: maxBars"></select>
                             </div>
                         </div>
+
+                        <div>
+                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpPlotModal">
+                            <i class="fa fa-question-circle"></i>
+                        </button>
+                        </div>
+
                     </form>
 
-                    <div class="btn-group mt-1 mb-5" role="group">
-                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeBurden('deaths'),
-                         css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
-                         css: {active: humanReadableBurdenOutcome() == 'dalys'}">Dalys
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
-                         css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
-                         css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
+                    <div class ="btn-toolbar">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths'),
+                             css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
+                             css: {active: humanReadableBurdenOutcome() == 'dalys'}">DALYs
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
+                             css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
+                             css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-info btn-circle pull-left" data-toggle="modal" data-target="#helpMetricModal">
+                                        <i class="fa fa-question-circle"></i>
                         </button>
                     </div>
+
 
                     <p style="font-weight:bold;color:red"
                         data-bind="text: warningMessage, visible: showWarning">
@@ -373,7 +391,7 @@
                     <form class="mb-0">
                         <div class="form-group row">
                             <div class="col-9">
-                                <div class="btn-group mt-1 mb-5" role="group">
+                                <div class="btn-group mt-1" role="group">
                                         <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_0'),
                                          css: {active: yearMethod() == 'method_0'}">Cross-sectional
                                         </button>
@@ -385,13 +403,10 @@
                                         </button>
                                 </div>
                             </div>
-                            <div class="col-3">
-                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#methodModal">
-                                    <i class="fa fa-question-circle"></i>
-                                    Help
-                                </button>
-                            </div>
                         </div>
+                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
+                            <i class="fa fa-question-circle"></i>
+                        </button>
                     </form>
                     <hr/>
                     <form class="mb-5">
@@ -413,30 +428,40 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
-                    <div class="btn-group mt-1 mb-6" role="group">
-                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeBurden('deaths'),
-                         css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
-                         css: {active: humanReadableBurdenOutcome() == 'dalys'}">Dalys
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
-                         css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
-                         css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
-                        </button>
-                        <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('coverage'),
-                         css: {active: humanReadableBurdenOutcome() == 'coverage'}, enable: yearMethod() == 'method_2'">Coverage
-                        </button>
-                        <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('deathsRate'),
-                         css: {active: humanReadableBurdenOutcome() == 'deathsRate'}, enable: yearMethod() == 'method_2'">Deaths (rate)
-                        </button>
-                        <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('casesRate'),
-                         css: {active: humanReadableBurdenOutcome() == 'casesRate'}, enable: yearMethod() == 'method_2'">Cases (rate)
+                    <div class="col-4">
+                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpPlotModal">
+                                <i class="fa fa-question-circle"></i>
                         </button>
                     </div>
+                    </form>
+                    <div class ="btn-toolbar">
+                        <div class="btn-group mt-1 mb-6" role="group">
+                            <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths'),
+                             css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
+                             css: {active: humanReadableBurdenOutcome() == 'dalys'}">DALYs
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
+                             css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
+                             css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
+                            </button>
+                            <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('coverage'),
+                             css: {active: humanReadableBurdenOutcome() == 'coverage'}, enable: yearMethod() == 'method_2'">Coverage
+                            </button>
+                            <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('deathsRate'),
+                             css: {active: humanReadableBurdenOutcome() == 'deathsRate'}, enable: yearMethod() == 'method_2'">Deaths (rate)
+                            </button>
+                            <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('casesRate'),
+                             css: {active: humanReadableBurdenOutcome() == 'casesRate'}, enable: yearMethod() == 'method_2'">Cases (rate)
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpMetricModal">
+                        <i class="fa fa-question-circle"></i>
+                    </button>
 
                     <p style="font-weight:bold;color:red"
                         data-bind="text: warningMessage, visible: showWarning">
@@ -471,7 +496,72 @@
 
     </div>
 </div>
+</div>
 
+<!-- Help Modal -->
+<div class="modal fade" id="helpPlotModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalLabel">
+                   <span data-bind="text: modalHelpTitle"></span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span data-bind="html: modalHelpMain"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="helpFilterModal" tabindex="-1" role="dialog" aria-labelledby="helFilterLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpFilterLabel">
+                    Filter Options
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span data-bind="html: modalFilterHelpMain"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Metrics Modal -->
+<div class="modal fade" id="helpMetricModal" tabindex="-1" role="dialog" aria-labelledby="helpMetricLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpMetricLabel">
+                    Metrics
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span data-bind="html: modalMetricsHelpMain"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal -->

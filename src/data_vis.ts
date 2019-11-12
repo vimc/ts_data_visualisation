@@ -13,6 +13,7 @@ import {activityTypes, countries, countryGroups, dates, diseases, plottingVariab
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
+import {filterHelp, generatedHelpBody, generatedHelpTitle, generatedMetricsHelp} from "./Help";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetaDataDisplay} from "./MetaDataDisplay";
 import {plotColours} from "./PlotColours";
@@ -445,6 +446,16 @@ class DataVisModel {
             saveAs(blob, "data.csv");
         });
     }
+
+    // Modal Help Windows
+    private modalHelpTitle
+        = ko.computed<string>(() => generatedHelpTitle(this.currentPlot()));
+    private modalHelpMain
+        = ko.computed<string>(() => generatedHelpBody(this.currentPlot()));
+    private modalFilterHelpMain
+        = ko.observable(filterHelp);
+    private modalMetricsHelpMain
+        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
 }
 
 $(document).ready(() => {
