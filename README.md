@@ -5,31 +5,18 @@
 
 The typescript / knockout implementation of the interactive reporting app.
 
-Compiling this is somewhat complicated as it relies on a large 100+MB data file that we don't want to put into git.
+Compiling this is somewhat complicated as it relies on a multiple large data
+files that we don't want to put into git.
 
-The data set is `201710gavi_summary.rds` from the Montagu report `native-201710gavi-method2`.
+The data file are `interim-update-201907wue_summary.rds` from the Montagu report
+`modup2-201907` and, `life_time_impact.rds` and `cross_sectional_impact.rds`
+from `internal-2018-201710gavi-impact-estimates`.
 
-To compile this report we need to 
-* grab that data file,
-* convert it to a JSON file,
-* prepend the file with `const impactData = ` and turn the file into a javascript file
-* move the `.js` into `data/`.
+In addition to the data files we also need some _dictionary_ files containing
+_e.g._ country and vaccine names.
 
-A simple R script to create this file is:
-```
-temp_data <- readRDS("201710gavi_summary.rds")
-
-# save the impact data a json file
-jsonlite::write_json(temp_data, "temporary.json", pretty = TRUE, na = "string")
-
-# we need the json file to be a javascript file
-# prepended with 'const impactdata = '
-system("echo 'const impactData = ' > impactData.js")
-system("cat temporary.json >> impactData.js")
-
-# remove the json file
-file.remove("temporary.json")
-```
+The process of creating these files for the app is carried out in the montagu
+report `internal-2018-interactive-plotting`.
 
 # Local development
 
@@ -41,14 +28,15 @@ This method is ideal for UI development where the data does not matter at all.
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
-Note that the fake data only contains points for years 2014 - 2020 and for the most 
-recent 3 touchstones.
+Note that the fake data only contains points for years 2014 - 2020 and for the
+most recent 3 touchstones.
 
 ## Using realistic data:
 Useful if you want data that resembles the real data set, but still want
 local development to be a bit quicker.
 1. Grab the real data set by downloading the relevant artefact from the
-reporting portal and copying it into this repo's `data` directory.
+reporting portal (`https://montagu.vaccineimpact.org/reports/report/internal-2018-interactive-plotting/XXXXXXXX-XXXXXX-XXXXXXXX`)
+and copying it into this repo's `data` directory.
 1. `./scripts/thinData`.
 1. `npm install`
 1. `npm run build-dev` or `npm run build-dev-watch`
@@ -58,7 +46,10 @@ reporting portal and copying it into this repo's `data` directory.
 ## Using real data:
 This will make development slow, but will give you the most accurate impression
 of the app in production.
-1. Grab the real data set as above but this time put it straight into `data/test`.
+1. Grab the real data file by downloading the relevant file from the relevant
+report on the reporting portal
+(`https://montagu.vaccineimpact.org/reports/report/internal-2018-interactive-plotting/XXXXXXXX-XXXXXX-XXXXXXXX`). 
+Copy the files to `data/test`.
 1. `npm install`
 1. `npm run build-dev` or `npm run build-dev-watch`
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.

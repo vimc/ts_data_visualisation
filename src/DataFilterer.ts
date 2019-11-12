@@ -521,7 +521,7 @@ export class DataFilterer {
     */
     public filterByAll(filterOptions: DataFiltererOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
-         // filter focal model
+        // filter focal model
         let filtData = this.filterByFocality(impactData, true);
         // filter so that support = gavi
         filtData = this.filterBySupport(filtData, filterOptions.supportType);
