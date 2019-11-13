@@ -31,9 +31,6 @@ appendToDataSet([initTouchstone], "method_2", montaguDataSets, true);
 appendToDataSet(["201710gavi"], "method_0", montaguDataSets, true);
 appendToDataSet(["201710gavi"], "method_1", montaguDataSets, true);
 
-console.log(reportInfo.dep_name);
-console.log(reportInfo.dep_id);
-
 require("./index.html");
 require("./image/logo-dark-drop.png");
 require("./image/caret-down.svg");
