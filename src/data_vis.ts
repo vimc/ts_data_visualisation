@@ -31,6 +31,9 @@ appendToDataSet([initTouchstone], "method_2", montaguDataSets, true);
 appendToDataSet(["201710gavi"], "method_0", montaguDataSets, true);
 appendToDataSet(["201710gavi"], "method_1", montaguDataSets, true);
 
+console.log(reportInfo.dep_name);
+console.log(reportInfo.dep_id);
+
 require("./index.html");
 require("./image/logo-dark-drop.png");
 require("./image/caret-down.svg");
@@ -132,11 +135,17 @@ class DataVisModel {
     private cumulativePlot = ko.observable<boolean>(false);
 
     private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
-    private dataId = ko.observable<string>("Data id: " + reportInfo.dep_id);
+    // if we end up with more datasets move this to arrays of ko strings
+    private dataId1 = ko.observable<string>(reportInfo.dep_id[0]);
+    private dataId2 = ko.observable<string>(reportInfo.dep_id[1]);
+    private dataLink1 = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"
+                                              + reportInfo.dep_name[0] + "/"
+                                              + reportInfo.dep_id[0] + "/");
+    private dataLink2 = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"
+                                              + reportInfo.dep_name[1] + "/"
+                                              + reportInfo.dep_id[1] + "/");
+    private linkText = ko.observable<string>("A report containing the data for the tool")
     private appId = ko.observable<string>("App. id: " + reportInfo.git_id);
-    private dataLink = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"
-                                             + reportInfo.dep_name + "/"
-                                             + reportInfo.dep_id + "/");
 
     private hideLabels = ko.observable<boolean>(false);
     private hideLegend = ko.observable<boolean>(false);
