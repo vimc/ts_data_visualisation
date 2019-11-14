@@ -157,6 +157,16 @@ class DataVisModel {
     private filteredTable: ko.ObservableArray<WideTableRow>;
     private filteredTSTable: ko.ObservableArray<WideTableRow>;
 
+    // Modal Help Windows
+    private modalHelpTitle
+        = ko.computed<string>(() => generatedHelpTitle(this.currentPlot()));
+    private modalHelpMain
+        = ko.computed<string>(() => generatedHelpBody(this.currentPlot()));
+    private modalFilterHelpMain
+        = ko.observable(filterHelp);
+    private modalMetricsHelpMain
+        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
+
     private burdenOutcome = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
@@ -446,16 +456,6 @@ class DataVisModel {
             saveAs(blob, "data.csv");
         });
     }
-
-    // Modal Help Windows
-    private modalHelpTitle
-        = ko.computed<string>(() => generatedHelpTitle(this.currentPlot()));
-    private modalHelpMain
-        = ko.computed<string>(() => generatedHelpBody(this.currentPlot()));
-    private modalFilterHelpMain
-        = ko.observable(filterHelp);
-    private modalMetricsHelpMain
-        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
 }
 
 $(document).ready(() => {
