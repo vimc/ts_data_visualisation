@@ -216,7 +216,7 @@ class DataVisModel {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
             xAxis: this.xAxis(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
-            yAxis: this.yAxis(), // variable we are disaggregating by
+            yAxis: this.yAxis(), // variable we are stratifying by
             hideLabels: this.hideLabels(),
             maxPlot: this.maxBars(), // How many bars on the plot
             metric: this.burdenOutcome(), // What outcome are we using e.g death, DALYs
