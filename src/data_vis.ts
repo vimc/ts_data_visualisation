@@ -107,7 +107,8 @@ class DataVisModel {
     }));
 
     private supportFilter = ko.observable(new ListFilter({
-        name: "Support type",
+        name: "Gavi support",
+        humanNames: { gavi : "yes", other : "no" },
         options: supportTypes,
         selected: supportTypes.slice(0, 1),
     }));
