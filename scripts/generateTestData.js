@@ -1,8 +1,8 @@
 const fs = require('fs');
 import JSZip from 'jszip';
 
-import {countryDict, countries, touchstones, activityTypes, diseases, diseaseVaccines, 
-        supportTypes, pineCountries, dove94, dove96, gavi68, gavi72, gavi77} from "./fakeVariables.ts"
+import {fakeCountryDict, countries, touchstones, activityTypes, diseases, diseaseVaccines, 
+        supportTypes, countryGroups} from "./fakeVariables.ts"
 
 // Impact data
 for (let i in touchstones) {
@@ -60,23 +60,23 @@ function writeToZipFile(path, lines) {
 
 writeToFile("data/test/activities.json", activityTypes);
 writeToFile("data/test/countryCodes.json", countries);
-writeToFile("data/test/countryDictionary.json", countryDict);
+writeToFile("data/test/countryDictionary.json", fakeCountryDict);
 writeToFile("data/test/dates.json", {"min":[2010],"max":[2020]});
 writeToFile("data/test/diseaseVaccines.json", diseaseVaccines);
 writeToFile("data/test/reportInfo.json",
             { "rep_id": ["test-fake-id"],
-              "dep_id": ["test-another-fake-id"],
-              "dep_name": ["report-name"],
+              "dep_id": ["test-another-fake-id", "test-yet-another-fake-id"],
+              "dep_name": ["report-name", "another-report-name"],
               "git_id": ["some-fake-git-id"]
             }
            );
 writeToFile("data/test/support.json", supportTypes);
-writeToFile("data/test/dove94.json", dove94);
-writeToFile("data/test/dove96.json", dove96);
-writeToFile("data/test/gavi68.json", gavi68);
-writeToFile("data/test/gavi72.json", gavi72);
-writeToFile("data/test/gavi77.json", gavi77);
-writeToFile("data/test/pine5.json", pineCountries);
+writeToFile("data/test/dove94.json", countryGroups.dove94);
+writeToFile("data/test/dove96.json", countryGroups.dove96);
+writeToFile("data/test/gavi68.json", countryGroups.gavi68);
+writeToFile("data/test/gavi72.json", countryGroups.gavi72);
+writeToFile("data/test/gavi77.json", countryGroups.gavi77);
+writeToFile("data/test/pine5.json", countryGroups.pine);
 writeToFile("data/test/touchstones.json", touchstones);
 writeToZipFile("data/test/data_set.zip", 100);
 
