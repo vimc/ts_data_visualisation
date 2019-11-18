@@ -58,6 +58,7 @@
             </a>
         </li>
     </ul>
+    <button class="float-bottom btn btn-success" data-bind="click: exportAllData">Export complete dataset</button>
 </div>
 
 <div class="filter-bar sidebar" data-bind="css: { in: showSidebar}">
@@ -100,13 +101,13 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        Year Low:
+                        First year:
                         <select class=form-control data-bind="options: rangeValues, value: selectedLow"></select>
                     </div>
                 </div>
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        Year High:
+                        Last year:
                         <select class=form-control data-bind="options: rangeValues, value: selectedHigh"></select>
                     </div>
                 </div>
@@ -244,7 +245,7 @@
                         <label data-bind="attr: {for: $data}">
                             <input type="checkbox"
                                    data-bind="attr: { value: $data, id: $data }, checked: $parent.selectedOptions">
-                            <span data-bind="text: $data"></span>
+                            <span data-bind="text: $parent.makeHumanreadable($data)"></span>
                         </label>
                     </div>
                 </div>
@@ -302,8 +303,8 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-4">
-                                <p>Disaggregate by <span class="info icon" data-toggle="tooltip" data-placement="top"
-                                                         title="What should we disaggregate by?">
+                                <p>Stratify by <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                                         title="What should we stratify by?">
                             </span></p>
                                 <select class="form-control" data-bind="options: yAxisOptions, value: yAxis"></select>
                             </div>
@@ -381,7 +382,6 @@
 
                     <button class="btn btn-success" data-bind="click: exportPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportData">Export data as csv</button>
-                    <button class="btn btn-success" data-bind="click: exportAllData">Export complete dataset</button>
                 </div>
             </div>
         </div>
@@ -412,8 +412,8 @@
                     <form class="mb-5">
                         <div class="form-group row">
                             <div class="col-4">
-                                <p>Disaggregate by <span class="info icon" data-toggle="tooltip" data-placement="top"
-                                                         title="What should we disaggregate by?">
+                                <p>Stratify by <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                                         title="What should we stratify by?">
                             </span></p>
                                 <select class="form-control" data-bind="options: yAxisOptions, value: yAxis"></select>
                             </div>
@@ -472,8 +472,6 @@
                     </div>
                     <button class="btn btn-success" data-bind="click: exportTSPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportTSData">Export data as csv</button>
-                    <button class="btn btn-success" data-bind="click: exportAllData">Export complete dataset</button>
-
                 </div>
             </div>
         </div>
