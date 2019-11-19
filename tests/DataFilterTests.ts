@@ -273,7 +273,6 @@ describe("DataFilterer", () => {
         // does not really test anything other than the code runs without error!
         for (const y of [2010, 2011, 2012, 2013, 2014]) {
             for (const idr of out["none"][y.toString()]) {
-                console.log(idr)
                 expect(idr.year).to.equal(y)
             }
         }
