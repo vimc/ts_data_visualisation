@@ -266,17 +266,15 @@ describe("DataFilterer", () => {
         }
     })
 
-    it("filterByYear", () => {
+    it("filterByNone", () => {
         const out = testObject.ArrangeSplitData("year", "none",
                                                 [],
                                                 fakeImpactData);
-        console.log(out)
-        for (const d of diseases.slice(0, 5)) {
-            for (const y of [2010, 2011, 2012, 2013, 2014]) {
-                for (const idr of out[d][y.toString()]) {
-                    expect(idr.disease).to.equal(d)
-                    expect(idr.year).to.equal(y)
-                }
+        // does not really test anything other than the code runs without error!
+        for (const y of [2010, 2011, 2012, 2013, 2014]) {
+            for (const idr of out["none"][y.toString()]) {
+                console.log(idr)
+                expect(idr.year).to.equal(y)
             }
         }
     })
