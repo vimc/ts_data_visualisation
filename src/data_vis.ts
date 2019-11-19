@@ -113,7 +113,7 @@ class DataVisModel {
         selected: supportTypes.slice(0, 1),
     }));
 
-    private xAxisOptions = plottingVariables;
+    private xAxisOptions = plottingVariables.filter((v, i, a) => (v !== "none"));
     private yAxisOptions = ko.computed(() => {
         switch (this.currentPlot()) {
             case "Impact":

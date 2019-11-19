@@ -3,11 +3,11 @@ import {ImpactDataRow} from "./ImpactDataRow";
 import {niceColours} from "./PlotColours";
 
 interface SplitImpactData {
-    [country: string]: ImpactDataRow[];
+    [key: string]: ImpactDataRow[];
 }
 
 interface ArrangedSplitImpactData {
-    [vaccine: string]: SplitImpactData;
+    [key: string]: SplitImpactData;
 }
 
 export interface DataFiltererOptions {
@@ -303,27 +303,45 @@ export class DataFilterer {
                             filteredData: ImpactDataRow[]): ArrangedSplitImpactData {
         // create a dictionary of empty dictionaries
         const dataByYAxis: ArrangedSplitImpactData = {};
-        yAxisVars.map((y: string) => { dataByYAxis[y] = {}; } );
-        // now fill 'em in
-        for (const row of filteredData) {
-            let dataByCompare = dataByYAxis[row[yAxisName]];
-            if (!dataByCompare) {
-                dataByCompare = dataByYAxis[row[yAxisName]] = {};
-            }
 
-            let list = dataByCompare[row[xAxisName]];
-            if (!list) {
-                list = dataByCompare[row[xAxisName]] = [];
-            }
+        if (yAxisVars[0] === "none") {
+            dataByYAxis["none"] = {};
 
-            // At this line of code `dataByCompare` is pointing at the
-            // object with key `row[yAxisName]` in `dataByYAxis`,
-            // And `list` is pointing to the array in `dataByCompare`
-            // with key row[xAxisName]. Which itself points at an object in
-            // `dataByYAxis`.
-            // So when we push we are pushing row into the array in the object
-            // `dataByYAxis` via two levels of redirection!
-            list.push(row);
+            for (const row of filteredData) {
+                let dataByCompare = dataByYAxis["none"];
+                if (!dataByCompare) {
+                    dataByCompare = dataByYAxis["none"] = {};
+                }
+
+                let list = dataByCompare[row[xAxisName]];
+                if (!list) {
+                    list = dataByCompare[row[xAxisName]] = [];
+                }
+                list.push(row);
+            }
+        } else {
+            yAxisVars.map((y: string) => { dataByYAxis[y] = {}; } );
+            // now fill 'em in
+            for (const row of filteredData) {
+                let dataByCompare = dataByYAxis[row[yAxisName]];
+                if (!dataByCompare) {
+                    dataByCompare = dataByYAxis[row[yAxisName]] = {};
+                }
+
+                let list = dataByCompare[row[xAxisName]];
+                if (!list) {
+                    list = dataByCompare[row[xAxisName]] = [];
+                }
+
+                // At this line of code `dataByCompare` is pointing at the
+                // object with key `row[yAxisName]` in `dataByYAxis`,
+                // And `list` is pointing to the array in `dataByCompare`
+                // with key row[xAxisName]. Which itself points at an object in
+                // `dataByYAxis`.
+                // So when we push we are pushing row into the array in the object
+                // `dataByYAxis` via two levels of redirection!
+                list.push(row);
+            }
         }
         return dataByYAxis;
     }
@@ -371,6 +389,10 @@ export class DataFilterer {
                               xAxisVar: string,
                               metric: string,
                               impactData: ImpactDataRow[]): string[] {
+        if (xAxisVar === "none") {
+            return(['none'])
+        }
+
         if (maxPlot > 0) {
             // this is taken from https://stackoverflow.com/a/49717936
             const groupedSummed = new Map<string, number>();
