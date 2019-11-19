@@ -266,6 +266,21 @@ describe("DataFilterer", () => {
         }
     })
 
+    it("filterByYear", () => {
+        const out = testObject.ArrangeSplitData("year", "none",
+                                                [],
+                                                fakeImpactData);
+        console.log(out)
+        for (const d of diseases.slice(0, 5)) {
+            for (const y of [2010, 2011, 2012, 2013, 2014]) {
+                for (const idr of out[d][y.toString()]) {
+                    expect(idr.disease).to.equal(d)
+                    expect(idr.year).to.equal(y)
+                }
+            }
+        }
+    })
+
     it("filterData", () => {
         let fakeOptions: DataFiltererOptions = {
             metric: "deaths_averted",

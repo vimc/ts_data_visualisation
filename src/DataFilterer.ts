@@ -304,7 +304,7 @@ export class DataFilterer {
         // create a dictionary of empty dictionaries
         const dataByYAxis: ArrangedSplitImpactData = {};
 
-        if (yAxisVars[0] === "none") {
+        if (yAxisName === "none") {
             dataByYAxis["none"] = {};
 
             for (const row of filteredData) {
