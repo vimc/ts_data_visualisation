@@ -390,7 +390,7 @@ export class DataFilterer {
                               metric: string,
                               impactData: ImpactDataRow[]): string[] {
         if (xAxisVar === "none") {
-            return(['none'])
+            return(["none"]);
         }
 
         if (maxPlot > 0) {
