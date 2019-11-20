@@ -54,7 +54,6 @@ describe("DataFilterer", () => {
                                 "dalys_averted_rate": randomNumber(0, 0.8),
                                 "region": "Southern Asia",
                                 "continent": "Asia",
-                                "rate_type": "123",
                             })
                         })
                     )
@@ -94,7 +93,6 @@ describe("DataFilterer", () => {
                                                     "disease",
                                                     "is_gavi",
                                                     "is_focal",
-                                                    "rate_type",
                                                     "support_type",
                                                     "touchstone",
                                                     "vaccine",
