@@ -33,5 +33,5 @@ export interface ImpactDataRow {
 export interface MetricsAndOptions {
     metrics: string[]; // The valid metric values
     options: string[]; // The valid filter values
-    secretOptions: { [key: string]: any }; // Other values that can be filtered by but not public
+    secretOptions?: { [key: string]: any }; // Other values that can be filtered by but not public
 }

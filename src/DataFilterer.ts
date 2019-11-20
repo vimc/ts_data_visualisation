@@ -544,9 +544,11 @@ export class DataFilterer {
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
         let filtData = impactData;
         // filter by secret options
-        for (const opt of Object.keys(metsAndOpts.secretOptions)) {
-            filtData = this.filterByIsEqualTo(filtData, opt,
-                                              metsAndOpts.secretOptions[opt]);
+        if (metsAndOpts.secretOptions) {
+            for (const opt of Object.keys(metsAndOpts.secretOptions)) {
+                filtData = this.filterByIsEqualTo(filtData, opt,
+                                                  metsAndOpts.secretOptions[opt]);
+            }
         }
         // filter so that support = gavi
         filtData = this.filterIsInList(filtData, "support_type",

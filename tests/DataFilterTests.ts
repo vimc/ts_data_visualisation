@@ -1,6 +1,6 @@
 import {countries, touchstones, activityTypes, diseases, vaccines} from "../scripts/fakeVariables";
 import {DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
-import {ImpactDataRow} from "../src/ImpactDataRow";
+import {ImpactDataRow, MetricsAndOptions} from "../src/ImpactDataRow";
 import {plotColours} from "../src/PlotColours";
 import {expect} from "chai";
 
@@ -280,17 +280,21 @@ describe("DataFilterer", () => {
             supportType: ["gavi"],
             cumulative: true,
         }
+        let fakeMetricAndOptions: MetricsAndOptions = {
+            metrics: ["Hello", "world!"],
+            options: ["Another", "array"]
+        }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an
         // error
-        let out = testObject.filterData(fakeOptions, fakeImpactData,
+        let out = testObject.filterData(fakeOptions, fakeImpactData, fakeMetricAndOptions,
                                           plotColours);
 
         fakeOptions.metric = "deaths_averted_rate",
         fakeOptions.xAxis = "year";
         fakeOptions.yAxis = "continent";
 
-        out = testObject.calculateMean(fakeOptions, fakeImpactData,
+        out = testObject.calculateMean(fakeOptions, fakeImpactData, fakeMetricAndOptions,
                                           plotColours);
     })
 });
