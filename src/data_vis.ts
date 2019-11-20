@@ -9,7 +9,7 @@ import {appendToDataSet, DataSet, DataSetUpdate, getDataSet} from "./AppendDataS
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, countryGroups, dates, diseases, plottingVariables,
-        reportInfo, supportTypes, touchstones, vaccines} from "./Data";
+        reportInfo, supportTypes, touchstones, vaccines, metricsAndOptions} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
@@ -310,7 +310,7 @@ class DataVisModel {
         if (this.chartObject) {
             this.chartObject.destroy();
         }
-        const filterData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
+        const filterData = new DataFilterer().filterData(chartOptions, this.impactData(), metricsAndOptions, plotColours);
         const {datasets, xAxisVals} = filterData;
 
         let xAxisNames: string[] = [...xAxisVals];
@@ -334,7 +334,7 @@ class DataVisModel {
             this.chartObjectTS.destroy();
         }
 
-        const filterData = new DataFilterer().calculateMean(chartOptions, this.impactData(), plotColours);
+        const filterData = new DataFilterer().calculateMean(chartOptions, this.impactData(), metricsAndOptions, plotColours);
         const {datasets, xAxisVals} = filterData;
 
         this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
@@ -395,7 +395,7 @@ class DataVisModel {
     private updateXAxisOptions() {
         // refilter the data
         const chartOptions = {...this.chartOptions(), maxPlot: -1};
-        const filteredData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
+        const filteredData = new DataFilterer().filterData(chartOptions, this.impactData(), metricsAndOptions, plotColours);
         this.xAxisNames(filteredData.xAxisVals);
         this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
         this.maxBars(this.xAxisNames().length);

@@ -23,10 +23,15 @@ export interface ImpactDataRow {
     is_gavi?: boolean;
     is_focal?: boolean;
     support_type?: string;
-    target_population?: number;
+    target_population?: number; // this is needed when calculating rates accross multiple variables
     touchstone?: string;
     vaccine?: string;
 
     [key: string]: any; // other key: value combinations that aren't above
 }
 
+export interface MetricsAndOptions {
+    metrics: string[]; // The valid metric values
+    options: string[]; // The valid filter values
+    secretOptions: { [key: string]: any }; // Other values that can be filtered by but not public
+}

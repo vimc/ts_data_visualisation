@@ -1,5 +1,5 @@
 import {FilteredRow} from "./FilteredRow";
-import {ImpactDataRow} from "./ImpactDataRow";
+import {ImpactDataRow, MetricsAndOptions} from "./ImpactDataRow";
 import {niceColours} from "./PlotColours";
 
 interface SplitImpactData {
@@ -101,8 +101,9 @@ export class DataFilterer {
     */
     public filterData(filterOptions: DataFiltererOptions,
                       impactData: ImpactDataRow[],
+                      metsAndOpts: MetricsAndOptions,
                       plotColours: { [p: string]: string }): FilteredData {
-        const filtData = this.filterByAll(filterOptions, impactData);
+        const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
 
         // now we filter by the compare variable
         const maxCompare = (filterOptions.plotType === "Time series") ? -1 : filterOptions.maxPlot;
@@ -177,6 +178,8 @@ export class DataFilterer {
     * The function filters a dataset (an array of ImpactDataRows) based on some
     * parameters and calculate ratios (to obtain e.g. death rates) then
     * returns a FilteredData object used by chartjs to produce the plot.
+    * This is needed for when we are calculating rates accross multiple e.g
+    * countries.
     *
     * @remarks
     * This function will only be called when filterOptions.xAxis === "year".
@@ -193,9 +196,10 @@ export class DataFilterer {
     */
     public calculateMean(filterOptions: DataFiltererOptions,
                          impactData: ImpactDataRow[],
+                         metsAndOpts: MetricsAndOptions,
                          plotColours: { [p: string]: string }): FilteredData {
         // x axis will always be year!
-        const filtData = this.filterByAll(filterOptions, impactData);
+        const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
 
         // based on the metric get the top and bottom of the ratio
         // death_rate = death / population
@@ -504,6 +508,23 @@ export class DataFilterer {
                          .filter((row) => row.year <= yearHigh );
     }
 
+    public filterIsInList(impactData: ImpactDataRow[], variable: string,
+                          isIn: any[]) {
+        return impactData.filter((row) =>
+            isIn.indexOf(row[variable]) > -1);
+    }
+
+    public filterByNumericBetween(impactData: ImpactDataRow[], variable: string,
+                            low: number, high: number) {
+        return impactData.filter((row) => row[variable] >= low )
+                         .filter((row) => row[variable] <= high );
+    }
+
+    public filterByIsEqualTo(impactData: ImpactDataRow[], variable: string,
+                             toEqual: any) {
+        return impactData.filter((row) => row[variable] === toEqual);
+    }
+
    /**
     * The function filters a dataset (an array of ImpactDataRows) based
     * on the the parameters in a DataFiltererOptions object
@@ -519,26 +540,32 @@ export class DataFilterer {
     * @returns An array of ImpactDataRow with all the invalid rows removed
     */
     public filterByAll(filterOptions: DataFiltererOptions,
+                       metsAndOpts: MetricsAndOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
-        // filter focal model
-        let filtData = this.filterByFocality(impactData, true);
+        let filtData = impactData;
+        // filter by secret options
+        for (const opt of Object.keys(metsAndOpts.secretOptions)) {
+            filtData = this.filterByIsEqualTo(filtData, opt,
+                                              metsAndOpts.secretOptions[opt]);
+        }
         // filter so that support = gavi
-        filtData = this.filterBySupport(filtData, filterOptions.supportType);
+        filtData = this.filterIsInList(filtData, "support_type",
+                                       filterOptions.supportType);
         // filter by years
-        filtData = this.filterByYear(filtData, filterOptions.yearLow,
-                                     filterOptions.yearHigh);
+        filtData = this.filterByNumericBetween(filtData, "year",
+                               filterOptions.yearLow, filterOptions.yearHigh);
         // filter by touchstone
-        filtData = this.filterByTouchstone(filtData,
-                                           filterOptions.selectedTouchstones);
+        filtData = this.filterIsInList(filtData, "touchstone",
+                                       filterOptions.selectedTouchstones);
         // filter by activity type
-        filtData = this.filterByActivityType(filtData,
-                                             filterOptions.activityTypes);
-        // filter by activity type
-        filtData = this.filterByCountrySet(filtData,
-                                           filterOptions.selectedCountries);
+        filtData = this.filterIsInList(filtData, "activity_type",
+                                       filterOptions.activityTypes);
+        // filter by country
+        filtData = this.filterIsInList(filtData, "country",
+                                       filterOptions.selectedCountries);
         // filter by vaccine
-        filtData = this.filterByVaccine(filtData,
-                                        filterOptions.selectedVaccines);
+        filtData = this.filterIsInList(filtData, "vaccine",
+                                       filterOptions.selectedVaccines);
         return filtData;
     }
 

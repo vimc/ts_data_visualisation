@@ -1,4 +1,4 @@
-import {ImpactDataRow} from "./ImpactDataRow";
+import {ImpactDataRow, MetricsAndOptions} from "./ImpactDataRow";
 import {loadObjectFromJSONFile} from "./Utils";
 
 export const countries: string[] =
@@ -54,3 +54,6 @@ export const plottingVariables = ["year", "country", "continent", "region",
 
 export const reportInfo =
     loadObjectFromJSONFile("./reportInfo.json");
+
+export const metricsAndOptions: MetricsAndOptions =
+            loadObjectFromJSONFile("./metricsAndOptions.json");

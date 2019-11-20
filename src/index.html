@@ -337,7 +337,7 @@
                              css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
                             </button>
                             <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
-                             css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
+                             css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'year_of_vac'">FVPS
                             </button>
                         </div>
                     </div>
@@ -393,13 +393,13 @@
                             <div class="col-9">
                                 <div class="btn-group mt-1" role="group">
                                         <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_0'),
-                                         css: {active: yearMethod() == 'method_0'}">Cross-sectional
+                                         css: {active: yearMethod() == 'cross'}">Cross-sectional
                                         </button>
                                         <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_1'),
-                                         css: {active: yearMethod() == 'method_1'}">Lifetime
+                                         css: {active: yearMethod() == 'cohort'}">Lifetime
                                         </button>
                                         <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('method_2'),
-                                         css: {active: yearMethod() == 'method_2'}">Year of vaccination
+                                         css: {active: yearMethod() == 'year_of_vac'}">Year of vaccination
                                         </button>
                                 </div>
                             </div>
@@ -446,16 +446,16 @@
                              css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
                             </button>
                             <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
-                             css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
+                             css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'year_of_vac'">FVPS
                             </button>
                             <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('coverage'),
-                             css: {active: humanReadableBurdenOutcome() == 'coverage'}, enable: yearMethod() == 'method_2'">Coverage
+                             css: {active: humanReadableBurdenOutcome() == 'coverage'}, enable: yearMethod() == 'year_of_vac'">Coverage
                             </button>
                             <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('deathsRate'),
-                             css: {active: humanReadableBurdenOutcome() == 'deathsRate'}, enable: yearMethod() == 'method_2'">Deaths (rate)
+                             css: {active: humanReadableBurdenOutcome() == 'deathsRate'}, enable: yearMethod() == 'year_of_vac'">Deaths (rate)
                             </button>
                             <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('casesRate'),
-                             css: {active: humanReadableBurdenOutcome() == 'casesRate'}, enable: yearMethod() == 'method_2'">Cases (rate)
+                             css: {active: humanReadableBurdenOutcome() == 'casesRate'}, enable: yearMethod() == 'year_of_vac'">Cases (rate)
                             </button>
                         </div>
                     </div>
