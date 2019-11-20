@@ -281,7 +281,6 @@ describe("DataFilterer", () => {
             plotType: "Impact",
             supportType: ["gavi"],
             cumulative: true,
-            timeSeries: true,
         }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an
