@@ -24,7 +24,6 @@ export interface DataFiltererOptions {
     plotType: string;
     supportType: string[];
     cumulative: boolean;
-    timeSeries: boolean;
 }
 
 /**
@@ -106,7 +105,7 @@ export class DataFilterer {
         const filtData = this.filterByAll(filterOptions, impactData);
 
         // now we filter by the compare variable
-        const maxCompare = filterOptions.timeSeries ? -1 : filterOptions.maxPlot;
+        const maxCompare = (filterOptions.plotType === "Time series") ? -1 : filterOptions.maxPlot;
         const temp: UniqueData = this.filterByxAxis(maxCompare, filterOptions.xAxis,
                                                     filterOptions.metric, filtData);
         // these are the values that go along the x-axis
@@ -138,7 +137,7 @@ export class DataFilterer {
             this.getColour(yAxisVal, plotColours, niceColours);
 
             // construct the relevant object for chartjs
-            if (filterOptions.timeSeries) {
+            if (filterOptions.plotType === "Time series") {
                 const fRow: FilteredRow = { backgroundColor: "transparent",
                         borderColor: plotColours[yAxisVal],
                         data: summedMetricByYAxis,

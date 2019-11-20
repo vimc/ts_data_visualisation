@@ -22,14 +22,14 @@ import {WarningMessageManager} from "./WarningMessage";
 // stuff to handle the data set being split into multiple files
 const initTouchstone: string = "201710gavi-201907wue";
 const montaguDataSets: DataSet[] = [
-    { name : "method_2", data : [], seen : [], selectedTouchstones: [] },
-    { name : "method_0", data : [], seen : [], selectedTouchstones: [] },
-    { name : "method_1", data : [], seen : [], selectedTouchstones: [] },
+    { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+    { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+    { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
 ];
 
-appendToDataSet([initTouchstone], "method_2", montaguDataSets, true);
-appendToDataSet(["201710gavi"], "method_0", montaguDataSets, true);
-appendToDataSet(["201710gavi"], "method_1", montaguDataSets, true);
+appendToDataSet([initTouchstone], "impactData", "year_of_vac", montaguDataSets, true);
+appendToDataSet(["201710gavi"], "impactData", "cross", montaguDataSets, true);
+appendToDataSet(["201710gavi"], "impactData", "cohort", montaguDataSets, true);
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -70,8 +70,8 @@ class DataVisModel {
     };
     private currentPlot = ko.observable("Impact");
 
-    private impactData = ko.observable(getDataSet("method_2", montaguDataSets).data);
-    private yearMethod = ko.observable("method_2");
+    private impactData = ko.observable(getDataSet("year_of_vac", montaguDataSets).data);
+    private yearMethod = ko.observable("year_of_vac");
 
     private showSidebar = ko.observable(true);
     private yearFilter = ko.observable(new RangeFilter({
@@ -227,7 +227,6 @@ class DataVisModel {
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
             selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
             supportType: this.supportFilter().selectedOptions(),
-            timeSeries: this.currentPlot() === "Time series",
             yAxisTitle: this.yAxisTitle(),
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
             yearLow: this.yearFilter().selectedLow(), // lower bound on year
@@ -289,7 +288,7 @@ class DataVisModel {
         this.touchstoneFilter().selectedOptions.subscribe(() => {
             const appendTo: string = this.yearMethod();
             appendToDataSet(this.touchstoneFilter().selectedOptions(),
-                            appendTo, montaguDataSets);
+                            "impactData", appendTo, montaguDataSets);
 
             this.impactData(getDataSet(appendTo, montaguDataSets).data);
             this.updateXAxisOptions();
