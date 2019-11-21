@@ -20,6 +20,8 @@ import {plotColours} from "./PlotColours";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
+/*
+const file_prefix: string = "impactData";
 const initTouchstone: string = "201710gavi-201907wue";
 const montaguDataSets: DataSet[] = [
     { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
@@ -27,9 +29,22 @@ const montaguDataSets: DataSet[] = [
     { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
 ];
 
-appendToDataSet([initTouchstone], "impactData", "year_of_vac", montaguDataSets, true);
-appendToDataSet(["201710gavi"], "impactData", "cross", montaguDataSets, true);
-appendToDataSet(["201710gavi"], "impactData", "cohort", montaguDataSets, true);
+appendToDataSet([initTouchstone], file_prefix, "year_of_vac", montaguDataSets, true);
+appendToDataSet(["201710gavi"], file_prefix, "cross", montaguDataSets, true);
+appendToDataSet(["201710gavi"], file_prefix, "cohort", montaguDataSets, true);
+*/
+const file_prefix: string = "firstPaper";
+const initTouchstone: string = "1";
+
+const montaguDataSets: DataSet[] = [
+    { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+    { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+    { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+];
+
+appendToDataSet(["1"], file_prefix, "cross", montaguDataSets, true);
+appendToDataSet(["1"], file_prefix, "cohort", montaguDataSets, true);
+
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -288,7 +303,7 @@ class DataVisModel {
         this.touchstoneFilter().selectedOptions.subscribe(() => {
             const appendTo: string = this.yearMethod();
             appendToDataSet(this.touchstoneFilter().selectedOptions(),
-                            "impactData", appendTo, montaguDataSets);
+                            file_prefix, appendTo, montaguDataSets);
 
             this.impactData(getDataSet(appendTo, montaguDataSets).data);
             this.updateXAxisOptions();

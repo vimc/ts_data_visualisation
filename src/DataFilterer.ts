@@ -543,31 +543,51 @@ export class DataFilterer {
                        metsAndOpts: MetricsAndOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
         let filtData = impactData;
+console.log("initial",filtData.length);
         // filter by secret options
         if (metsAndOpts.secretOptions) {
             for (const opt of Object.keys(metsAndOpts.secretOptions)) {
                 filtData = this.filterByIsEqualTo(filtData, opt,
                                                   metsAndOpts.secretOptions[opt]);
             }
+console.log("secrets", filtData.length);
         }
         // filter so that support = gavi
-        filtData = this.filterIsInList(filtData, "support_type",
-                                       filterOptions.supportType);
+        if (metsAndOpts.options.indexOf("support_type") > -1) {
+            filtData = this.filterIsInList(filtData, "support_type",
+                                           filterOptions.supportType);
+console.log("support", filtData.length);
+        }
         // filter by years
-        filtData = this.filterByNumericBetween(filtData, "year",
+        if (metsAndOpts.options.indexOf("year") > -1) {
+            filtData = this.filterByNumericBetween(filtData, "year",
                                filterOptions.yearLow, filterOptions.yearHigh);
+console.log("year", filtData.length);
+        }
         // filter by touchstone
-        filtData = this.filterIsInList(filtData, "touchstone",
-                                       filterOptions.selectedTouchstones);
+        if (metsAndOpts.options.indexOf("touchstone") > -1) {
+            filtData = this.filterIsInList(filtData, "touchstone",
+                                           filterOptions.selectedTouchstones);
+console.log("touchstone", filtData.length);
+        }
         // filter by activity type
-        filtData = this.filterIsInList(filtData, "activity_type",
-                                       filterOptions.activityTypes);
+        if (metsAndOpts.options.indexOf("activity_type") > -1) {
+            filtData = this.filterIsInList(filtData, "activity_type",
+                                           filterOptions.activityTypes);
+console.log("activity", filtData.length);
+        }
         // filter by country
-        filtData = this.filterIsInList(filtData, "country",
-                                       filterOptions.selectedCountries);
+        if (metsAndOpts.options.indexOf("country") > -1) {
+            filtData = this.filterIsInList(filtData, "country",
+                                           filterOptions.selectedCountries);
+console.log("country", filtData.length);
+        }
         // filter by vaccine
-        filtData = this.filterIsInList(filtData, "vaccine",
-                                       filterOptions.selectedVaccines);
+        if (metsAndOpts.options.indexOf("vaccine") > -1) {
+            filtData = this.filterIsInList(filtData, "vaccine",
+                                           filterOptions.selectedVaccines);
+console.log("vaccine", filtData.length);
+        }
         return filtData;
     }
 

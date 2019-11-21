@@ -282,19 +282,20 @@ describe("DataFilterer", () => {
         }
         let fakeMetricAndOptions: MetricsAndOptions = {
             metrics: ["Hello", "world!"],
-            options: ["Another", "array"]
+            options: ["Another", "array"],
+            otherOptions: ["Yet", "another", "array"]
         }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an
         // error
-        let out = testObject.filterData(fakeOptions, fakeImpactData, fakeMetricAndOptions,
-                                          plotColours);
+        let out = testObject.filterData(fakeOptions, fakeImpactData,
+                                        fakeMetricAndOptions, plotColours);
 
         fakeOptions.metric = "deaths_averted_rate",
         fakeOptions.xAxis = "year";
         fakeOptions.yAxis = "continent";
 
-        out = testObject.calculateMean(fakeOptions, fakeImpactData, fakeMetricAndOptions,
-                                          plotColours);
+        out = testObject.calculateMean(fakeOptions, fakeImpactData,
+                                       fakeMetricAndOptions, plotColours);
     })
 });
