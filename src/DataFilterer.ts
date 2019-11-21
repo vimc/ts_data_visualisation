@@ -19,7 +19,8 @@ export interface DataFiltererOptions {
     yearHigh: number;
     activityTypes: string[];
     selectedCountries: string[];
-    selectedVaccines: string[];
+    selectedVaccines?: string[];
+    selectedDiseases?: string[];
     selectedTouchstones: string[];
     plotType: string;
     supportType: string[];
@@ -595,6 +596,13 @@ console.log("vaccine", filtData.length);
                                               filterOptions.allAges);
 console.log("age_group", filtData.length);
         }
+        // filter by disease
+        if (metsAndOpts.options.indexOf("disease") > -1) {
+            filtData = this.filterIsInList(filtData, "disease",
+                                           filterOptions.selectedDiseases);
+console.log("disease", filtData.length);
+        }
+console.log(filtData);
         return filtData;
     }
 

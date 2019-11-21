@@ -109,10 +109,15 @@ class DataVisModel {
         options: countries,
         selected: countryGroups["pine"],
     }));
-
+/*
     private diseaseFilter = ko.observable(new DiseaseFilter({
         name: "Disease",
         vaccineFilters: diseases.map(createVaccineFilterForDisease),
+    }));
+*/
+    private diseaseFilter = ko.observable(new ListFilter({
+        name: "Disease",
+        options: diseases,
     }));
 
     private touchstoneFilter = ko.observable(new ListFilter({
@@ -242,7 +247,8 @@ class DataVisModel {
             plotType: this.currentPlot(),
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-            selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
+//            selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
+            selectedDiseases: this.diseaseFilter().selectedOptions(),
             supportType: this.supportFilter().selectedOptions(),
             yAxisTitle: this.yAxisTitle(),
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
