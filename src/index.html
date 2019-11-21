@@ -12,6 +12,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- We seem to need this to get the collapsable card to work -->
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -266,17 +267,20 @@
                         <div class="form-group row">
                             <div class="col-9">
                                 <div class="btn-group mt-1" role="group">
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cross'),
-                                         css: {active: yearMethod() == 'cross'}">Cross-sectional
-                                        </button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cohort'),
-                                         css: {active: yearMethod() == 'cohort'}">Lifetime
-                                        </button>
-                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('year_of_vac'),
-                                         css: {active: yearMethod() == 'year_of_vac'}">Year of vaccination
-                                        </button>
+                                    <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cross'),
+                                     css: {active: yearMethod() == 'cross'}">Cross-sectional
+                                    </button>
+                                    <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cohort'),
+                                     css: {active: yearMethod() == 'cohort'}">Lifetime
+                                    </button>
+                                    <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('year_of_vac'),
+                                     css: {active: yearMethod() == 'year_of_vac'}">Year of vaccination
+                                    </button>
                                 </div>
                             </div>
+                        </div>
+                        <div>
+                            <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s" data-off="All Ages", data-bind="checked: allAges">
                         </div>
                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
                             <i class="fa fa-question-circle"></i>
@@ -404,6 +408,9 @@
                                 </div>
                             </div>
                         </div>
+                        <div>
+                            <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s" data-off="All Ages"data-bind="checked: allAges">
+                        </div>
                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
                             <i class="fa fa-question-circle"></i>
                         </button>
@@ -475,7 +482,6 @@
                 </div>
             </div>
         </div>
-        <!-- META-DATA TEXT BOX -->
 
         <div class="card" style="width: 50rem;">
             <div class="card-header">

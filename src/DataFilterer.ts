@@ -24,6 +24,7 @@ export interface DataFiltererOptions {
     plotType: string;
     supportType: string[];
     cumulative: boolean;
+    allAges: string;
 }
 
 /**
@@ -586,7 +587,13 @@ console.log("country", filtData.length);
         if (metsAndOpts.options.indexOf("vaccine") > -1) {
             filtData = this.filterIsInList(filtData, "vaccine",
                                            filterOptions.selectedVaccines);
+        }
 console.log("vaccine", filtData.length);
+        // filter by age group
+        if (metsAndOpts.options.indexOf("age_group") > -1) {
+            filtData = this.filterByIsEqualTo(filtData, "age_group",
+                                              filterOptions.allAges);
+console.log("age_group", filtData.length);
         }
         return filtData;
     }

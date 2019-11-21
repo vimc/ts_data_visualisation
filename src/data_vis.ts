@@ -146,6 +146,7 @@ class DataVisModel {
     private xAxis = ko.observable<string>(this.xAxisOptions[1]);
     private yAxis = ko.observable<string>("disease");
     private cumulativePlot = ko.observable<boolean>(false);
+    private allAges = ko.observable<boolean>(true);
 
     private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
     // if we end up with more datasets move this to arrays of ko strings
@@ -230,6 +231,7 @@ class DataVisModel {
     private chartOptions = ko.computed<CustomChartOptions>(() => {
         return {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            allAges: (this.allAges() ? "all" : "under5"), //
             xAxis: this.xAxis(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
             yAxis: this.yAxis(), // variable we are stratifying by
