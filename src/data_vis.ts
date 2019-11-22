@@ -152,7 +152,7 @@ class DataVisModel {
             ko.observable(isVisible(metricsAndOptions.options, "support_type"));
 
     private visbleMetricButtons = ko.observable(metricsAndOptions.metrics);
-    private visbleAgeGroupCheck = ko.observable(isVisible(metricsAndOptions.options, "age_group"));
+    private showAgeGroupCheck = ko.observable(isVisible(metricsAndOptions.options, "age_group"));
 
     private xAxisOptions = plottingVariables;
     private yAxisOptions = ko.computed(() => {
@@ -219,10 +219,14 @@ class DataVisModel {
     private burdenOutcome = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
+                return "deaths";
+            case "deaths_averted":
                 return "deaths_averted";
             case "cases":
                 return "cases_averted";
             case "dalys":
+                return "dalys";
+            case "dalys_averted":
                 return "dalys_averted";
             case "fvps":
                 return "fvps";
@@ -246,10 +250,14 @@ class DataVisModel {
     private yAxisTitle = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
+                return "Future deaths";
+            case "deaths_averted":
                 return "Future deaths averted";
             case "cases":
                 return "Future cases averted";
             case "dalys":
+                return "Future DALYs";
+            case "dalys_averted":
                 return "Future DALYS averted";
             case "fvps":
                 return "fvps";

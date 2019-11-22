@@ -303,7 +303,7 @@
                         </div>
                         <div>
                             <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s" data-off="All Ages"
-                                   data-bind="checked: allAges, visible: visbleAgeGroupCheck">
+                                   data-bind="checked: allAges, visible: showAgeGroupCheck">
                         </div>
                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
                             <i class="fa fa-question-circle"></i>
@@ -357,8 +357,14 @@
                             <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths'),
                              css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
                             </button>
+                            <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths_averted'),
+                             css: {active: humanReadableBurdenOutcome() == 'deaths_averted'}">Deaths averted
+                            </button>
                             <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
                              css: {active: humanReadableBurdenOutcome() == 'dalys'}">DALYs
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys_averted'),
+                             css: {active: humanReadableBurdenOutcome() == 'dalys_averted'}">DALYs averted
                             </button>
                             <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
                              css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
@@ -433,7 +439,7 @@
                         </div>
                         <div>
                             <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s"
-                                   data-off="All Ages"data-bind="checked: allAges, visible: visbleAgeGroupCheck">
+                                   data-off="All Ages"data-bind="checked: allAges, visible: showAgeGroupCheck">
                         </div>
                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
                             <i class="fa fa-question-circle"></i>
@@ -470,8 +476,14 @@
                             <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths'),
                              css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
                             </button>
+                            <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths_averted'),
+                             css: {active: humanReadableBurdenOutcome() == 'deaths_averted'}">Deaths averted
+                            </button>
                             <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
                              css: {active: humanReadableBurdenOutcome() == 'dalys'}">DALYs
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys_averted'),
+                             css: {active: humanReadableBurdenOutcome() == 'dalys_averted'}">DALYs averted
                             </button>
                             <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
                              css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
