@@ -77,10 +77,8 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
 class DataVisModel {
     private plots = ko.observableArray(["Impact", "Time series"]);
     private permittedMetrics: { [key: string]: string[] } = {
-        "Impact": ["deaths_averted", "dalys_averted", "cases_averted", "fvps"],
-        "Time series": ["deaths_averted", "dalys_averted", "cases_averted",
-                        "fvps", "deaths_averted_rate", "cases_averted_rate",
-                        "coverage" ],
+        "Impact": metricsAndOptions.metrics,
+        "Time series": metricsAndOptions.metrics,
     };
     private currentPlot = ko.observable("Impact");
 
@@ -150,15 +148,18 @@ class DataVisModel {
     private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
     private showAgeGroupCheck = ko.observable(metricsAndOptions.options.includes("age_group"));
 
-    private xAxisOptions = plottingVariables;
+    private xAxisOptions =
+               metricsAndOptions.options.concat(metricsAndOptions.otherOptions);
     private yAxisOptions = ko.computed(() => {
+        const catOptions =
+               metricsAndOptions.options.concat(metricsAndOptions.otherOptions);
         switch (this.currentPlot()) {
             case "Impact":
-                return plottingVariables;
+                return catOptions;
             case "Time series":
-                return plottingVariables.filter((v, i, a) => (v !== "year"));
+                return catOptions.filter((v, i, a) => (v !== "year"));
             default:
-                return plottingVariables;
+                return catOptions;
         }
     }, this);
 
