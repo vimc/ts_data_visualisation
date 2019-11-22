@@ -146,36 +146,37 @@
                 <div class="nav-item nav-option">
                     <div class="nav-link">
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('all')">
+                                data-bind="click: () => selectCountryGroup('all')">
                             All
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('none')">None
+                                data-bind="click: () => selectCountryGroup('none')">None
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi77')">
+                                data-bind="click: () => selectCountryGroup('pine')">
+                            pine5
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1 btn-sm"
+                                data-bind="click: () => selectCountryGroup('gavi77')">
                             Gavi77
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi72')">
+                                data-bind="click: () => selectCountryGroup('gavi72')">
                             Gavi72
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi68')">
+                                data-bind="click: () => selectCountryGroup('gavi68')">
                             Gavi68
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('dove94')">
+                                data-bind="click: () => selectCountryGroup('dove94')">
                             Dove94
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('dove96')">
+                                data-bind="click: () => selectCountryGroup('dove96')">
                             Dove96
                         </button>
-                        <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('pine')">
-                            pine5
-                        </button>
+
                     </div>
                 </div>
                 <hr>
@@ -193,7 +194,7 @@
             </div>
         </li>
 
-        <li class="nav-item" data-bind="with: vaccineDiseaseFilter, visible: vaccineDiseaseFilter">
+        <li class="nav-item" data-bind="with: vaccineDiseaseFilter, visible: showVaccineFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -223,14 +224,27 @@
                               css: { active: isOpen },
                               click: toggleOpen"></a>
 
-            <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: options">
+            <div class="filter clearfix" data-bind="css: {in: isOpen}">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <label data-bind="attr: {for: $data}">
-                            <input type="checkbox" data-bind="attr: {id: $data, value: $data},
-                                checked: $parent.selectedOptions"/>
-                            <span data-bind="text: $data"></span>
-                        </label>
+                        <button type="button" class="btn btn-primary mt-1 btn-sm"
+                                data-bind="click: () => selectAll()">All
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1 btn-sm"
+                                data-bind="click: () => selectNone()">None
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div data-bind="foreach: options">
+                    <div class="nav-item nav-option">
+                        <div class="nav-link">
+                            <label data-bind="attr: {for: $data}">
+                                <input type="checkbox" data-bind="attr: {id: $data, value: $data},
+                                    checked: $parent.selectedOptions"/>
+                                <span data-bind="text: $data"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>

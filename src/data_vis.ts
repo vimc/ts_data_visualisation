@@ -84,8 +84,8 @@ class DataVisModel {
     };
     private currentPlot = ko.observable("Impact");
 
-    private impactData = ko.observable(getDataSet("year_of_vac", montaguDataSets).data);
-    private yearMethod = ko.observable("year_of_vac");
+    private impactData = ko.observable(getDataSet("cross", montaguDataSets).data);
+    private yearMethod = ko.observable("cross");
 
     private showSidebar = ko.observable(true);
 
