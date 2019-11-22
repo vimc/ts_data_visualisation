@@ -74,10 +74,6 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
     },
 );
 
-function isVisible(options: string[], o: string): boolean {
-    return(options.indexOf(o) > -1);
-}
-
 class DataVisModel {
     private plots = ko.observableArray(["Impact", "Time series"]);
     private permittedMetrics: { [key: string]: string[] } = {
@@ -101,14 +97,14 @@ class DataVisModel {
         selectedLow: 2016,
     }));
     private showYearFilter =
-            ko.observable(isVisible(metricsAndOptions.options, "year"));
+            ko.observable(metricsAndOptions.options.includes("year"));
 
     private activityFilter = ko.observable(new ListFilter({
         name: "Activity",
         options: activityTypes,
     }));
     private showActivityFilter =
-            ko.observable(isVisible(metricsAndOptions.options, "activity_type"));
+            ko.observable(metricsAndOptions.options.includes("activity_type"));
 
     private countryFilter = ko.observable(new CountryFilter({
         groups: countryGroups,
@@ -118,21 +114,21 @@ class DataVisModel {
         selected: countryGroups["pine"],
     }));
     private showCountryFilter =
-            ko.observable(isVisible(metricsAndOptions.options, "country"));
+            ko.observable(metricsAndOptions.options.includes("country"));
 
     private vaccineDiseaseFilter = ko.observable(new DiseaseFilter({
         name: "Disease",
         vaccineFilters: diseases.map(createVaccineFilterForDisease),
     }));
     private showVaccineFilter =
-            ko.observable(isVisible(metricsAndOptions.options, "vaccine"));
+            ko.observable(metricsAndOptions.options.includes("vaccine"));
 
     private diseaseFilter = ko.observable(new ListFilter({
         name: "Disease",
         options: diseases,
     }));
     private showDiseaseFilter =
-            ko.observable(isVisible(metricsAndOptions.options, "disease"));
+            ko.observable(metricsAndOptions.options.includes("disease"));
 
     private touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
@@ -140,7 +136,7 @@ class DataVisModel {
         selected: [initTouchstone],
     }));
     private showTouchstoneFilter =
-            ko.observable(isVisible(metricsAndOptions.options, "touchstone"));
+            ko.observable(metricsAndOptions.options.includes("touchstone"));
 
     private supportFilter = ko.observable(new ListFilter({
         name: "Gavi support",
@@ -149,10 +145,10 @@ class DataVisModel {
         selected: supportTypes.slice(0, 1),
     }));
     private showSupportFilter =
-            ko.observable(isVisible(metricsAndOptions.options, "support_type"));
+            ko.observable(metricsAndOptions.options.includes("support_type"));
 
-    private visbleMetricButtons = ko.observable(metricsAndOptions.metrics);
-    private showAgeGroupCheck = ko.observable(isVisible(metricsAndOptions.options, "age_group"));
+    private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
+    private showAgeGroupCheck = ko.observable(metricsAndOptions.options.includes("age_group"));
 
     private xAxisOptions = plottingVariables;
     private yAxisOptions = ko.computed(() => {
@@ -223,6 +219,8 @@ class DataVisModel {
             case "deaths_averted":
                 return "deaths_averted";
             case "cases":
+                return "cases";
+            case "cases_averted":
                 return "cases_averted";
             case "dalys":
                 return "dalys";
@@ -231,14 +229,8 @@ class DataVisModel {
             case "fvps":
                 return "fvps";
             case "coverage":
-                this.cumulativePlot(false); // this might not be prefered
-                return "coverage";          // behaviour, if a user goes deaths
-            case "casesRate":               // -> coverage -> death it will set
-                this.cumulativePlot(false); // cumulative to false
-                return "cases_averted_rate";
-            case "deathsRate":
-                this.cumulativePlot(false);
-                return "deaths_averted_rate";
+                this.cumulativePlot(false); // this might not be prefered behaviour, if a user goes deaths
+                return "coverage";          // -> coverage -> death it will set cumulative to false
             default:
                 this.cumulativePlot(false);
                 return "deaths_averted";
