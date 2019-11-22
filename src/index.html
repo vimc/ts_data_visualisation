@@ -92,7 +92,7 @@
     </div>
 
     <ul class="nav flex-column border-bottom border-top" data-bind="visible: showSidebar">
-        <li class="nav-item" data-bind="with: yearFilter">
+        <li class="nav-item" data-bind="with: yearFilter, visible: showYearFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -115,7 +115,7 @@
             </div>
         </li>
 
-        <li class="nav-item" data-bind="with: activityFilter">
+        <li class="nav-item" data-bind="with: activityFilter, visible: showActivityFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -135,7 +135,7 @@
             </div>
         </li>
 
-        <li class="nav-item" data-bind="with: countryFilter">
+        <li class="nav-item" data-bind="with: countryFilter, visible: showCountryFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -192,8 +192,8 @@
                 </div>
             </div>
         </li>
-<!-- 
-        <li class="nav-item" data-bind="with: diseaseFilter">
+
+        <li class="nav-item" data-bind="with: vaccineDiseaseFilter, visible: vaccineDiseaseFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -214,9 +214,9 @@
                 </div>
             </div>
         </li>
- -->
 
-        <li class="nav-item" data-bind="with: diseaseFilter">
+
+        <li class="nav-item" data-bind="with: diseaseFilter, visible: showDiseaseFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -236,7 +236,7 @@
             </div>
         </li>
 
-        <li class="nav-item" data-bind="with: touchstoneFilter">
+        <li class="nav-item" data-bind="with: touchstoneFilter, visible: showTouchstoneFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -255,7 +255,7 @@
                 </div>
             </div>
         </li>
-        <li class="nav-item" data-bind="with: supportFilter">
+        <li class="nav-item" data-bind="with: supportFilter, visible: showSupportFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,

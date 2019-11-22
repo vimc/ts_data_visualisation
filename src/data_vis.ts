@@ -8,8 +8,8 @@ import "select2/dist/css/select2.min.css";
 import {appendToDataSet, DataSet, DataSetUpdate, getDataSet} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
-import {activityTypes, countries, countryGroups, dates, diseases, plottingVariables,
-        reportInfo, supportTypes, touchstones, vaccines, metricsAndOptions} from "./Data";
+import {activityTypes, countries, countryGroups, dates, diseases, metricsAndOptions,
+        plottingVariables, reportInfo, supportTypes, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
@@ -20,20 +20,20 @@ import {plotColours} from "./PlotColours";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
-/*
-const file_prefix: string = "impactData";
-const initTouchstone: string = "201710gavi-201907wue";
-const montaguDataSets: DataSet[] = [
-    { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cross", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
-];
 
-appendToDataSet([initTouchstone], file_prefix, "year_of_vac", montaguDataSets, true);
-appendToDataSet(["201710gavi"], file_prefix, "cross", montaguDataSets, true);
-appendToDataSet(["201710gavi"], file_prefix, "cohort", montaguDataSets, true);
-*/
-const file_prefix: string = "firstPaper";
+// const filePrefix: string = "impactData";
+// const initTouchstone: string = "201710gavi-201907wue";
+// const montaguDataSets: DataSet[] = [
+//     { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+//     { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+//     { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+// ];
+
+// appendToDataSet([initTouchstone], filePrefix, "year_of_vac", montaguDataSets, true);
+// appendToDataSet(["201710gavi"], filePrefix, "cross", montaguDataSets, true);
+// appendToDataSet(["201710gavi"], filePrefix, "cohort", montaguDataSets, true);
+
+const filePrefix: string = "firstPaper";
 const initTouchstone: string = "1";
 
 const montaguDataSets: DataSet[] = [
@@ -42,9 +42,8 @@ const montaguDataSets: DataSet[] = [
     { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
 ];
 
-appendToDataSet(["1"], file_prefix, "cross", montaguDataSets, true);
-appendToDataSet(["1"], file_prefix, "cohort", montaguDataSets, true);
-
+appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
+appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -75,6 +74,10 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
     },
 );
 
+function isVisible(options: string[], o: string): boolean {
+    return(options.indexOf(o) > -1);
+}
+
 class DataVisModel {
     private plots = ko.observableArray(["Impact", "Time series"]);
     private permittedMetrics: { [key: string]: string[] } = {
@@ -89,6 +92,7 @@ class DataVisModel {
     private yearMethod = ko.observable("year_of_vac");
 
     private showSidebar = ko.observable(true);
+
     private yearFilter = ko.observable(new RangeFilter({
         max: dates["max"][0],
         min: dates["min"][0],
@@ -96,11 +100,15 @@ class DataVisModel {
         selectedHigh: 2020,
         selectedLow: 2016,
     }));
+    private showYearFilter =
+            ko.observable(isVisible(metricsAndOptions.options, "year"));
 
     private activityFilter = ko.observable(new ListFilter({
         name: "Activity",
         options: activityTypes,
     }));
+    private showActivityFilter =
+            ko.observable(isVisible(metricsAndOptions.options, "activity_type"));
 
     private countryFilter = ko.observable(new CountryFilter({
         groups: countryGroups,
@@ -109,22 +117,30 @@ class DataVisModel {
         options: countries,
         selected: countryGroups["pine"],
     }));
-/*
-    private diseaseFilter = ko.observable(new DiseaseFilter({
+    private showCountryFilter =
+            ko.observable(isVisible(metricsAndOptions.options, "country"));
+
+    private vaccineDiseaseFilter = ko.observable(new DiseaseFilter({
         name: "Disease",
         vaccineFilters: diseases.map(createVaccineFilterForDisease),
     }));
-*/
+    private showVaccineFilter =
+            ko.observable(isVisible(metricsAndOptions.options, "vaccine"));
+
     private diseaseFilter = ko.observable(new ListFilter({
         name: "Disease",
         options: diseases,
     }));
+    private showDiseaseFilter =
+            ko.observable(isVisible(metricsAndOptions.options, "disease"));
 
     private touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
         options: touchstones,
         selected: [initTouchstone],
     }));
+    private showTouchstoneFilter =
+            ko.observable(isVisible(metricsAndOptions.options, "touchstone"));
 
     private supportFilter = ko.observable(new ListFilter({
         name: "Gavi support",
@@ -132,6 +148,8 @@ class DataVisModel {
         options: supportTypes,
         selected: supportTypes.slice(0, 1),
     }));
+    private showSupportFilter =
+            ko.observable(isVisible(metricsAndOptions.options, "support_type"));
 
     private xAxisOptions = plottingVariables;
     private yAxisOptions = ko.computed(() => {
@@ -163,7 +181,7 @@ class DataVisModel {
     private dataLink2 = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"
                                               + reportInfo.dep_name[1] + "/"
                                               + reportInfo.dep_id[1] + "/");
-    private linkText = ko.observable<string>("A report containing the data for the tool")
+    private linkText = ko.observable<string>("A report containing the data for the tool");
     private appId = ko.observable<string>("App. id: " + reportInfo.git_id);
 
     private hideLabels = ko.observable<boolean>(false);
@@ -184,6 +202,16 @@ class DataVisModel {
 
     private filteredTable: ko.ObservableArray<WideTableRow>;
     private filteredTSTable: ko.ObservableArray<WideTableRow>;
+
+    // Modal Help Windows
+    private modalHelpTitle
+        = ko.computed<string>(() => generatedHelpTitle(this.currentPlot()));
+    private modalHelpMain
+        = ko.computed<string>(() => generatedHelpBody(this.currentPlot()));
+    private modalFilterHelpMain
+        = ko.observable(filterHelp);
+    private modalMetricsHelpMain
+        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
 
     private burdenOutcome = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
@@ -247,7 +275,7 @@ class DataVisModel {
             plotType: this.currentPlot(),
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-//            selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
+            selectedVaccines: this.vaccineDiseaseFilter().selectedOptions(), // which vaccines do we care about
             selectedDiseases: this.diseaseFilter().selectedOptions(),
             supportType: this.supportFilter().selectedOptions(),
             yAxisTitle: this.yAxisTitle(),
@@ -301,6 +329,9 @@ class DataVisModel {
         this.countryFilter().selectedOptions.subscribe(() => {
             this.updateXAxisOptions();
         });
+        this.vaccineDiseaseFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
         this.diseaseFilter().selectedOptions.subscribe(() => {
             this.updateXAxisOptions();
         });
@@ -311,7 +342,7 @@ class DataVisModel {
         this.touchstoneFilter().selectedOptions.subscribe(() => {
             const appendTo: string = this.yearMethod();
             appendToDataSet(this.touchstoneFilter().selectedOptions(),
-                            file_prefix, appendTo, montaguDataSets);
+                            filePrefix, appendTo, montaguDataSets);
 
             this.impactData(getDataSet(appendTo, montaguDataSets).data);
             this.updateXAxisOptions();
@@ -333,7 +364,10 @@ class DataVisModel {
         if (this.chartObject) {
             this.chartObject.destroy();
         }
-        const filterData = new DataFilterer().filterData(chartOptions, this.impactData(), metricsAndOptions, plotColours);
+        const filterData = new DataFilterer().filterData(chartOptions,
+                                                         this.impactData(),
+                                                         metricsAndOptions,
+                                                         plotColours);
         const {datasets, xAxisVals} = filterData;
 
         let xAxisNames: string[] = [...xAxisVals];
@@ -357,7 +391,10 @@ class DataVisModel {
             this.chartObjectTS.destroy();
         }
 
-        const filterData = new DataFilterer().calculateMean(chartOptions, this.impactData(), metricsAndOptions, plotColours);
+        const filterData = new DataFilterer().calculateMean(chartOptions,
+                                                            this.impactData(),
+                                                            metricsAndOptions,
+                                                            plotColours);
         const {datasets, xAxisVals} = filterData;
 
         this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
@@ -418,7 +455,10 @@ class DataVisModel {
     private updateXAxisOptions() {
         // refilter the data
         const chartOptions = {...this.chartOptions(), maxPlot: -1};
-        const filteredData = new DataFilterer().filterData(chartOptions, this.impactData(), metricsAndOptions, plotColours);
+        const filteredData = new DataFilterer().filterData(chartOptions,
+                                                           this.impactData(),
+                                                           metricsAndOptions,
+                                                           plotColours);
         this.xAxisNames(filteredData.xAxisVals);
         this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
         this.maxBars(this.xAxisNames().length);
@@ -475,16 +515,6 @@ class DataVisModel {
             saveAs(blob, "data.csv");
         });
     }
-
-    // Modal Help Windows
-    private modalHelpTitle
-        = ko.computed<string>(() => generatedHelpTitle(this.currentPlot()));
-    private modalHelpMain
-        = ko.computed<string>(() => generatedHelpBody(this.currentPlot()));
-    private modalFilterHelpMain
-        = ko.observable(filterHelp);
-    private modalMetricsHelpMain
-        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
 }
 
 $(document).ready(() => {

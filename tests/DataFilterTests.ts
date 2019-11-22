@@ -279,6 +279,7 @@ describe("DataFilterer", () => {
             plotType: "Impact",
             supportType: ["gavi"],
             cumulative: true,
+            ageGroup: "under5"
         }
         let fakeMetricAndOptions: MetricsAndOptions = {
             metrics: ["Hello", "world!"],
