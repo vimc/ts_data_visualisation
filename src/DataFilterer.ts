@@ -517,7 +517,7 @@ export class DataFilterer {
     }
 
     public filterByNumericBetween(impactData: ImpactDataRow[], variable: string,
-                            low: number, high: number) {
+                                  low: number, high: number) {
         return impactData.filter((row) => row[variable] >= low )
                          .filter((row) => row[variable] <= high );
     }
