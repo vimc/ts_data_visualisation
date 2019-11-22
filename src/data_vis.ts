@@ -151,6 +151,9 @@ class DataVisModel {
     private showSupportFilter =
             ko.observable(isVisible(metricsAndOptions.options, "support_type"));
 
+    private visbleMetricButtons = ko.observable(metricsAndOptions.metrics);
+    private visbleAgeGroupCheck = ko.observable(isVisible(metricsAndOptions.options, "age_group"));
+
     private xAxisOptions = plottingVariables;
     private yAxisOptions = ko.computed(() => {
         switch (this.currentPlot()) {
@@ -264,7 +267,7 @@ class DataVisModel {
     private chartOptions = ko.computed<CustomChartOptions>(() => {
         return {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
-            allAges: (this.allAges() ? "all" : "under5"), //
+            ageGroup: (this.allAges() ? "all" : "under5"), //
             xAxis: this.xAxis(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
             yAxis: this.yAxis(), // variable we are stratifying by
