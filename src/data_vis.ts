@@ -22,14 +22,14 @@ import {WarningMessageManager} from "./WarningMessage";
 // stuff to handle the data set being split into multiple files
 
 // const filePrefix: string = "impactData";
-// const initTouchstone: string = "201710gavi-201907wue";
+// const initTouchstone: string = "201710gavi";
 // const montaguDataSets: DataSet[] = [
 //     { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
 //     { name : "cross", data : [], seen : [], selectedTouchstones: [] },
 //     { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
 // ];
 
-// appendToDataSet([initTouchstone], filePrefix, "year_of_vac", montaguDataSets, true);
+// appendToDataSet(["201710gavi-201907wue"], filePrefix, "year_of_vac", montaguDataSets, true);
 // appendToDataSet(["201710gavi"], filePrefix, "cross", montaguDataSets, true);
 // appendToDataSet(["201710gavi"], filePrefix, "cohort", montaguDataSets, true);
 
@@ -187,7 +187,7 @@ class DataVisModel {
     private hideLegend = ko.observable<boolean>(false);
     private hideTitleOpts = ko.observable<boolean>(false);
 
-    private humanReadableBurdenOutcome = ko.observable("deaths");
+    private humanReadableBurdenOutcome = ko.observable("deaths_averted");
 
     private xAxisNames = ko.observableArray<string>([]);
 
@@ -408,7 +408,7 @@ class DataVisModel {
         // need to make sure that the new new plot  is valid with current metric
         if (this.permittedMetrics[plotName].indexOf(this.burdenOutcome()) < 0) {
             // ...if not set it to deaths
-            this.changeBurden("deaths");
+            this.changeBurden("deaths_averted");
             // It might worth remember what the Burden was so we can restore it
             // when we naviaget back? TODO
         }
