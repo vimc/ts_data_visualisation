@@ -9,7 +9,7 @@ import {appendToDataSet, DataSet, DataSetUpdate, getDataSet} from "./AppendDataS
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, countryGroups, dates, diseases, metricsAndOptions,
-        plottingVariables, reportInfo, supportTypes, touchstones, vaccines} from "./Data";
+        reportInfo, supportTypes, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
 import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";

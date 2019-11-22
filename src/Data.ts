@@ -48,10 +48,6 @@ export const countryGroups: { [code: string]: string[] } = {
     gavi77: loadObjectFromJSONFile("./gavi77.json"),
 };
 
-export const plottingVariables = ["year", "country", "continent", "region",
-    "cofinance_status_2018", "activity_type", "disease", "vaccine",
-    "touchstone", "support_type"];
-
 export const reportInfo =
     loadObjectFromJSONFile("./reportInfo.json");
 
