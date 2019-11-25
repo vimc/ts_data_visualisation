@@ -553,42 +553,42 @@ export class DataFilterer {
             }
         }
         // filter so that support = gavi
-        if (metsAndOpts.options.indexOf("support_type") > -1) {
+        if (metsAndOpts.filterOptions.indexOf("support_type") > -1) {
             filtData = this.filterIsInList(filtData, "support_type",
                                            filterOptions.supportType);
         }
         // filter by years
-        if (metsAndOpts.options.indexOf("year") > -1) {
+        if (metsAndOpts.filterOptions.indexOf("year") > -1) {
             filtData = this.filterByNumericBetween(filtData, "year",
                                filterOptions.yearLow, filterOptions.yearHigh);
         }
         // filter by touchstone
-        if (metsAndOpts.options.indexOf("touchstone") > -1) {
+        if (metsAndOpts.filterOptions.indexOf("touchstone") > -1) {
             filtData = this.filterIsInList(filtData, "touchstone",
                                            filterOptions.selectedTouchstones);
         }
         // filter by activity type
-        if (metsAndOpts.options.indexOf("activity_type") > -1) {
+        if (metsAndOpts.filterOptions.indexOf("activity_type") > -1) {
             filtData = this.filterIsInList(filtData, "activity_type",
                                            filterOptions.activityTypes);
         }
         // filter by country
-        if (metsAndOpts.options.indexOf("country") > -1) {
+        if (metsAndOpts.filterOptions.indexOf("country") > -1) {
             filtData = this.filterIsInList(filtData, "country",
                                            filterOptions.selectedCountries);
         }
         // filter by vaccine
-        if (metsAndOpts.options.indexOf("vaccine") > -1) {
+        if (metsAndOpts.filterOptions.indexOf("vaccine") > -1) {
             filtData = this.filterIsInList(filtData, "vaccine",
                                            filterOptions.selectedVaccines);
         }
         // filter by age group
-        if (metsAndOpts.options.indexOf("age_group") > -1) {
+        if (metsAndOpts.filterOptions.indexOf("age_group") > -1) {
             filtData = this.filterByIsEqualTo(filtData, "age_group",
                                               filterOptions.ageGroup);
         }
         // filter by disease
-        if (metsAndOpts.options.indexOf("disease") > -1) {
+        if (metsAndOpts.filterOptions.indexOf("disease") > -1) {
             filtData = this.filterIsInList(filtData, "disease",
                                            filterOptions.selectedDiseases);
         }

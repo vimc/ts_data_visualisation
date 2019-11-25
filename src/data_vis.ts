@@ -95,14 +95,14 @@ class DataVisModel {
         selectedLow: 2016,
     }));
     private showYearFilter =
-            ko.observable(metricsAndOptions.options.includes("year"));
+            ko.observable(metricsAndOptions.filterOptions.includes("year"));
 
     private activityFilter = ko.observable(new ListFilter({
         name: "Activity",
         options: activityTypes,
     }));
     private showActivityFilter =
-            ko.observable(metricsAndOptions.options.includes("activity_type"));
+            ko.observable(metricsAndOptions.filterOptions.includes("activity_type"));
 
     private countryFilter = ko.observable(new CountryFilter({
         groups: countryGroups,
@@ -112,21 +112,21 @@ class DataVisModel {
         selected: countryGroups["pine"],
     }));
     private showCountryFilter =
-            ko.observable(metricsAndOptions.options.includes("country"));
+            ko.observable(metricsAndOptions.filterOptions.includes("country"));
 
     private vaccineDiseaseFilter = ko.observable(new DiseaseFilter({
         name: "Disease",
         vaccineFilters: diseases.map(createVaccineFilterForDisease),
     }));
     private showVaccineFilter =
-            ko.observable(metricsAndOptions.options.includes("vaccine"));
+            ko.observable(metricsAndOptions.filterOptions.includes("vaccine"));
 
     private diseaseFilter = ko.observable(new ListFilter({
         name: "Disease",
         options: diseases,
     }));
     private showDiseaseFilter =
-            ko.observable(metricsAndOptions.options.includes("disease"));
+            ko.observable(metricsAndOptions.filterOptions.includes("disease"));
 
     private touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
@@ -134,7 +134,7 @@ class DataVisModel {
         selected: [initTouchstone],
     }));
     private showTouchstoneFilter =
-            ko.observable(metricsAndOptions.options.includes("touchstone"));
+            ko.observable(metricsAndOptions.filterOptions.includes("touchstone"));
 
     private supportFilter = ko.observable(new ListFilter({
         name: "Gavi support",
@@ -143,16 +143,16 @@ class DataVisModel {
         selected: supportTypes.slice(0, 1),
     }));
     private showSupportFilter =
-            ko.observable(metricsAndOptions.options.includes("support_type"));
+            ko.observable(metricsAndOptions.filterOptions.includes("support_type"));
 
     private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
-    private showAgeGroupCheck = ko.observable(metricsAndOptions.options.includes("age_group"));
+    private showAgeGroupCheck = ko.observable(metricsAndOptions.filterOptions.includes("age_group"));
 
     private xAxisOptions =
-               metricsAndOptions.options.concat(metricsAndOptions.otherOptions);
+               metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
     private yAxisOptions = ko.computed(() => {
         const catOptions =
-               metricsAndOptions.options.concat(metricsAndOptions.otherOptions);
+               metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
         switch (this.currentPlot()) {
             case "Impact":
                 return catOptions;

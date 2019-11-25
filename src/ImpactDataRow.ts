@@ -35,7 +35,7 @@ export interface MetricsAndOptions {
     metrics: string[];
     // These are the columns that we filter the data by and can stratify by
     // e.g. country, year, vaccine
-    options: string[];
+    filterOptions: string[];
     // These are columns that we stratify by but not filter by e.g. continent
     // (we never filter by continent, we filter by country)
     otherOptions: string[];
