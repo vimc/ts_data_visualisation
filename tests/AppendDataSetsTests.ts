@@ -26,18 +26,18 @@ describe("appendToDataSet", () => {
         { name : "data_C", data : [], seen : [], selectedTouchstones: [] },
       ]
 
-      appendToDataSet(["XXX"], "data_A", ds, false);
+      appendToDataSet(["XXX"], "prefix", "data_A", ds, false);
       expect(getDataSet("data_A", ds).data).to.have.length(5);
 
-      appendToDataSet(["YYY"], "data_A", ds, false);
+      appendToDataSet(["YYY"], "prefix", "data_A", ds, false);
       expect(getDataSet("data_A", ds).data).to.have.length(10);
 
-      appendToDataSet(["YYY"], "data_A", ds, false);
+      appendToDataSet(["YYY"], "prefix", "data_A", ds, false);
       expect(getDataSet("data_A", ds).data).to.have.length(10);
       expect(getDataSet("data_A", ds).seen).to.have.members(["XXX", "YYY"]);
       expect(getDataSet("data_A", ds).selectedTouchstones).to.have.members([]);
 
-      appendToDataSet(["YYY"], "data_B", ds, true);
+      appendToDataSet(["YYY"], "prefix", "data_B", ds, true);
       expect(getDataSet("data_B", ds).data).to.have.length(5);
       expect(getDataSet("data_B", ds).seen).to.have.members(["YYY"]);
       expect(getDataSet("data_B", ds).selectedTouchstones).to.have.members(["YYY"]);
@@ -50,7 +50,7 @@ describe("appendToDataSet", () => {
 
       // make sure we capture the console message
       let spy = sinon.spy(console, 'log');
-      appendToDataSet(["ZZZ"], "data_D", ds, true);
+      appendToDataSet(["ZZZ"], "prefix", "data_D", ds, true);
       sinon.assert.calledWith(spy, "No dataset named data_D");
       expect(ds).to.have.length(3);
       

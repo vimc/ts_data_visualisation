@@ -21,7 +21,6 @@ describe("MetaDataDisplay", () => {
                 selectedCountries: ["COD", "MMR"], 
                 selectedTouchstones: ["ts1", "ts2", "ts3", "ts4", "ts5", "ts6"],
                 selectedVaccines: ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1", "MCV2"],
-                timeSeries: true,
                 yAxisTitle: "AXIS TITLE",
                 yearHigh: 1066,
                 yearLow: 2525,

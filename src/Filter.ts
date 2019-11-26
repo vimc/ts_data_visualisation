@@ -55,6 +55,14 @@ export class ListFilter extends Filter {
     public makeHumanreadable(code: string): string {
         return this.dictionary[code];
     }
+
+    public selectAll() {
+        this.selectedOptions(this.options());
+    }
+
+    public selectNone() {
+        this.selectedOptions([]);
+    }
 }
 
 export class CountryFilter extends ListFilter {
@@ -69,9 +77,9 @@ export class CountryFilter extends ListFilter {
 
     public selectCountryGroup(selectedGroup: string) {
         if (selectedGroup === "all") {
-            this.selectedOptions(this.options());
+            this.selectAll();
         } else if (selectedGroup === "none") {
-            this.selectedOptions([]);
+            this.selectNone();
         } else if (this.groups[selectedGroup] !== undefined) {
             this.selectedOptions(this.groups[selectedGroup]);
         } else {

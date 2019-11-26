@@ -2,6 +2,10 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/js/bootstrap4-toggle.min.js"></script>
+
     <link type="text/css" rel="stylesheet" href="bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="styles.css"/>
     <link type="text/css" rel="stylesheet" href="select2.min.css" />
@@ -9,16 +13,14 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"/>
     <link type="text/css" rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- We seem to need this to get the collapsable card to work -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
 
     <!-- Loading Screen -->
     <script type="text/javascript">
-        $(window).load(function() {
+        $(window).ready(function() {
             // Animate loader off screen
         $(".loader").fadeOut("fast");
     });
@@ -91,7 +93,7 @@
     </div>
 
     <ul class="nav flex-column border-bottom border-top" data-bind="visible: showSidebar">
-        <li class="nav-item" data-bind="with: yearFilter">
+        <li class="nav-item" data-bind="with: yearFilter, visible: showYearFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -114,7 +116,7 @@
             </div>
         </li>
 
-        <li class="nav-item" data-bind="with: activityFilter">
+        <li class="nav-item" data-bind="with: activityFilter, visible: showActivityFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -134,7 +136,7 @@
             </div>
         </li>
 
-        <li class="nav-item" data-bind="with: countryFilter">
+        <li class="nav-item" data-bind="with: countryFilter, visible: showCountryFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -144,37 +146,31 @@
             <div class="filter clearfix" data-bind="css: {in: isOpen}">
                 <div class="nav-item nav-option">
                     <div class="nav-link">
-                        <button type="button" class="btn btn-primary mt-1 btn-sm" 
-                                data-bind="click: selectCountryGroup('all')">
-                            All
+                        <button type="button" class="btn btn-primary mt-1 btn-sm"
+                                data-bind="click: () => selectCountryGroup('all')">All
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('none')">None
+                                data-bind="click: () => selectCountryGroup('none')">None
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi77')">
-                            Gavi77
+                                data-bind="click: () => selectCountryGroup('pine')">PINE 5
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi72')">
-                            Gavi72
+                                data-bind="click: () => selectCountryGroup('gavi77')">Gavi 77
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('gavi68')">
-                            Gavi68
+                                data-bind="click: () => selectCountryGroup('gavi72')">Gavi 72
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('dove94')">
-                            Dove94
+                                data-bind="click: () => selectCountryGroup('gavi68')">Gavi 68
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('dove96')">
-                            Dove96
+                                data-bind="click: () => selectCountryGroup('dove94')">Dove 94
                         </button>
                         <button type="button" class="btn btn-primary mt-1 btn-sm"
-                                data-bind="click: selectCountryGroup('pine')">
-                            pine5
+                                data-bind="click: () => selectCountryGroup('dove96')">Dove 96
                         </button>
+
                     </div>
                 </div>
                 <hr>
@@ -192,7 +188,7 @@
             </div>
         </li>
 
-        <li class="nav-item" data-bind="with: diseaseFilter">
+        <li class="nav-item" data-bind="with: vaccineDiseaseFilter, visible: showVaccineFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -213,7 +209,42 @@
                 </div>
             </div>
         </li>
-        <li class="nav-item" data-bind="with: touchstoneFilter">
+
+
+        <li class="nav-item" data-bind="with: diseaseFilter, visible: showDiseaseFilter">
+            <a class="nav-link nav-parent"
+               href="#"
+               data-bind="text: name,
+                              css: { active: isOpen },
+                              click: toggleOpen"></a>
+
+            <div class="filter clearfix" data-bind="css: {in: isOpen}">
+                <div class="nav-item nav-option">
+                    <div class="nav-link">
+                        <button type="button" class="btn btn-primary mt-1 btn-sm"
+                                data-bind="click: () => selectAll()">All
+                        </button>
+                        <button type="button" class="btn btn-primary mt-1 btn-sm"
+                                data-bind="click: () => selectNone()">None
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div data-bind="foreach: options">
+                    <div class="nav-item nav-option">
+                        <div class="nav-link">
+                            <label data-bind="attr: {for: $data}">
+                                <input type="checkbox" data-bind="attr: {id: $data, value: $data},
+                                    checked: $parent.selectedOptions"/>
+                                <span data-bind="text: $data"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item" data-bind="with: touchstoneFilter, visible: showTouchstoneFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -232,7 +263,7 @@
                 </div>
             </div>
         </li>
-        <li class="nav-item" data-bind="with: supportFilter">
+        <li class="nav-item" data-bind="with: supportFilter, visible: showSupportFilter">
             <a class="nav-link nav-parent"
                href="#"
                data-bind="text: name,
@@ -266,18 +297,25 @@
                         <div class="form-group row">
                             <div class="col-9">
                                 <div class="btn-group mt-1" role="group">
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_0'),
-                                         css: {active: yearMethod() == 'method_0'}">Cross-sectional
-                                        </button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_1'),
-                                         css: {active: yearMethod() == 'method_1'}">Lifetime
-                                        </button>
-                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('method_2'),
-                                         css: {active: yearMethod() == 'method_2'}">Year of vaccination
-                                        </button>
+                                    <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cross'),
+                                     css: {active: yearMethod() == 'cross'}">Cross-sectional
+                                    </button>
+                                    <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cohort'),
+                                     css: {active: yearMethod() == 'cohort'}">Lifetime
+                                    </button>
+                                    <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('year_of_vac'),
+                                     css: {active: yearMethod() == 'year_of_vac'}">Year of vaccination
+                                    </button>
                                 </div>
                             </div>
                         </div>
+                        <div>
+                            <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s" data-off="All Ages"
+                                   data-bind="checked: allAges, visible: showAgeGroupCheck, click: () => debug('check box')">
+                        </div>
+<!--                         <div>
+                            <input data-bind="ageGroupToggleOn: active" type="checkbox" data-toggle="toggle"/>
+                        </div> -->
                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
                             <i class="fa fa-question-circle"></i>
                         </button>
@@ -327,17 +365,41 @@
 
                     <div class ="btn-toolbar">
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths'),
-                             css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
+                            <button type="button" class="btn btn-primary active btn-sm"
+                                    data-bind="click: () => changeBurden('deaths'),
+                                               css: {active: humanReadableBurdenOutcome() == 'deaths'},
+                                               visible: visbleMetricButtons().includes('deaths')">Deaths
                             </button>
-                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
-                             css: {active: humanReadableBurdenOutcome() == 'dalys'}">DALYs
+                            <button type="button" class="btn btn-primary active btn-sm"
+                                    data-bind="click: () => changeBurden('deaths_averted'),
+                                                css: {active: humanReadableBurdenOutcome() == 'deaths_averted'},
+                                                visible: visbleMetricButtons().includes('deaths_averted')">Deaths averted
                             </button>
-                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
-                             css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('dalys'),
+                                                css: {active: humanReadableBurdenOutcome() == 'dalys'},
+                                                visible: visbleMetricButtons().includes('dalys')">DALYs
                             </button>
-                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
-                             css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('dalys_averted'),
+                                               css: {active: humanReadableBurdenOutcome() == 'dalys_averted'},
+                                               visible: visbleMetricButtons().includes('dalys_averted')">DALYs averted
+                            </button>
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('cases'),
+                                               css: {active: humanReadableBurdenOutcome() == 'cases'},
+                                               visible: visbleMetricButtons().includes('cases')">Cases
+                            </button>
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('cases_averted'),
+                                               css: {active: humanReadableBurdenOutcome() == 'cases_averted'},
+                                               visible: visbleMetricButtons().includes('cases_averted')">Cases averted
+                            </button>
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('fvps'),
+                                               css: {active: humanReadableBurdenOutcome() == 'fvps'},
+                                               enable: yearMethod() == 'year_of_vac',
+                                               visible: visbleMetricButtons().includes('fvps')">FVPS
                             </button>
                         </div>
                     </div>
@@ -392,17 +454,21 @@
                         <div class="form-group row">
                             <div class="col-9">
                                 <div class="btn-group mt-1" role="group">
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_0'),
-                                         css: {active: yearMethod() == 'method_0'}">Cross-sectional
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cross'),
+                                         css: {active: yearMethod() == 'cross'}">Cross-sectional
                                         </button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('method_1'),
-                                         css: {active: yearMethod() == 'method_1'}">Lifetime
+                                        <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cohort'),
+                                         css: {active: yearMethod() == 'cohort'}">Lifetime
                                         </button>
-                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('method_2'),
-                                         css: {active: yearMethod() == 'method_2'}">Year of vaccination
+                                        <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('year_of_vac'),
+                                         css: {active: yearMethod() == 'year_of_vac'}">Year of vaccination
                                         </button>
                                 </div>
                             </div>
+                        </div>
+                        <div>
+                            <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s"
+                                   data-off="All Ages"data-bind="checked: allAges, visible: showAgeGroupCheck">
                         </div>
                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
                             <i class="fa fa-question-circle"></i>
@@ -419,7 +485,7 @@
                             </div>
                             <div class="col-4" style="margin-top: 46px;">
                                 <div class="form-check"
-                                     data-bind="visible: ['deaths_averted', 'cases_averted', 'dalys_averted', 'fvps'].includes(burdenOutcome())">
+                                     data-bind="visible: ('Coverage' !== burdenOutcome())">
                                     <input class="form-check-input" type="checkbox" data-bind="checked: cumulativePlot"
                                            id="cumulativePlotId">
                                     <label class="form-check-label" for="cumulativePlotId">
@@ -436,26 +502,47 @@
                     </form>
                     <div class ="btn-toolbar">
                         <div class="btn-group mt-1 mb-6" role="group">
-                            <button type="button" class="btn btn-primary active btn-sm" data-bind="click: () => changeBurden('deaths'),
-                             css: {active: humanReadableBurdenOutcome() == 'deaths'}">Deaths
+                            <button type="button" class="btn btn-primary active btn-sm"
+                                    data-bind="click: () => changeBurden('deaths'),
+                                               css: {active: humanReadableBurdenOutcome() == 'deaths'},
+                                               visible: visbleMetricButtons().includes('deaths')">Deaths
                             </button>
-                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('dalys'),
-                             css: {active: humanReadableBurdenOutcome() == 'dalys'}">DALYs
+                            <button type="button" class="btn btn-primary active btn-sm"
+                                    data-bind="click: () => changeBurden('deaths_averted'),
+                                                css: {active: humanReadableBurdenOutcome() == 'deaths_averted'},
+                                                visible: visbleMetricButtons().includes('deaths_averted')">Deaths averted
                             </button>
-                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('cases'),
-                             css: {active: humanReadableBurdenOutcome() == 'cases'}">Cases
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('dalys'),
+                                                css: {active: humanReadableBurdenOutcome() == 'dalys'},
+                                                visible: visbleMetricButtons().includes('dalys')">DALYs
                             </button>
-                            <button type="button" class="btn btn-primary" data-bind="click: () => changeBurden('fvps'),
-                             css: {active: humanReadableBurdenOutcome() == 'fvps'}, enable: yearMethod() == 'method_2'">FVPS
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('dalys_averted'),
+                                               css: {active: humanReadableBurdenOutcome() == 'dalys_averted'},
+                                               visible: visbleMetricButtons().includes('dalys_averted')">DALYs averted
                             </button>
-                            <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('coverage'),
-                             css: {active: humanReadableBurdenOutcome() == 'coverage'}, enable: yearMethod() == 'method_2'">Coverage
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('cases'),
+                                               css: {active: humanReadableBurdenOutcome() == 'cases'},
+                                               visible: visbleMetricButtons().includes('cases')">Cases
                             </button>
-                            <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('deathsRate'),
-                             css: {active: humanReadableBurdenOutcome() == 'deathsRate'}, enable: yearMethod() == 'method_2'">Deaths (rate)
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('cases_averted'),
+                                               css: {active: humanReadableBurdenOutcome() == 'cases_averted'},
+                                               visible: visbleMetricButtons().includes('cases_averted')">Cases averted
                             </button>
-                            <button class="btn btn-warning" type="button" class="btn btn-primary" data-bind="click: () => changeBurden('casesRate'),
-                             css: {active: humanReadableBurdenOutcome() == 'casesRate'}, enable: yearMethod() == 'method_2'">Cases (rate)
+                            <button type="button" class="btn btn-primary"
+                                    data-bind="click: () => changeBurden('fvps'),
+                                               css: {active: humanReadableBurdenOutcome() == 'fvps'},
+                                               enable: yearMethod() == 'year_of_vac',
+                                               visible: visbleMetricButtons().includes('fvps')">FVPS
+                            </button>
+                            <button class="btn btn-warning btn-primary" type="button"
+                                    data-bind="click: () => changeBurden('coverage'),
+                                               css: {active: humanReadableBurdenOutcome() == 'coverage'},
+                                               enable: yearMethod() == 'year_of_vac',
+                                               visible: visbleMetricButtons().includes('coverage')">Coverage
                             </button>
                         </div>
                     </div>
@@ -475,7 +562,6 @@
                 </div>
             </div>
         </div>
-        <!-- META-DATA TEXT BOX -->
 
         <div class="card" style="width: 50rem;">
             <div class="card-header">
