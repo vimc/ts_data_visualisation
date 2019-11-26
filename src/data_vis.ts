@@ -519,10 +519,50 @@ class DataVisModel {
             saveAs(blob, "data.csv");
         });
     }
+
+    private debug(message: string) {
+        console.log(message);
+    }
 }
 
 $(document).ready(() => {
     const viewModel = new DataVisModel();
+
+// ko.bindingHandlers.ageGroupToggleOn = {
+//     init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+//         const $elem = $(element);
+//     console.log($elem);
+//         $(element).bootstrapToggle(
+//             {
+//                 on: 'Yes',
+//                 off: 'No',
+//                 onstyle: 'primary',
+//                 offstyle: 'danger'
+//             }
+//         );
+//         if (ko.utils.unwrapObservable(valueAccessor())){
+//           $elem.bootstrapToggle('on')
+//         }else{
+//            $elem.bootstrapToggle('off')
+//         }
+
+//        $elem.change(function() {
+//        if ($(this).prop('checked')){
+//           valueAccessor()(true);
+//        }else{
+//            valueAccessor()(false);
+//        }
+//     })
+
+//     },
+//     update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+//         var vStatus = $(element).prop('checked');
+//         var vmStatus = ko.utils.unwrapObservable(valueAccessor());
+//         if (vStatus != vmStatus) {
+//             $(element).bootstrapToggle('toggle')
+//         }
+//     }
+// };
 
     ko.applyBindings(viewModel);
 

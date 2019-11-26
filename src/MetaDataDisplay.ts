@@ -116,7 +116,7 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
                                 chartOptions.metric.replace("_", " ") + " data for:\n" +
                                 prettyActivities(chartOptions.activityTypes) + ";\n" +
                                 prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";\n" +
-//                                prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";\n" +
+                                prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";\n" +
                                 prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
                                 prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
                                 "The data is divided up by " +
@@ -129,7 +129,7 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
                                 chartOptions.metric.replace("_", " ") + " data for:\n" +
                                 prettyActivities(chartOptions.activityTypes) + ";\n" +
                                  prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";\n" +
-//                                 prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";\n" +
+                                 prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";\n" +
                                  prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
                                  prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";\n" +
                                  "Each line represents a " + chartOptions.yAxis + ";\n" +

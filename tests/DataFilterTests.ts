@@ -283,7 +283,7 @@ describe("DataFilterer", () => {
         }
         let fakeMetricAndOptions: MetricsAndOptions = {
             metrics: ["Hello", "world!"],
-            options: ["Another", "array"],
+            filterOptions: ["Another", "array"],
             otherOptions: ["Yet", "another", "array"]
         }
         // the functionality of this function covered in the unit testing above
