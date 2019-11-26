@@ -8,7 +8,7 @@ import "select2/dist/css/select2.min.css";
 import {appendToDataSet, DataSet, DataSetUpdate, getDataSet} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
-import {activityTypes, countries, countryGroups, dates, diseases, plottingVariables,
+import {activityTypes, countries, countryGroups, dates, diseases, metricsAndOptions,
         reportInfo, supportTypes, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
@@ -20,16 +20,30 @@ import {plotColours} from "./PlotColours";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
-const initTouchstone: string = "201710gavi-201907wue";
+
+// const filePrefix: string = "impactData";
+// const initTouchstone: string = "201710gavi";
+// const montaguDataSets: DataSet[] = [
+//     { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+//     { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+//     { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+// ];
+
+// appendToDataSet(["201710gavi-201907wue"], filePrefix, "year_of_vac", montaguDataSets, true);
+// appendToDataSet(["201710gavi"], filePrefix, "cross", montaguDataSets, true);
+// appendToDataSet(["201710gavi"], filePrefix, "cohort", montaguDataSets, true);
+
+const filePrefix: string = "firstPaper";
+const initTouchstone: string = "1";
+
 const montaguDataSets: DataSet[] = [
-    { name : "method_2", data : [], seen : [], selectedTouchstones: [] },
-    { name : "method_0", data : [], seen : [], selectedTouchstones: [] },
-    { name : "method_1", data : [], seen : [], selectedTouchstones: [] },
+    { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+    { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+    { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
 ];
 
-appendToDataSet([initTouchstone], "method_2", montaguDataSets, true);
-appendToDataSet(["201710gavi"], "method_0", montaguDataSets, true);
-appendToDataSet(["201710gavi"], "method_1", montaguDataSets, true);
+appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
+appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -63,17 +77,16 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
 class DataVisModel {
     private plots = ko.observableArray(["Impact", "Time series"]);
     private permittedMetrics: { [key: string]: string[] } = {
-        "Impact": ["deaths_averted", "dalys_averted", "cases_averted", "fvps"],
-        "Time series": ["deaths_averted", "dalys_averted", "cases_averted",
-                        "fvps", "deaths_averted_rate", "cases_averted_rate",
-                        "coverage" ],
+        "Impact": metricsAndOptions.metrics,
+        "Time series": metricsAndOptions.metrics,
     };
     private currentPlot = ko.observable("Impact");
 
-    private impactData = ko.observable(getDataSet("method_2", montaguDataSets).data);
-    private yearMethod = ko.observable("method_2");
+    private impactData = ko.observable(getDataSet("cross", montaguDataSets).data);
+    private yearMethod = ko.observable("cross");
 
     private showSidebar = ko.observable(true);
+
     private yearFilter = ko.observable(new RangeFilter({
         max: dates["max"][0],
         min: dates["min"][0],
@@ -81,11 +94,15 @@ class DataVisModel {
         selectedHigh: 2020,
         selectedLow: 2016,
     }));
+    private showYearFilter =
+            ko.observable(metricsAndOptions.filterOptions.includes("year"));
 
     private activityFilter = ko.observable(new ListFilter({
         name: "Activity",
         options: activityTypes,
     }));
+    private showActivityFilter =
+            ko.observable(metricsAndOptions.filterOptions.includes("activity_type"));
 
     private countryFilter = ko.observable(new CountryFilter({
         groups: countryGroups,
@@ -94,17 +111,30 @@ class DataVisModel {
         options: countries,
         selected: countryGroups["pine"],
     }));
+    private showCountryFilter =
+            ko.observable(metricsAndOptions.filterOptions.includes("country"));
 
-    private diseaseFilter = ko.observable(new DiseaseFilter({
+    private vaccineDiseaseFilter = ko.observable(new DiseaseFilter({
         name: "Disease",
         vaccineFilters: diseases.map(createVaccineFilterForDisease),
     }));
+    private showVaccineFilter =
+            ko.observable(metricsAndOptions.filterOptions.includes("vaccine"));
+
+    private diseaseFilter = ko.observable(new ListFilter({
+        name: "Disease",
+        options: diseases,
+    }));
+    private showDiseaseFilter =
+            ko.observable(metricsAndOptions.filterOptions.includes("disease"));
 
     private touchstoneFilter = ko.observable(new ListFilter({
         name: "Touchstone",
         options: touchstones,
         selected: [initTouchstone],
     }));
+    private showTouchstoneFilter =
+            ko.observable(metricsAndOptions.filterOptions.includes("touchstone"));
 
     private supportFilter = ko.observable(new ListFilter({
         name: "Gavi support",
@@ -112,16 +142,26 @@ class DataVisModel {
         options: supportTypes,
         selected: supportTypes.slice(0, 1),
     }));
+    private showSupportFilter =
+            ko.observable(metricsAndOptions.filterOptions.includes("support_type"));
 
-    private xAxisOptions = plottingVariables.filter((v, i, a) => (v !== "none"));
+    private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
+    private showAgeGroupCheck = ko.observable(metricsAndOptions.filterOptions.includes("age_group"));
+
+    private xAxisOptions =
+               metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
+
     private yAxisOptions = ko.computed(() => {
+        const catOptions =
+               metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
+        catOptions.push("none");
         switch (this.currentPlot()) {
             case "Impact":
-                return plottingVariables;
+                return catOptions;
             case "Time series":
-                return plottingVariables.filter((v, i, a) => (v !== "year"));
+                return catOptions.filter((v, i, a) => (v !== "year"));
             default:
-                return plottingVariables;
+                return catOptions;
         }
     }, this);
 
@@ -131,6 +171,7 @@ class DataVisModel {
     private xAxis = ko.observable<string>(this.xAxisOptions[1]);
     private yAxis = ko.observable<string>("disease");
     private cumulativePlot = ko.observable<boolean>(false);
+    private allAges = ko.observable<boolean>(true);
 
     private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
     // if we end up with more datasets move this to arrays of ko strings
@@ -142,14 +183,14 @@ class DataVisModel {
     private dataLink2 = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"
                                               + reportInfo.dep_name[1] + "/"
                                               + reportInfo.dep_id[1] + "/");
-    private linkText = ko.observable<string>("A report containing the data for the tool")
+    private linkText = ko.observable<string>("A report containing the data for the tool");
     private appId = ko.observable<string>("App. id: " + reportInfo.git_id);
 
     private hideLabels = ko.observable<boolean>(false);
     private hideLegend = ko.observable<boolean>(false);
     private hideTitleOpts = ko.observable<boolean>(false);
 
-    private humanReadableBurdenOutcome = ko.observable("deaths");
+    private humanReadableBurdenOutcome = ko.observable("deaths_averted");
 
     private xAxisNames = ko.observableArray<string>([]);
 
@@ -164,25 +205,35 @@ class DataVisModel {
     private filteredTable: ko.ObservableArray<WideTableRow>;
     private filteredTSTable: ko.ObservableArray<WideTableRow>;
 
+    // Modal Help Windows
+    private modalHelpTitle
+        = ko.computed<string>(() => generatedHelpTitle(this.currentPlot()));
+    private modalHelpMain
+        = ko.computed<string>(() => generatedHelpBody(this.currentPlot()));
+    private modalFilterHelpMain
+        = ko.observable(filterHelp);
+    private modalMetricsHelpMain
+        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
+
     private burdenOutcome = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
+                return "deaths";
+            case "deaths_averted":
                 return "deaths_averted";
             case "cases":
+                return "cases";
+            case "cases_averted":
                 return "cases_averted";
             case "dalys":
+                return "dalys";
+            case "dalys_averted":
                 return "dalys_averted";
             case "fvps":
                 return "fvps";
             case "coverage":
-                this.cumulativePlot(false); // this might not be prefered
-                return "coverage";          // behaviour, if a user goes deaths
-            case "casesRate":               // -> coverage -> death it will set
-                this.cumulativePlot(false); // cumulative to false
-                return "cases_averted_rate";
-            case "deathsRate":
-                this.cumulativePlot(false);
-                return "deaths_averted_rate";
+                this.cumulativePlot(false); // this might not be prefered behaviour, if a user goes deaths
+                return "coverage";          // -> coverage -> death it will set cumulative to false
             default:
                 this.cumulativePlot(false);
                 return "deaths_averted";
@@ -194,10 +245,14 @@ class DataVisModel {
     private yAxisTitle = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
+                return "Future deaths";
+            case "deaths_averted":
                 return "Future deaths averted";
             case "cases":
                 return "Future cases averted";
             case "dalys":
+                return "Future DALYs";
+            case "dalys_averted":
                 return "Future DALYS averted";
             case "fvps":
                 return "fvps";
@@ -215,6 +270,7 @@ class DataVisModel {
     private chartOptions = ko.computed<CustomChartOptions>(() => {
         return {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
+            ageGroup: (this.allAges() ? "all" : "under5"), //
             xAxis: this.xAxis(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
             yAxis: this.yAxis(), // variable we are stratifying by
@@ -225,9 +281,9 @@ class DataVisModel {
             plotType: this.currentPlot(),
             selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
             selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-            selectedVaccines: this.diseaseFilter().selectedOptions(), // which vaccines do we care about
+            selectedVaccines: this.vaccineDiseaseFilter().selectedOptions(), // which vaccines do we care about
+            selectedDiseases: this.diseaseFilter().selectedOptions(),
             supportType: this.supportFilter().selectedOptions(),
-            timeSeries: this.currentPlot() === "Time series",
             yAxisTitle: this.yAxisTitle(),
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
             yearLow: this.yearFilter().selectedLow(), // lower bound on year
@@ -279,6 +335,9 @@ class DataVisModel {
         this.countryFilter().selectedOptions.subscribe(() => {
             this.updateXAxisOptions();
         });
+        this.vaccineDiseaseFilter().selectedOptions.subscribe(() => {
+            this.updateXAxisOptions();
+        });
         this.diseaseFilter().selectedOptions.subscribe(() => {
             this.updateXAxisOptions();
         });
@@ -289,7 +348,7 @@ class DataVisModel {
         this.touchstoneFilter().selectedOptions.subscribe(() => {
             const appendTo: string = this.yearMethod();
             appendToDataSet(this.touchstoneFilter().selectedOptions(),
-                            appendTo, montaguDataSets);
+                            filePrefix, appendTo, montaguDataSets);
 
             this.impactData(getDataSet(appendTo, montaguDataSets).data);
             this.updateXAxisOptions();
@@ -311,7 +370,10 @@ class DataVisModel {
         if (this.chartObject) {
             this.chartObject.destroy();
         }
-        const filterData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
+        const filterData = new DataFilterer().filterData(chartOptions,
+                                                         this.impactData(),
+                                                         metricsAndOptions,
+                                                         plotColours);
         const {datasets, xAxisVals} = filterData;
 
         let xAxisNames: string[] = [...xAxisVals];
@@ -335,7 +397,10 @@ class DataVisModel {
             this.chartObjectTS.destroy();
         }
 
-        const filterData = new DataFilterer().calculateMean(chartOptions, this.impactData(), plotColours);
+        const filterData = new DataFilterer().calculateMean(chartOptions,
+                                                            this.impactData(),
+                                                            metricsAndOptions,
+                                                            plotColours);
         const {datasets, xAxisVals} = filterData;
 
         this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
@@ -346,7 +411,7 @@ class DataVisModel {
         // need to make sure that the new new plot  is valid with current metric
         if (this.permittedMetrics[plotName].indexOf(this.burdenOutcome()) < 0) {
             // ...if not set it to deaths
-            this.changeBurden("deaths");
+            this.changeBurden("deaths_averted");
             // It might worth remember what the Burden was so we can restore it
             // when we naviaget back? TODO
         }
@@ -396,7 +461,10 @@ class DataVisModel {
     private updateXAxisOptions() {
         // refilter the data
         const chartOptions = {...this.chartOptions(), maxPlot: -1};
-        const filteredData = new DataFilterer().filterData(chartOptions, this.impactData(), plotColours);
+        const filteredData = new DataFilterer().filterData(chartOptions,
+                                                           this.impactData(),
+                                                           metricsAndOptions,
+                                                           plotColours);
         this.xAxisNames(filteredData.xAxisVals);
         this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
         this.maxBars(this.xAxisNames().length);
@@ -454,19 +522,49 @@ class DataVisModel {
         });
     }
 
-    // Modal Help Windows
-    private modalHelpTitle
-        = ko.computed<string>(() => generatedHelpTitle(this.currentPlot()));
-    private modalHelpMain
-        = ko.computed<string>(() => generatedHelpBody(this.currentPlot()));
-    private modalFilterHelpMain
-        = ko.observable(filterHelp);
-    private modalMetricsHelpMain
-        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
+    private debug(message: string) {
+        console.log(message);
+    }
 }
 
 $(document).ready(() => {
     const viewModel = new DataVisModel();
+
+// ko.bindingHandlers.ageGroupToggleOn = {
+//     init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+//         const $elem = $(element);
+//     console.log($elem);
+//         $(element).bootstrapToggle(
+//             {
+//                 on: 'Yes',
+//                 off: 'No',
+//                 onstyle: 'primary',
+//                 offstyle: 'danger'
+//             }
+//         );
+//         if (ko.utils.unwrapObservable(valueAccessor())){
+//           $elem.bootstrapToggle('on')
+//         }else{
+//            $elem.bootstrapToggle('off')
+//         }
+
+//        $elem.change(function() {
+//        if ($(this).prop('checked')){
+//           valueAccessor()(true);
+//        }else{
+//            valueAccessor()(false);
+//        }
+//     })
+
+//     },
+//     update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+//         var vStatus = $(element).prop('checked');
+//         var vmStatus = ko.utils.unwrapObservable(valueAccessor());
+//         if (vStatus != vmStatus) {
+//             $(element).bootstrapToggle('toggle')
+//         }
+//     }
+// };
 
     ko.applyBindings(viewModel);
 

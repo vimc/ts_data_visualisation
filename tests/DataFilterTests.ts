@@ -1,6 +1,6 @@
 import {countries, touchstones, activityTypes, diseases, vaccines} from "../scripts/fakeVariables";
 import {DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
-import {ImpactDataRow} from "../src/ImpactDataRow";
+import {ImpactDataRow, MetricsAndOptions} from "../src/ImpactDataRow";
 import {plotColours} from "../src/PlotColours";
 import {expect} from "chai";
 
@@ -54,7 +54,6 @@ describe("DataFilterer", () => {
                                 "dalys_averted_rate": randomNumber(0, 0.8),
                                 "region": "Southern Asia",
                                 "continent": "Asia",
-                                "rate_type": "123",
                             })
                         })
                     )
@@ -94,7 +93,6 @@ describe("DataFilterer", () => {
                                                     "disease",
                                                     "is_gavi",
                                                     "is_focal",
-                                                    "rate_type",
                                                     "support_type",
                                                     "touchstone",
                                                     "vaccine",
@@ -293,19 +291,24 @@ describe("DataFilterer", () => {
             plotType: "Impact",
             supportType: ["gavi"],
             cumulative: true,
-            timeSeries: true,
+            ageGroup: "under5"
+        }
+        let fakeMetricAndOptions: MetricsAndOptions = {
+            metrics: ["Hello", "world!"],
+            filterOptions: ["Another", "array"],
+            otherOptions: ["Yet", "another", "array"]
         }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an
         // error
         let out = testObject.filterData(fakeOptions, fakeImpactData,
-                                          plotColours);
+                                        fakeMetricAndOptions, plotColours);
 
         fakeOptions.metric = "deaths_averted_rate",
         fakeOptions.xAxis = "year";
         fakeOptions.yAxis = "continent";
 
         out = testObject.calculateMean(fakeOptions, fakeImpactData,
-                                          plotColours);
+                                       fakeMetricAndOptions, plotColours);
     })
 });
