@@ -1,5 +1,5 @@
 import {countries, touchstones, activityTypes, diseases, vaccines} from "../scripts/fakeVariables";
-import {DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
+import {upperLowerNames, DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
 import {ImpactDataRow} from "../src/ImpactDataRow";
 import {MetricsAndOptions} from "../src/MetricsAndOptions";
 import {plotColours} from "../src/PlotColours";
@@ -218,5 +218,29 @@ describe("DataFilterer", () => {
 
         out = testObject.calculateMean(fakeOptions, fakeImpactData,
                                        fakeMetricAndOptions, plotColours);
+    })
+
+    it("upperLowerNames", () => {
+        let out = upperLowerNames("dalys");
+        console.log(out)
+        expect(out).to.include({low: "dalys_lo", high:"dalys_hi"});
+
+        out = upperLowerNames("dalys_averted");
+        expect(out).to.include({low: "dalys_av_lo", high:"dalys_av_hi"});
+
+        out = upperLowerNames("dalys_no_vac");
+        expect(out).to.include({low: "dalys_nv_lo", high:"dalys_nv_hi"});
+
+        out = upperLowerNames("deaths");
+        expect(out).to.include({low: "deaths_lo", high:"deaths_hi"});
+
+        out = upperLowerNames("deaths_averted");
+        expect(out).to.include({low: "deaths_av_lo", high:"deaths_av_hi"});
+
+        out = upperLowerNames("deaths_no_vac");
+        expect(out).to.include({low: "deaths_nv_lo", high:"deaths_nv_hi"});
+
+        out = upperLowerNames("BAD STRING");
+        expect(out).to.include({});
     })
 });

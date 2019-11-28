@@ -30,7 +30,7 @@ export interface DataFiltererOptions {
     ageGroup: string;
 }
 
-function UpperLowerNames(metric: string): { [key: string]: string } {
+export function upperLowerNames(metric: string): { [key: string]: string } {
     switch (metric) {
         case "dalys":
             return({low: "dalys_lo", high:"dalys_hi"});
@@ -157,7 +157,7 @@ export class DataFilterer {
 
         // get upper and lower metric names
         const uncertainity: { [key: string]: string } =
-                                          UpperLowerNames(filterOptions.metric);
+                                          upperLowerNames(filterOptions.metric);
 
         // get an array of all the remaining y axis values
         const yAxisVars: string[] =
