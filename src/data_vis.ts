@@ -85,6 +85,13 @@ class DataVisModel {
     private impactData = ko.observable(getDataSet("cross", montaguDataSets).data);
     private yearMethod = ko.observable("cross");
 
+    private showYearOfVac =
+        ko.observable(metricsAndOptions.methods.includes("year_of_vac"));
+    private showCross =
+        ko.observable(metricsAndOptions.methods.includes("cross"));
+    private showCohort =
+        ko.observable(metricsAndOptions.methods.includes("cohort"));
+
     private showSidebar = ko.observable(true);
 
     private yearFilter = ko.observable(new RangeFilter({
@@ -166,7 +173,7 @@ class DataVisModel {
     }, this);
 
     private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
-    private maxBars = ko.observable<number>(5);
+    private maxBars = ko.observable<number>(19);
 
     private xAxis = ko.observable<string>(this.xAxisOptions[1]);
     private yAxis = ko.observable<string>("disease");

@@ -143,9 +143,14 @@ export class DataFilterer {
         const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
 
         // now we filter by the compare variable
-        const maxCompare = (filterOptions.plotType === "Time series") ? -1 : filterOptions.maxPlot;
-        const temp: UniqueData = this.filterByxAxis(maxCompare, filterOptions.xAxis,
-                                                    filterOptions.metric, filtData);
+        const isTimeSeries: boolean = (filterOptions.plotType === "Time series");
+        const xAxis = isTimeSeries ? "year" : filterOptions.xAxis;
+        const maxCompare = isTimeSeries ? -1 : filterOptions.maxPlot;
+        const temp: UniqueData =
+                    this.filterByxAxis(isTimeSeries ? -1 : maxCompare,  xAxis,
+                                       filterOptions.metric, filtData);
+
+        //const temp: UniqueData = this.filterByxAxis(-1, "year", top, filtData);
         // these are the values that go along the x-axis
         const xAxisVals: string[] = temp.xAxisVals;
         const filteredData: ImpactDataRow[] = temp.data;
@@ -161,54 +166,33 @@ export class DataFilterer {
                                             filteredData)];
         // recombine the split data by y axis values
         const organisedData: ArrangedSplitImpactData =
-            this.ArrangeSplitData(filterOptions.xAxis, filterOptions.yAxis,
+            this.ArrangeSplitData(xAxis, filterOptions.yAxis,
                                   yAxisVars, filteredData);
 
         const datasets: FilteredRow[] = [];
         for (const yAxisVal of yAxisVars) {
-            if ((uncertainity.low != null) && (uncertainity.low != null)) {
-                let summedMetricByYAxisLo: number[] = 
-                    this.reduceSummary(organisedData, yAxisVal, xAxisVals,
-                                       uncertainity.low);
-
-                console.log(summedMetricByYAxisLo);
-
-                this.getColour(yAxisVal, plotColours, niceColours);
-                const fRow = this.getChartJsRow(filterOptions.plotType,
-                                                plotColours[yAxisVal], yAxisVal,
-                                                summedMetricByYAxisLo, "+2", false);
+            // if we have uncertainity grab the upper and lower bounds
+            if ((uncertainity.low != null) && (uncertainity.low != null) &&
+                (filterOptions.plotType === "Time series")) {
+                const fRow = this.getDataRow(organisedData, yAxisVal, xAxisVals,
+                                             filterOptions, plotColours,
+                                             niceColours, uncertainity.low,
+                                             "low");
                 datasets.push(fRow);
             }
-////////////////////////////////////////////////////////////////////////////////
-            let summedMetricByYAxis: number[] =
-                this.reduceSummary(organisedData, yAxisVal, xAxisVals,
-                                   filterOptions.metric);
 
-            // we're doing a cumulative plot
-            if (filterOptions.xAxis === "year" && filterOptions.cumulative) {
-                summedMetricByYAxis = summedMetricByYAxis
-                    .reduce((a: number[], x: number, i: number) =>
-                                            [...a, (+x) + (a[i - 1] || 0)], []);
-            }
-
-            // make sure we have colours for each yAxisVal
-            this.getColour(yAxisVal, plotColours, niceColours);
-            const fRow = this.getChartJsRow(filterOptions.plotType,
-                                            plotColours[yAxisVal], yAxisVal,
-                                            summedMetricByYAxis, false);
+            const fRow = this.getDataRow(organisedData, yAxisVal, xAxisVals,
+                                         filterOptions, plotColours,
+                                         niceColours, filterOptions.metric,
+                                         "mid");
             datasets.push(fRow);
-////////////////////////////////////////////////////////////////////////////////
-            if ((uncertainity.low != null) && (uncertainity.low != null)) {
-                let summedMetricByYAxisHi: number[] = 
-                    this.reduceSummary(organisedData, yAxisVal, xAxisVals,
-                                       uncertainity.high);
 
-                console.log(summedMetricByYAxisHi);
-
-                this.getColour(yAxisVal, plotColours, niceColours);
-                const fRow = this.getChartJsRow(filterOptions.plotType,
-                                                plotColours[yAxisVal], yAxisVal,
-                                                summedMetricByYAxisHi, false, false);
+            if ((uncertainity.low != null) && (uncertainity.low != null) &&
+                (filterOptions.plotType === "Time series")) {
+                const fRow = this.getDataRow(organisedData, yAxisVal, xAxisVals,
+                                             filterOptions, plotColours,
+                                             niceColours, uncertainity.high,
+                                             "high");
                 datasets.push(fRow);
             }
         }
@@ -641,8 +625,36 @@ export class DataFilterer {
         }
     }
 
+    private getDataRow(organisedData: ArrangedSplitImpactData, yAxisVal: string,
+                       xAxisVals: string[], filterOptions: DataFiltererOptions,
+                       plotColours: { [p: string]: string },
+                       niceColours: { [p: string]: string },
+                       metric: string,
+                       pos: string) {
+        let summedMetricByYAxis: number[] =
+            this.reduceSummary(organisedData, yAxisVal, xAxisVals,
+                               metric);
+
+        // we're doing a cumulative plot
+        if (filterOptions.xAxis === "year" && filterOptions.cumulative) {
+            summedMetricByYAxis = summedMetricByYAxis
+                .reduce((a: number[], x: number, i: number) =>
+                                        [...a, (+x) + (a[i - 1] || 0)], []);
+        }
+
+        // make sure we have colours for each yAxisVal
+        this.getColour(yAxisVal, plotColours, niceColours);
+        const fRow = this.getChartJsRow(filterOptions.plotType,
+                                        plotColours[yAxisVal], yAxisVal,
+                                        summedMetricByYAxis,
+                                        (pos == "low") ? "+2" : false,
+                                        (pos == "mid"));
+        return fRow;
+    }
+
     private getChartJsRow(plotMode: string, valueColor: string,
-                          label: string, data: number[], fill: any, show: boolean = true): FilteredRow {
+                          label: string, data: number[], fill: any,
+                          show: boolean = true): FilteredRow {
         if (plotMode === "Time series") {
             const fRow: FilteredRow =
                 {

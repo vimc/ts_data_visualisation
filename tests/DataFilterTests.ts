@@ -1,6 +1,7 @@
 import {countries, touchstones, activityTypes, diseases, vaccines} from "../scripts/fakeVariables";
 import {DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
-import {ImpactDataRow, MetricsAndOptions} from "../src/ImpactDataRow";
+import {ImpactDataRow} from "../src/ImpactDataRow";
+import {MetricsAndOptions} from "../src/MetricsAndOptions";
 import {plotColours} from "../src/PlotColours";
 import {expect} from "chai";
 
@@ -141,100 +142,6 @@ describe("DataFilterer", () => {
         expect(touchstones).to.include.members(out5);
     })
 
-    it("filterByFocality", () => {
-        const outTrue: ImpactDataRow[] = testObject.filterByFocality(fakeImpactData, true);
-        const sut: boolean[] = outTrue.map((row) => (row["is_focal"]));
-        expect(sut).to.include.members([true]);
-        expect(sut).to.not.include.members([false]);
-
-        const outFalse: ImpactDataRow[] = testObject.filterByFocality(fakeImpactData, false);
-        const tus: boolean[] = outFalse.map((row) => (row["is_focal"]));
-        expect(tus).to.include.members([false]);
-        expect(tus).to.not.include.members([true]);
-    })
-
-    it("filterBySupport", () => {
-        const outGavi: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, ["gavi"]);
-        const sut: string[] = outGavi.map((row) => (row["support_type"]));
-        expect(sut).to.include.members(["gavi"]);
-        expect(sut).to.not.include.members(["other"]);
-        expect(sut).to.not.include.members(["fish"]);
-
-        const outOther: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, ["other"]);
-        const tus: string[] = outOther.map((row) => (row["support_type"]));
-        expect(tus).to.include.members(["other"]);
-        expect(tus).to.not.include.members(["gavi"]);
-        expect(tus).to.not.include.members(["fish"]);
-
-        const outBad: ImpactDataRow[] = testObject.filterBySupport(fakeImpactData, ["fish"]);
-        expect(outBad).to.have.lengthOf(0);
-    })
-
-    it("filterByTouchstone", () => {
-        const outGood: ImpactDataRow[] =
-            testObject.filterByTouchstone(fakeImpactData, touchstones.slice(0, 2));
-
-        const sut: string[] = outGood.map((row) => (row["touchstone"]));
-        const uniqueItems: string[] = [...new Set(sut)];
-        expect(uniqueItems).to.include.members(touchstones.slice(0, 2));
-        expect(uniqueItems).to.not.include.members(touchstones.slice(2));
-
-        const outBad: ImpactDataRow[] = testObject.filterByTouchstone(fakeImpactData, ["fish"]);
-        expect(outBad).to.have.lengthOf(0);
-    })
-
-    it("filterByVaccine", () => {
-        const outGood: ImpactDataRow[] =
-            testObject.filterByVaccine(fakeImpactData, vaccines.slice(0, 2));
-
-        const sut: string[] = outGood.map((row) => (row["vaccine"]));
-        const uniqueItems: string[] = [...new Set(sut)];
-        expect(uniqueItems).to.include.members(vaccines.slice(0, 2));
-        expect(uniqueItems).to.not.include.members(vaccines.slice(2));
-
-        const outBad: ImpactDataRow[] = testObject.filterByVaccine(fakeImpactData, ["fish"]);
-        expect(outBad).to.have.lengthOf(0);
-    })
-
-    it("filterByCountrySet", () => {
-        const outGood: ImpactDataRow[] =
-            testObject.filterByCountrySet(fakeImpactData, countries.slice(0, 2));
-
-        const sut: string[] = outGood.map((row) => (row["country"]));
-        const uniqueItems: string[] = [...new Set(sut)];
-        expect(uniqueItems).to.include.members(countries.slice(0, 2));
-        expect(uniqueItems).to.not.include.members(countries.slice(2));
-
-        const outBad: ImpactDataRow[] = testObject.filterByCountrySet(fakeImpactData, ["fish"]);
-        expect(outBad).to.have.lengthOf(0);
-    })
-
-    it("filterByActivityType", () => {
-        const outGood: ImpactDataRow[] =
-            testObject.filterByActivityType(fakeImpactData, activityTypes.slice(0, 2));
-
-        const sut: string[] = outGood.map((row) => (row["activity_type"]));
-        const uniqueItems: string[] = [...new Set(sut)];
-        expect(uniqueItems).to.include.members(activityTypes.slice(0, 2));
-        expect(uniqueItems).to.not.include.members(activityTypes.slice(2));
-
-        const outBad: ImpactDataRow[] = testObject.filterByActivityType(fakeImpactData, ["fish"]);
-        expect(outBad).to.have.lengthOf(0);
-    })
-
-    it("filterByYear", () => {
-        const outGood: ImpactDataRow[] =
-            testObject.filterByYear(fakeImpactData, 2013, 2014);
-
-        const sut: number[] = outGood.map((row) => (row["year"]));
-        const uniqueItems: number[] = [...new Set(sut)];
-        expect(uniqueItems).to.include.members([2013, 2014]);
-        expect(uniqueItems).to.not.include.members([2010, 2011, 2012, 2015, 2016, 2017, 2018, 2019, 2020]);
-
-        const outBad: ImpactDataRow[] = testObject.filterByYear(fakeImpactData, 2014, 2013);
-        expect(outBad).to.have.lengthOf(0);
-    })
-
     it("meanVariables", () => {
         const out1 = testObject.meanVariables("coverage");
         expect(out1).to.include({top: "fvps", bottom: "target_population"});
@@ -295,6 +202,7 @@ describe("DataFilterer", () => {
         }
         let fakeMetricAndOptions: MetricsAndOptions = {
             metrics: ["Hello", "world!"],
+            methods: ["deaths", "deaths_averted"],
             filterOptions: ["Another", "array"],
             otherOptions: ["Yet", "another", "array"]
         }
