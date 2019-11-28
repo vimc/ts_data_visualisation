@@ -5,6 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/js/bootstrap4-toggle.min.js"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="styles.css"/>
@@ -309,13 +310,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s" data-off="All Ages"
-                                   data-bind="checked: allAges, visible: showAgeGroupCheck, click: () => debug('check box')">
-                        </div>
-<!--                         <div>
-                            <input data-bind="ageGroupToggleOn: active" type="checkbox" data-toggle="toggle"/>
-                        </div> -->
+                           <div class="btn-group mt-1" role="group">
+                                <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('all'),
+                                 css: {active: ageGroup() == 'all'}">All Ages
+                                </button>
+                                <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('under5'),
+                                 css: {active: ageGroup() == 'under5'}">Lifetime
+                                </button>
+                            </div>
                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
                             <i class="fa fa-question-circle"></i>
                         </button>
@@ -466,10 +468,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s"
-                                   data-off="All Ages"data-bind="checked: allAges, visible: showAgeGroupCheck">
-                        </div>
+                           <div class="btn-group mt-1" role="group">
+                                <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('all'),
+                                 css: {active: ageGroup() == 'all'}">All Ages
+                                </button>
+                                <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('under5'),
+                                 css: {active: ageGroup() == 'under5'}">Lifetime
+                                </button>
+                            </div>
                         <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
                             <i class="fa fa-question-circle"></i>
                         </button>

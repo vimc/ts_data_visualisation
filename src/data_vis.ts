@@ -171,7 +171,7 @@ class DataVisModel {
     private xAxis = ko.observable<string>(this.xAxisOptions[1]);
     private yAxis = ko.observable<string>("disease");
     private cumulativePlot = ko.observable<boolean>(false);
-    private allAges = ko.observable<boolean>(true);
+    private ageGroup = ko.observable<string>("all");
 
     private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
     // if we end up with more datasets move this to arrays of ko strings
@@ -270,7 +270,7 @@ class DataVisModel {
     private chartOptions = ko.computed<CustomChartOptions>(() => {
         return {
             activityTypes: this.activityFilter().selectedOptions(), // which vaccination strategies do we care about
-            ageGroup: (this.allAges() ? "all" : "under5"), //
+            ageGroup: this.ageGroup(), //
             xAxis: this.xAxis(), // variable we are comparing across
             cumulative: this.cumulativePlot(), // are we creating a cumulative plot
             yAxis: this.yAxis(), // variable we are stratifying by
@@ -458,6 +458,10 @@ class DataVisModel {
         this.touchstoneFilter().selectedOptions(data.selectedTouchstones);
     }
 
+    private changeAgeGroup(ageGroup: string) {
+        this.ageGroup(ageGroup);
+    }
+
     private updateXAxisOptions() {
         // refilter the data
         const chartOptions = {...this.chartOptions(), maxPlot: -1};
@@ -529,42 +533,6 @@ class DataVisModel {
 
 $(document).ready(() => {
     const viewModel = new DataVisModel();
-
-// ko.bindingHandlers.ageGroupToggleOn = {
-//     init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-//         const $elem = $(element);
-//     console.log($elem);
-//         $(element).bootstrapToggle(
-//             {
-//                 on: 'Yes',
-//                 off: 'No',
-//                 onstyle: 'primary',
-//                 offstyle: 'danger'
-//             }
-//         );
-//         if (ko.utils.unwrapObservable(valueAccessor())){
-//           $elem.bootstrapToggle('on')
-//         }else{
-//            $elem.bootstrapToggle('off')
-//         }
-
-//        $elem.change(function() {
-//        if ($(this).prop('checked')){
-//           valueAccessor()(true);
-//        }else{
-//            valueAccessor()(false);
-//        }
-//     })
-
-//     },
-//     update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-//         var vStatus = $(element).prop('checked');
-//         var vmStatus = ko.utils.unwrapObservable(valueAccessor());
-//         if (vStatus != vmStatus) {
-//             $(element).bootstrapToggle('toggle')
-//         }
-//     }
-// };
 
     ko.applyBindings(viewModel);
 
