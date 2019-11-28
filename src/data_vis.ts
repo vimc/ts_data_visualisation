@@ -91,8 +91,8 @@ class DataVisModel {
         max: dates["max"][0],
         min: dates["min"][0],
         name: "Years",
-        selectedHigh: 2020,
-        selectedLow: 2016,
+        selectedHigh: 2018,
+        selectedLow: 2000,
     }));
     private showYearFilter =
             ko.observable(metricsAndOptions.filterOptions.includes("year"));
@@ -146,7 +146,7 @@ class DataVisModel {
             ko.observable(metricsAndOptions.filterOptions.includes("support_type"));
 
     private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
-    private showAgeGroupCheck = ko.observable(metricsAndOptions.filterOptions.includes("age_group"));
+    private showAgeGroupCheck = ko.observable(metricsAndOptions.otherOptions.includes("age_group"));
 
     private xAxisOptions =
                metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
@@ -397,7 +397,7 @@ class DataVisModel {
             this.chartObjectTS.destroy();
         }
 
-        const filterData = new DataFilterer().calculateMean(chartOptions,
+        const filterData = new DataFilterer().filterData(chartOptions,
                                                             this.impactData(),
                                                             metricsAndOptions,
                                                             plotColours);

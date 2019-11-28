@@ -1,6 +1,8 @@
 import {FilteredRow} from "./FilteredRow";
-import {ImpactDataRow, MetricsAndOptions} from "./ImpactDataRow";
+import {ImpactDataRow} from "./ImpactDataRow";
+import {MetricsAndOptions} from "./MetricsAndOptions";
 import {niceColours} from "./PlotColours";
+import * as Color from "color";
 
 interface SplitImpactData {
     [key: string]: ImpactDataRow[];
@@ -26,6 +28,39 @@ export interface DataFiltererOptions {
     supportType: string[];
     cumulative: boolean;
     ageGroup: string;
+}
+
+function UpperLowerNames(metric: string): { [key: string]: string } {
+    switch (metric) {
+        case "dalys":
+            return({low: "dalys_lo", high:"dalys_hi"});
+            break;
+
+        case "dalys_averted":
+            return({low: "dalys_av_lo", high:"dalys_av_hi"});
+            break;
+
+        case "dalys_no_vac":
+            return({low: "dalys_nv_lo", high:"dalys_nv_hi"});
+            break;
+
+        case "deaths":
+            return({low: "deaths_lo", high:"deaths_hi"});
+            break;
+
+        case "deaths_averted":
+            return({low: "deaths_av_lo", high:"deaths_av_hi"});
+            break;
+
+        case "deaths_no_vac":
+            return({low: "deaths_nv_lo", high:"deaths_nv_hi"});
+            break;
+        
+        default:
+            console.log("Unexpected metric", metric);
+            return({});
+            break;
+    }
 }
 
 /**
@@ -115,6 +150,10 @@ export class DataFilterer {
         const xAxisVals: string[] = temp.xAxisVals;
         const filteredData: ImpactDataRow[] = temp.data;
 
+        // get upper and lower metric names
+        const uncertainity: { [key: string]: string } =
+                                          UpperLowerNames(filterOptions.metric);
+
         // get an array of all the remaining y axis values
         const yAxisVars: string[] =
             [...this.getUniqueVariables(-1, filterOptions.yAxis,
@@ -127,38 +166,49 @@ export class DataFilterer {
 
         const datasets: FilteredRow[] = [];
         for (const yAxisVal of yAxisVars) {
+            if ((uncertainity.low != null) && (uncertainity.low != null)) {
+                let summedMetricByYAxisLo: number[] = 
+                    this.reduceSummary(organisedData, yAxisVal, xAxisVals,
+                                       uncertainity.low);
+
+                console.log(summedMetricByYAxisLo);
+
+                this.getColour(yAxisVal, plotColours, niceColours);
+                const fRow = this.getChartJsRow(filterOptions.plotType,
+                                                plotColours[yAxisVal], yAxisVal,
+                                                summedMetricByYAxisLo, "+2", false);
+                datasets.push(fRow);
+            }
+////////////////////////////////////////////////////////////////////////////////
             let summedMetricByYAxis: number[] =
                 this.reduceSummary(organisedData, yAxisVal, xAxisVals,
                                    filterOptions.metric);
+
             // we're doing a cumulative plot
             if (filterOptions.xAxis === "year" && filterOptions.cumulative) {
                 summedMetricByYAxis = summedMetricByYAxis
                     .reduce((a: number[], x: number, i: number) =>
                                             [...a, (+x) + (a[i - 1] || 0)], []);
             }
+
             // make sure we have colours for each yAxisVal
             this.getColour(yAxisVal, plotColours, niceColours);
+            const fRow = this.getChartJsRow(filterOptions.plotType,
+                                            plotColours[yAxisVal], yAxisVal,
+                                            summedMetricByYAxis, false);
+            datasets.push(fRow);
+////////////////////////////////////////////////////////////////////////////////
+            if ((uncertainity.low != null) && (uncertainity.low != null)) {
+                let summedMetricByYAxisHi: number[] = 
+                    this.reduceSummary(organisedData, yAxisVal, xAxisVals,
+                                       uncertainity.high);
 
-            // construct the relevant object for chartjs
-            if (filterOptions.plotType === "Time series") {
-                const fRow: FilteredRow = { backgroundColor: "transparent",
-                        borderColor: plotColours[yAxisVal],
-                        data: summedMetricByYAxis,
-                        label: yAxisVal,
-                        lineTension: 0.1,
-                        pointBackgroundColor: "plotColours[yAxisVal]",
-                        pointHitRadius: 15,
-                        pointHoverRadius: 7.5,
-                        pointRadius: 2.5,
-                        pointStyle: "circle",
-                    };
-                datasets.push(fRow);
-            } else {
-                const fRow: FilteredRow = {
-                        backgroundColor: plotColours[yAxisVal],
-                        data: summedMetricByYAxis,
-                        label: yAxisVal,
-                    };
+                console.log(summedMetricByYAxisHi);
+
+                this.getColour(yAxisVal, plotColours, niceColours);
+                const fRow = this.getChartJsRow(filterOptions.plotType,
+                                                plotColours[yAxisVal], yAxisVal,
+                                                summedMetricByYAxisHi, false, false);
                 datasets.push(fRow);
             }
         }
@@ -256,20 +306,9 @@ export class DataFilterer {
 
             // make sure we have colours for each yVar
             this.getColour(yVar, plotColours, niceColours);
-
-            const fRow: FilteredRow = {
-                            backgroundColor: "transparent",
-                            borderColor: plotColours[yVar],
-                            data: summedMetricByYAxis,
-                            label: yVar,
-                            lineTension: 0.1,
-                            pointBackgroundColor: "plotColours[yVar]",
-                            pointHitRadius: 15,
-                            pointHoverRadius: 7.5,
-                            pointRadius: 2.5,
-                            pointStyle: "circle",
-                        };
-
+            const fRow = this.getChartJsRow(filterOptions.plotType,
+                                            plotColours[yVar], yVar,
+                                            summedMetricByYAxis, false);
             datasets.push(fRow);
         }
 
@@ -421,117 +460,6 @@ export class DataFilterer {
         }
     }
 
-   /**
-    * The function filters a dataset (an array of ImpactDataRows) based
-    * on the focality of the model
-    *
-    * @param impactData - The data that will be filtered
-    * @param isFocal - Removes any ImpactDataRow where is_focal does not
-    * match this argument
-    *
-    * @returns An array of ImpactDataRow with all the invalid rows removed
-    */
-    public filterByFocality(impactData: ImpactDataRow[],
-                            isFocal: boolean): ImpactDataRow[] {
-        return impactData.filter((row) => row.is_focal === isFocal );
-    }
-
-   /**
-    * The function filters a dataset (an array of ImpactDataRows) based
-    * on the focality of the model
-    *
-    * @param impactData - The data that will be filtered
-    * @param isFocal - Removes any ImpactDataRow where is_focal does not
-    * match this argument
-    *
-    * @returns An array of ImpactDataRow with all the invalid rows removed
-    */
-    public filterBySupport(impactData: ImpactDataRow[],
-                           supportType: string[]): ImpactDataRow[] {
-        return impactData.filter((row) =>
-            supportType.indexOf(row.support_type) > -1 );
-    }
-
-   /**
-    * The function filters a dataset (an array of ImpactDataRows) based
-    * on the touchstone
-    *
-    * @param impactData - The data that will be filtered
-    * @param isFocal - Removes any ImpactDataRow where touchstone does not
-    * match at least one element of this array
-    *
-    * @returns An array of ImpactDataRow with all the invalid rows removed
-    */
-    public filterByTouchstone(impactData: ImpactDataRow[],
-                              touchStone: string[]): ImpactDataRow[] {
-        return impactData.filter((row) =>
-            touchStone.indexOf(row.touchstone) > -1 );
-    }
-
-   /**
-    * The function filters a dataset (an array of ImpactDataRows) based
-    * on the vaccine
-    *
-    * @param impactData - The data that will be filtered
-    * @param vaccineSet - Removes any ImpactDataRow where vaccine does not
-    * match at least one element of this array
-    *
-    * @returns An array of ImpactDataRow with all the invalid rows removed
-    */
-    public filterByVaccine(impactData: ImpactDataRow[],
-                           vaccineSet: string[]): ImpactDataRow[] {
-        return impactData.filter((row) =>
-            vaccineSet.indexOf(row.vaccine) > -1 );
-    }
-
-   /**
-    * The function filters a dataset (an array of ImpactDataRows) based
-    * on the country
-    *
-    * @param impactData - The data that will be filtered
-    * @param countrySet - Removes any ImpactDataRow where country does not
-    * match at least one element of this array
-    *
-    * @returns An array of ImpactDataRow with all the invalid rows removed
-    */
-    public filterByCountrySet(impactData: ImpactDataRow[],
-                              countrySet: string[]): ImpactDataRow[] {
-        return impactData.filter((row) =>
-            countrySet.indexOf(row.country) > -1 );
-    }
-
-   /**
-    * The function filters a dataset (an array of ImpactDataRows) based
-    * on the activity_type
-    *
-    * @param impactData - The data that will be filtered
-    * @param activitySet - Removes any ImpactDataRow where activity_type does not
-    * match at least one element of this array
-    *
-    * @returns An array of ImpactDataRow with all the invalid rows removed
-    */
-    public filterByActivityType(impactData: ImpactDataRow[],
-                                activitySet: string[]): ImpactDataRow[] {
-        return impactData.filter((row) =>
-            activitySet.indexOf(row.activity_type) > -1 );
-    }
-
-   /**
-    * The function filters a dataset (an array of ImpactDataRows) based
-    * on the year
-    *
-    * @param impactData - The data that will be filtered
-    * @param yearLow - Removes any ImpactDataRow where year is below this
-    * @param yearHigh - Removes any ImpactDataRow where year is above this
-    *
-    * @returns An array of ImpactDataRow with all the invalid rows removed
-    */
-    public filterByYear(impactData: ImpactDataRow[], yearLow: number,
-                        yearHigh: number) {
-        return impactData.filter((row) => row.year >= yearLow )
-                         .filter((row) => row.year <= yearHigh );
-    }
-
     public filterIsInList(impactData: ImpactDataRow[], variable: string,
                           isIn: any[]) {
         return impactData.filter((row) =>
@@ -614,6 +542,7 @@ export class DataFilterer {
             filtData = this.filterIsInList(filtData, "disease",
                                            filterOptions.selectedDiseases);
         }
+
         return filtData;
     }
 
@@ -709,6 +638,36 @@ export class DataFilterer {
                 // it should be obvious when we've run out of colours.
                 $.extend(colourDict, { [key]: "#999999"});
             }
+        }
+    }
+
+    private getChartJsRow(plotMode: string, valueColor: string,
+                          label: string, data: number[], fill: any, show: boolean = true): FilteredRow {
+        if (plotMode === "Time series") {
+            const fRow: FilteredRow =
+                {
+                    backgroundColor: Color(valueColor).alpha(0.5),
+                    borderColor: valueColor,
+                    borderWidth: show ? 2 : 0.1,
+                    data: data,
+                    fill: fill,
+                    label: label,
+                    lineTension: 0.0,
+                    pointBackgroundColor: valueColor,
+                    pointHitRadius: 15,
+                    pointHoverRadius: show ? 5 : 0.0,
+                    pointRadius: show ? 2.5 : 0.0,
+                    pointStyle: "circle",
+                };
+            return fRow;
+        } else {
+            const fRow: FilteredRow = 
+                {
+                    backgroundColor:valueColor,
+                    data: data,
+                    label: label,
+                };
+            return fRow;
         }
     }
 }
