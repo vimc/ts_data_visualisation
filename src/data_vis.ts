@@ -405,9 +405,9 @@ class DataVisModel {
         }
 
         const filterData = new DataFilterer().filterData(chartOptions,
-                                                            this.impactData(),
-                                                            metricsAndOptions,
-                                                            plotColours);
+                                                         this.impactData(),
+                                                         metricsAndOptions,
+                                                         plotColours);
         const {datasets, xAxisVals} = filterData;
 
         this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
