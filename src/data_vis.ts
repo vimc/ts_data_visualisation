@@ -150,9 +150,11 @@ class DataVisModel {
 
     private xAxisOptions =
                metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
+
     private yAxisOptions = ko.computed(() => {
         const catOptions =
                metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
+        catOptions.push("none");
         switch (this.currentPlot()) {
             case "Impact":
                 return catOptions;
