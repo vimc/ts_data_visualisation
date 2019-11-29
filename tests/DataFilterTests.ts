@@ -187,8 +187,8 @@ describe("DataFilterer", () => {
         let fakeOptions: DataFiltererOptions = {
             metric: "deaths_averted",
             maxPlot: 10,
-            xAxis: "continent",
-            yAxis: "year",
+            xAxis: "year",
+            yAxis: "continent",
             yearLow: 2005,
             yearHigh: 2025,
             activityTypes: ["routine","campaign"],
