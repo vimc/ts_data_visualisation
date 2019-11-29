@@ -34,32 +34,25 @@ export function upperLowerNames(metric: string): { [key: string]: string } {
     switch (metric) {
         case "dalys":
             return({low: "dalys_lo", high:"dalys_hi"});
-            break;
 
         case "dalys_averted":
             return({low: "dalys_av_lo", high:"dalys_av_hi"});
-            break;
 
         case "dalys_no_vac":
             return({low: "dalys_nv_lo", high:"dalys_nv_hi"});
-            break;
 
         case "deaths":
             return({low: "deaths_lo", high:"deaths_hi"});
-            break;
 
         case "deaths_averted":
             return({low: "deaths_av_lo", high:"deaths_av_hi"});
-            break;
 
         case "deaths_no_vac":
             return({low: "deaths_nv_lo", high:"deaths_nv_hi"});
-            break;
         
         default:
             console.log("Unexpected metric", metric);
             return({});
-            break;
     }
 }
 
