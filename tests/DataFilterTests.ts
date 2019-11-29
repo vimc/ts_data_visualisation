@@ -187,8 +187,8 @@ describe("DataFilterer", () => {
         let fakeOptions: DataFiltererOptions = {
             metric: "deaths_averted",
             maxPlot: 10,
-            xAxis: "year",
-            yAxis: "continent",
+            xAxis: "continent",
+            yAxis: "year",
             yearLow: 2005,
             yearHigh: 2025,
             activityTypes: ["routine","campaign"],
@@ -211,8 +211,8 @@ describe("DataFilterer", () => {
         // error
         let out = testObject.filterData(fakeOptions, fakeImpactData,
                                         fakeMetricAndOptions, plotColours);
-
-        fakeOptions.metric = "deaths_averted_rate",
+        fakeOptions.plotType = "Time Series";
+        fakeOptions.metric = "deaths_averted_rate";
         fakeOptions.xAxis = "year";
         fakeOptions.yAxis = "continent";
 
