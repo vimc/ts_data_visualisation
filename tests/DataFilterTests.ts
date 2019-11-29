@@ -222,7 +222,7 @@ describe("DataFilterer", () => {
 
     it("upperLowerNames", () => {
         let out = upperLowerNames("dalys");
-        console.log(out)
+
         expect(out).to.include({low: "dalys_lo", high:"dalys_hi"});
 
         out = upperLowerNames("dalys_averted");
@@ -242,5 +242,74 @@ describe("DataFilterer", () => {
 
         out = upperLowerNames("BAD STRING");
         expect(out).to.include({});
+    })
+
+    // it("getDataRow", () => {
+    //     let out = testObject.getDataRow("dalys");
+
+    //     expect(out).to.include({low: "dalys_lo", high:"dalys_hi"});
+
+    //     out = upperLowerNames("dalys_averted");
+    //     expect(out).to.include({low: "dalys_av_lo", high:"dalys_av_hi"});
+
+    //     out = upperLowerNames("dalys_no_vac");
+    //     expect(out).to.include({low: "dalys_nv_lo", high:"dalys_nv_hi"});
+
+    //     out = upperLowerNames("deaths");
+    //     expect(out).to.include({low: "deaths_lo", high:"deaths_hi"});
+
+    //     out = upperLowerNames("deaths_averted");
+    //     expect(out).to.include({low: "deaths_av_lo", high:"deaths_av_hi"});
+
+    //     out = upperLowerNames("deaths_no_vac");
+    //     expect(out).to.include({low: "deaths_nv_lo", high:"deaths_nv_hi"});
+
+    //     out = upperLowerNames("BAD STRING");
+    //     expect(out).to.include({});
+    // })
+
+    it("getDataRow", () => {
+        let out = testObject.getChartJsRow("Time series",
+                                           "#0B588E",
+                                           "label",
+                                           [1,2,3,4,5,6,7,8,9,10,11,12],
+                                           "+1",
+                                           true);
+        expect(out).to.include({
+            borderColor: '#0B588E',
+            borderWidth: 2,
+            fill: '+1',
+            label: 'label',
+            lineTension: 0,
+            pointBackgroundColor: '#0B588E',
+            pointHitRadius: 15,
+            pointHoverRadius: 5,
+            pointRadius: 2.5,
+            pointStyle: 'circle'});
+
+        expect(out.data).to.include.members([1,2,3,4,5,6,7,8,9,10,11,12]);
+        expect(out.backgroundColor).to.include({ model: 'rgb', valpha: 0.5 })
+        expect(out.backgroundColor.color).to.include.members([ 11, 88, 142 ])
+
+        out = testObject.getChartJsRow("Not time series",
+                                       "#0B588E",
+                                       "label",
+                                       [7,8,9,10,11,12],
+                                       false,
+                                       true);
+
+        expect(out).to.include({backgroundColor: '#0B588E', label: 'label'});
+        expect(out.data).to.include.members([7,8,9,10,11,12]);
+
+        out = testObject.getChartJsRow("Time series",
+                                       "#0B588E",
+                                       "label",
+                                       [1,2,3,4,5,6,7,8,9,10,11,12],
+                                       false,
+                                       false);
+
+        expect(out.pointRadius).to.equal(0);
+        expect(out.fill).to.equal(false);
+        expect(out.borderWidth).to.equal(0.1);
     })
 });

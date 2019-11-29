@@ -618,7 +618,7 @@ export class DataFilterer {
         }
     }
 
-    private getDataRow(organisedData: ArrangedSplitImpactData, yAxisVal: string,
+    public getDataRow(organisedData: ArrangedSplitImpactData, yAxisVal: string,
                        xAxisVals: string[], filterOptions: DataFiltererOptions,
                        plotColours: { [p: string]: string },
                        niceColours: { [p: string]: string },
@@ -645,7 +645,7 @@ export class DataFilterer {
         return fRow;
     }
 
-    private getChartJsRow(plotMode: string, valueColor: string,
+    public getChartJsRow(plotMode: string, valueColor: string,
                           label: string, data: number[], fill: any,
                           show: boolean = true): FilteredRow {
         if (plotMode === "Time series") {
