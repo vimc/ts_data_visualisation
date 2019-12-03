@@ -7,7 +7,7 @@ export let plotColours: { [vaccine: string]: string } = {
     "HepB_BD": "#466963",
     "Hib":     "#bdb76b",
     "Hib3":    "#FB8072",
-    "JE":      "#FFFFB3",
+    "JE":      "#654321",
     "MCV1":    "#80B1D3",
     "MCV2":    "#597b93",
     "Measles": "#0B588E",
