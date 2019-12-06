@@ -509,19 +509,16 @@ export class DataFilterer {
             filtData = this.filterIsInList(filtData, "vaccine",
                                            filterOptions.selectedVaccines);
         }
-        console.log(filtData.length)   
         // filter by age group
         if (metsAndOpts.filterOptions.indexOf("age_group") > -1) {
             filtData = this.filterByIsEqualTo(filtData, "age_group",
                                               filterOptions.ageGroup);
         }
-        console.log(filtData.length)   
         // filter by disease
         if (metsAndOpts.filterOptions.indexOf("disease") > -1) {
             filtData = this.filterIsInList(filtData, "disease",
                                            filterOptions.selectedDiseases);
         }
-        console.log(filtData.length)   
 
         return filtData;
     }
