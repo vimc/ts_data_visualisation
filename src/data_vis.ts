@@ -20,30 +20,36 @@ import {plotColours} from "./PlotColours";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
+let filePrefix: string = "Uninitialized filePrefix";
+let initTouchstone: string = "Uninitialized initTouchstone";
+let montaguDataSets: DataSet[] = [];
 
-// const filePrefix: string = "impactData";
-// const initTouchstone: string = "201710gavi";
-// const montaguDataSets: DataSet[] = [
-//     { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
-//     { name : "cross", data : [], seen : [], selectedTouchstones: [] },
-//     { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
-// ];
+if (metricsAndOptions.mode === "public") {
+    filePrefix = "firstPaper";
+    initTouchstone = "1";
 
-// appendToDataSet(["201710gavi-201907wue"], filePrefix, "year_of_vac", montaguDataSets, true);
-// appendToDataSet(["201710gavi"], filePrefix, "cross", montaguDataSets, true);
-// appendToDataSet(["201710gavi"], filePrefix, "cohort", montaguDataSets, true);
+    montaguDataSets = [
+        { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+        { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+        { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+    ];
 
-const filePrefix: string = "firstPaper";
-const initTouchstone: string = "1";
+    appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
+    appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
+} else if (metricsAndOptions.mode === "private") {
+    filePrefix = "impactData";
+    initTouchstone = "201710gavi";
 
-const montaguDataSets: DataSet[] = [
-    { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cross", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
-];
+    montaguDataSets = [
+        { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+        { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+        { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+    ];
 
-appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
-appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
+    appendToDataSet(["201710gavi-201907wue"], filePrefix, "year_of_vac", montaguDataSets, true);
+    appendToDataSet(["201710gavi"], filePrefix, "cross", montaguDataSets, true);
+    appendToDataSet(["201710gavi"], filePrefix, "cohort", montaguDataSets, true);
+}
 
 require("./index.html");
 require("./image/logo-dark-drop.png");

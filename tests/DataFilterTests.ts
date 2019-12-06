@@ -201,6 +201,7 @@ describe("DataFilterer", () => {
             ageGroup: "under5"
         }
         let fakeMetricAndOptions: MetricsAndOptions = {
+            mode: "public",
             metrics: ["Hello", "world!"],
             methods: ["deaths", "deaths_averted"],
             filterOptions: ["Another", "array"],
