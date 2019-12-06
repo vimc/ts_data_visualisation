@@ -23,10 +23,12 @@ import {WarningMessageManager} from "./WarningMessage";
 let filePrefix: string = "Uninitialized filePrefix";
 let initTouchstone: string = "Uninitialized initTouchstone";
 let montaguDataSets: DataSet[] = [];
+let initMethod: string = "Uninitialized initMethod";
 
 if (metricsAndOptions.mode === "public") {
     filePrefix = "firstPaper";
     initTouchstone = "1";
+    initMethod = "cross";
 
     montaguDataSets = [
         { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
@@ -39,6 +41,7 @@ if (metricsAndOptions.mode === "public") {
 } else if (metricsAndOptions.mode === "private") {
     filePrefix = "impactData";
     initTouchstone = "201710gavi";
+    initMethod = "year_of_vac";
 
     montaguDataSets = [
         { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
@@ -88,8 +91,8 @@ class DataVisModel {
     };
     private currentPlot = ko.observable("Impact");
 
-    private impactData = ko.observable(getDataSet("cross", montaguDataSets).data);
-    private yearMethod = ko.observable("cross");
+    private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
+    private yearMethod = ko.observable(initMethod);
 
     private showYearOfVac =
         ko.observable(metricsAndOptions.methods.includes("year_of_vac"));
