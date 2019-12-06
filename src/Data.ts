@@ -1,4 +1,5 @@
-import {ImpactDataRow, MetricsAndOptions} from "./ImpactDataRow";
+import {ImpactDataRow} from "./ImpactDataRow";
+import {MetricsAndOptions} from "./MetricsAndOptions";
 import {loadObjectFromJSONFile} from "./Utils";
 
 export const countries: string[] =
