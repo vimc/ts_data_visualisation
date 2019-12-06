@@ -480,7 +480,7 @@ export class DataFilterer {
                 console.log(opt)
                 console.log(metsAndOpts.secretOptions[opt])
                 filtData = this.filterByIsEqualTo(filtData, opt,
-                                                  metsAndOpts.secretOptions[opt]);
+                                                  metsAndOpts.secretOptions[opt][0]);
             }
         }
         console.log(filtData.length)   
