@@ -471,49 +471,39 @@ export class DataFilterer {
     public filterByAll(filterOptions: DataFiltererOptions,
                        metsAndOpts: MetricsAndOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
-        let filtData = impactData;
-        console.log(filtData.length)    
+        let filtData = impactData;  
         // filter by secret options
         if (metsAndOpts.secretOptions) {
-            console.log(metsAndOpts.secretOptions)
             for (const opt of Object.keys(metsAndOpts.secretOptions)) {
-                console.log(opt)
-                console.log(metsAndOpts.secretOptions[opt])
                 filtData = this.filterByIsEqualTo(filtData, opt,
                                                   metsAndOpts.secretOptions[opt][0]);
             }
         }
-        console.log(filtData.length)   
         // filter so that support = gavi
         if (metsAndOpts.filterOptions.indexOf("support_type") > -1) {
             filtData = this.filterIsInList(filtData, "support_type",
                                            filterOptions.supportType);
         }
-        console.log(filtData.length)   
         // filter by years
         if (metsAndOpts.filterOptions.indexOf("year") > -1) {
             filtData = this.filterByNumericBetween(filtData, "year",
                                filterOptions.yearLow, filterOptions.yearHigh);
         }
-        console.log(filtData.length)   
         // filter by touchstone
         if (metsAndOpts.filterOptions.indexOf("touchstone") > -1) {
             filtData = this.filterIsInList(filtData, "touchstone",
                                            filterOptions.selectedTouchstones);
         }
-        console.log(filtData.length)   
         // filter by activity type
         if (metsAndOpts.filterOptions.indexOf("activity_type") > -1) {
             filtData = this.filterIsInList(filtData, "activity_type",
                                            filterOptions.activityTypes);
         }
-        console.log(filtData.length)   
         // filter by country
         if (metsAndOpts.filterOptions.indexOf("country") > -1) {
             filtData = this.filterIsInList(filtData, "country",
                                            filterOptions.selectedCountries);
         }
-        console.log(filtData.length)   
         // filter by vaccine
         if (metsAndOpts.filterOptions.indexOf("vaccine") > -1) {
             filtData = this.filterIsInList(filtData, "vaccine",
