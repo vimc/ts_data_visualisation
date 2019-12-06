@@ -476,7 +476,7 @@ export class DataFilterer {
         if (metsAndOpts.secretOptions) {
             for (const opt of Object.keys(metsAndOpts.secretOptions)) {
                 filtData = this.filterByIsEqualTo(filtData, opt,
-                                                  metsAndOpts.secretOptions[opt]);
+                                                  metsAndOpts.secretOptions[opt][0]);
             }
         }
         // filter so that support = gavi

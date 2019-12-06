@@ -25,7 +25,7 @@ let initTouchstone: string = "Uninitialized initTouchstone";
 let montaguDataSets: DataSet[] = [];
 let initMethod: string = "Uninitialized initMethod";
 
-if (metricsAndOptions.mode === "public") {
+if (metricsAndOptions.mode.includes("public")) {
     filePrefix = "firstPaper";
     initTouchstone = "1";
     initMethod = "cross";
@@ -38,9 +38,9 @@ if (metricsAndOptions.mode === "public") {
 
     appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
     appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
-} else if (metricsAndOptions.mode === "private") {
+} else if (metricsAndOptions.mode.includes("private")) {
     filePrefix = "impactData";
-    initTouchstone = "201710gavi";
+    initTouchstone = "201710gavi-201907wue";
     initMethod = "year_of_vac";
 
     montaguDataSets = [
