@@ -91,6 +91,8 @@ class DataVisModel {
     };
     private currentPlot = ko.observable("Impact");
 
+    private isPrivate = ko.observable(metricsAndOptions.mode.includes("private"));
+
     private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
     private yearMethod = ko.observable(initMethod);
 
