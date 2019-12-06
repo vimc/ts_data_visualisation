@@ -471,7 +471,7 @@ export class DataFilterer {
     public filterByAll(filterOptions: DataFiltererOptions,
                        metsAndOpts: MetricsAndOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
-        let filtData = impactData;  
+        let filtData = impactData;
         // filter by secret options
         if (metsAndOpts.secretOptions) {
             for (const opt of Object.keys(metsAndOpts.secretOptions)) {
