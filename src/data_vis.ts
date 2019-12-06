@@ -20,30 +20,36 @@ import {plotColours} from "./PlotColours";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
+let filePrefix: string = "Uninitialized filePrefix";
+let initTouchstone: string = "Uninitialized initTouchstone";
+let montaguDataSets: DataSet[] = [];
 
-// const filePrefix: string = "impactData";
-// const initTouchstone: string = "201710gavi";
-// const montaguDataSets: DataSet[] = [
-//     { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
-//     { name : "cross", data : [], seen : [], selectedTouchstones: [] },
-//     { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
-// ];
+if (metricsAndOptions.mode === "public") {
+    filePrefix = "firstPaper";
+    initTouchstone = "1";
 
-// appendToDataSet(["201710gavi-201907wue"], filePrefix, "year_of_vac", montaguDataSets, true);
-// appendToDataSet(["201710gavi"], filePrefix, "cross", montaguDataSets, true);
-// appendToDataSet(["201710gavi"], filePrefix, "cohort", montaguDataSets, true);
+    montaguDataSets = [
+        { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+        { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+        { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+    ];
 
-const filePrefix: string = "firstPaper";
-const initTouchstone: string = "1";
+    appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
+    appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
+} else if (metricsAndOptions.mode === "private") {
+    filePrefix = "impactData";
+    initTouchstone = "201710gavi";
 
-const montaguDataSets: DataSet[] = [
-    { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cross", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
-];
+    montaguDataSets = [
+        { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
+        { name : "cross", data : [], seen : [], selectedTouchstones: [] },
+        { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+    ];
 
-appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
-appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
+    appendToDataSet(["201710gavi-201907wue"], filePrefix, "year_of_vac", montaguDataSets, true);
+    appendToDataSet(["201710gavi"], filePrefix, "cross", montaguDataSets, true);
+    appendToDataSet(["201710gavi"], filePrefix, "cohort", montaguDataSets, true);
+}
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
@@ -85,14 +91,21 @@ class DataVisModel {
     private impactData = ko.observable(getDataSet("cross", montaguDataSets).data);
     private yearMethod = ko.observable("cross");
 
+    private showYearOfVac =
+        ko.observable(metricsAndOptions.methods.includes("year_of_vac"));
+    private showCross =
+        ko.observable(metricsAndOptions.methods.includes("cross"));
+    private showCohort =
+        ko.observable(metricsAndOptions.methods.includes("cohort"));
+
     private showSidebar = ko.observable(true);
 
     private yearFilter = ko.observable(new RangeFilter({
         max: dates["max"][0],
         min: dates["min"][0],
         name: "Years",
-        selectedHigh: 2020,
-        selectedLow: 2016,
+        selectedHigh: 2018,
+        selectedLow: 2000,
     }));
     private showYearFilter =
             ko.observable(metricsAndOptions.filterOptions.includes("year"));
@@ -146,13 +159,15 @@ class DataVisModel {
             ko.observable(metricsAndOptions.filterOptions.includes("support_type"));
 
     private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
-    private showAgeGroupCheck = ko.observable(metricsAndOptions.filterOptions.includes("age_group"));
+    private showAgeGroupCheck = ko.observable(metricsAndOptions.otherOptions.includes("age_group"));
 
     private xAxisOptions =
                metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
+
     private yAxisOptions = ko.computed(() => {
         const catOptions =
                metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
+        catOptions.push("none");
         switch (this.currentPlot()) {
             case "Impact":
                 return catOptions;
@@ -164,7 +179,7 @@ class DataVisModel {
     }, this);
 
     private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
-    private maxBars = ko.observable<number>(5);
+    private maxBars = ko.observable<number>(19);
 
     private xAxis = ko.observable<string>(this.xAxisOptions[1]);
     private yAxis = ko.observable<string>("disease");
@@ -395,10 +410,10 @@ class DataVisModel {
             this.chartObjectTS.destroy();
         }
 
-        const filterData = new DataFilterer().calculateMean(chartOptions,
-                                                            this.impactData(),
-                                                            metricsAndOptions,
-                                                            plotColours);
+        const filterData = new DataFilterer().filterData(chartOptions,
+                                                         this.impactData(),
+                                                         metricsAndOptions,
+                                                         plotColours);
         const {datasets, xAxisVals} = filterData;
 
         this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);

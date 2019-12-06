@@ -1,12 +1,13 @@
 // This is not const as we might append colours to it at run time
 export let plotColours: { [vaccine: string]: string } = {
+    "none":    "#0000C0",
     // disease / vaccine colours
     "HPV":     "#BEBADA",
     "HepB":    "#8DD3C7",
     "HepB_BD": "#466963",
     "Hib":     "#bdb76b",
     "Hib3":    "#FB8072",
-    "JE":      "#FFFFB3",
+    "JE":      "#654321",
     "MCV1":    "#80B1D3",
     "MCV2":    "#597b93",
     "Measles": "#0B588E",
@@ -191,6 +192,7 @@ export let plotColours: { [vaccine: string]: string } = {
     "ZMB": "#66a384", // AFRICA
     "ZWE": "#005128", // AFRICA
     // touchstones
+    "201710gavi-201907wue":  "#AC1A68",
     "201710gavi":            "#00ffff",
     "201710gavi-201810gavi": "#00008b",
     "201510gavi":            "#ff8c00",
