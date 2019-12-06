@@ -1,4 +1,5 @@
 export interface MetricsAndOptions {
+    // Is this for the private or public tool
     mode: "public" | "private"
     // These are the metric columns in the data set e.g. deaths, dalys, cases_averted etc.
     metrics: string[];
