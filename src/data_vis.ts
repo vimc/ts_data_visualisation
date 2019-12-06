@@ -28,7 +28,7 @@ let initMethod: string = "Uninitialized initMethod";
 console.log(metricsAndOptions)
 console.log(metricsAndOptions.mode)
 
-if (metricsAndOptions.mode === "public") {
+if (metricsAndOptions.mode.includes("public")) {
 console.log("public")
     filePrefix = "firstPaper";
     initTouchstone = "1";
@@ -42,7 +42,7 @@ console.log("public")
 
     appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
     appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
-} else if (metricsAndOptions.mode === "private") {
+} else if (metricsAndOptions.mode.includes("private")) {
 console.log("private")
     filePrefix = "impactData";
     initTouchstone = "201710gavi-201907wue";
