@@ -40,7 +40,7 @@ if (metricsAndOptions.mode === "public") {
     appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
 } else if (metricsAndOptions.mode === "private") {
     filePrefix = "impactData";
-    initTouchstone = "201710gavi";
+    initTouchstone = "201710gavi-201907wue";
     initMethod = "year_of_vac";
 
     montaguDataSets = [
