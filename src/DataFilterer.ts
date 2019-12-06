@@ -475,7 +475,10 @@ export class DataFilterer {
         console.log(filtData.length)    
         // filter by secret options
         if (metsAndOpts.secretOptions) {
+            console.log(metsAndOpts.secretOptions)
             for (const opt of Object.keys(metsAndOpts.secretOptions)) {
+                console.log(opt)
+                console.log(metsAndOpts.secretOptions[opt])
                 filtData = this.filterByIsEqualTo(filtData, opt,
                                                   metsAndOpts.secretOptions[opt]);
             }
