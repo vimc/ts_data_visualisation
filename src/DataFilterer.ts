@@ -472,6 +472,7 @@ export class DataFilterer {
                        metsAndOpts: MetricsAndOptions,
                        impactData: ImpactDataRow[]): ImpactDataRow[] {
         let filtData = impactData;
+        console.log(filtData.length)    
         // filter by secret options
         if (metsAndOpts.secretOptions) {
             for (const opt of Object.keys(metsAndOpts.secretOptions)) {
@@ -479,46 +480,55 @@ export class DataFilterer {
                                                   metsAndOpts.secretOptions[opt]);
             }
         }
+        console.log(filtData.length)   
         // filter so that support = gavi
         if (metsAndOpts.filterOptions.indexOf("support_type") > -1) {
             filtData = this.filterIsInList(filtData, "support_type",
                                            filterOptions.supportType);
         }
+        console.log(filtData.length)   
         // filter by years
         if (metsAndOpts.filterOptions.indexOf("year") > -1) {
             filtData = this.filterByNumericBetween(filtData, "year",
                                filterOptions.yearLow, filterOptions.yearHigh);
         }
+        console.log(filtData.length)   
         // filter by touchstone
         if (metsAndOpts.filterOptions.indexOf("touchstone") > -1) {
             filtData = this.filterIsInList(filtData, "touchstone",
                                            filterOptions.selectedTouchstones);
         }
+        console.log(filtData.length)   
         // filter by activity type
         if (metsAndOpts.filterOptions.indexOf("activity_type") > -1) {
             filtData = this.filterIsInList(filtData, "activity_type",
                                            filterOptions.activityTypes);
         }
+        console.log(filtData.length)   
         // filter by country
         if (metsAndOpts.filterOptions.indexOf("country") > -1) {
             filtData = this.filterIsInList(filtData, "country",
                                            filterOptions.selectedCountries);
         }
+        console.log(filtData.length)   
         // filter by vaccine
         if (metsAndOpts.filterOptions.indexOf("vaccine") > -1) {
             filtData = this.filterIsInList(filtData, "vaccine",
                                            filterOptions.selectedVaccines);
         }
+        console.log(filtData.length)   
         // filter by age group
         if (metsAndOpts.filterOptions.indexOf("age_group") > -1) {
             filtData = this.filterByIsEqualTo(filtData, "age_group",
                                               filterOptions.ageGroup);
         }
+        console.log(filtData.length)   
         // filter by disease
         if (metsAndOpts.filterOptions.indexOf("disease") > -1) {
             filtData = this.filterIsInList(filtData, "disease",
                                            filterOptions.selectedDiseases);
         }
+        console.log(filtData.length)   
 
         return filtData;
     }
