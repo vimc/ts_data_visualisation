@@ -61,7 +61,6 @@
         </li>
     </ul>
     <button class="float-bottom btn btn-success" data-bind="click: exportAllData">Export complete dataset</button>
-    <button class="float-bottom btn btn-success" data-toggle="modal" data-target="#metadataModal">Show Metadata</button>
 </div>
 
 <div class="filter-bar sidebar" data-bind="css: { in: showSidebar}">
@@ -445,6 +444,7 @@
 
                     <button class="btn btn-success" data-bind="click: exportPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportData">Export data as csv</button>
+                    <button class="float-bottom btn btn-success" data-toggle="modal" data-target="#metadataModal">Show Metadata</button>
                 </div>
             </div>
         </div>
@@ -560,6 +560,7 @@
                     </div>
                     <button class="btn btn-success" data-bind="click: exportTSPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportTSData">Export data as csv</button>
+                    <button class="float-bottom btn btn-success" data-toggle="modal" data-target="#metadataModal">Show Metadata</button>
                 </div>
             </div>
         </div>
@@ -671,7 +672,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="methodModalLabel">Decription of plot</h5>
+                <h5 class="modal-title" id="methodModalLabel">Plot Metadata</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
