@@ -648,6 +648,10 @@ export class DataFilterer {
     public getChartJsRow(plotMode: string, valueColor: string,
                           label: string, data: number[], fill: any,
                           show: boolean = true): FilteredRow {
+console.log(valueColor)
+console.log(Color(valueColor).alpha(0.5))
+
+
         if (plotMode === "Time series") {
             const fRow: FilteredRow =
                 {
