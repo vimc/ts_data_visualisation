@@ -41,7 +41,7 @@
     </div>
     <div class="float-right small" style="color: #0056b3; white-space: pre-wrap;">
         <a data-bind="text: reportId"/></a>
-        Data ids: <a data-bind="attr: { href: dataLink1, title: linkText }, text: dataId1"/></a> <a data-bind="attr: { href: dataLink2, title: linkText }, text: dataId2"/></a>
+        <a data-bind="visible: isPrivate"/>Data ids: </a><a data-bind="attr: { href: dataLink1, title: linkText }, text: dataId1, visible: isPrivate"/></a> <a data-bind="attr: { href: dataLink2, title: linkText }, text: dataId2, visible: isPrivate"/></a>
         <a data-bind="text: appId"/></a>
     </div>
 </nav>
@@ -453,13 +453,13 @@
                             <div class="col-9">
                                 <div class="btn-group mt-1" role="group">
                                     <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cross'),
-                                     css: {active: yearMethod() == 'cross'}">Cross-sectional
+                                     css: {active: yearMethod() == 'cross'}, visible: showCross">Cross-sectional
                                     </button>
                                     <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cohort'),
-                                     css: {active: yearMethod() == 'cohort'}">Lifetime
+                                     css: {active: yearMethod() == 'cohort'},visible: showCohort">Lifetime
                                     </button>
                                     <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('year_of_vac'),
-                                     css: {active: yearMethod() == 'year_of_vac'}">Year of vaccination
+                                     css: {active: yearMethod() == 'year_of_vac'}, visible: showYearOfVac">Year of vaccination
                                     </button>
                                 </div>
                                  <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">

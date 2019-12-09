@@ -476,7 +476,7 @@ export class DataFilterer {
         if (metsAndOpts.secretOptions) {
             for (const opt of Object.keys(metsAndOpts.secretOptions)) {
                 filtData = this.filterByIsEqualTo(filtData, opt,
-                                                  metsAndOpts.secretOptions[opt]);
+                                                  metsAndOpts.secretOptions[opt][0]);
             }
         }
         // filter so that support = gavi
@@ -651,7 +651,7 @@ export class DataFilterer {
         if (plotMode === "Time series") {
             const fRow: FilteredRow =
                 {
-                    backgroundColor: Color(valueColor).alpha(0.5),
+                    backgroundColor: Color(valueColor).alpha(0.5).hsl().string(),
                     borderColor: valueColor,
                     borderWidth: show ? 2 : 0.1,
                     data: data,
