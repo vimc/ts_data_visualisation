@@ -4,6 +4,7 @@ import {ImpactDataRow} from "../src/ImpactDataRow";
 import {MetricsAndOptions} from "../src/MetricsAndOptions";
 import {plotColours} from "../src/PlotColours";
 import {expect} from "chai";
+import * as Color from "color";
 
 function randomNumber(floor: number, ceiling: number) : number {
     return Math.round(Math.random() * (ceiling - floor) * 100) / 100 + floor;
@@ -289,8 +290,8 @@ describe("DataFilterer", () => {
             pointStyle: 'circle'});
 
         expect(out.data).to.include.members([1,2,3,4,5,6,7,8,9,10,11,12]);
-        expect(out.backgroundColor).to.include({ model: 'rgb', valpha: 0.5 })
-        expect(out.backgroundColor.color).to.include.members([ 11, 88, 142 ])
+        expect(out.backgroundColor).to.
+                               equal(Color('#0B588E').alpha(0.5).hsl().string())
 
         out = testObject.getChartJsRow("Not time series",
                                        "#0B588E",
