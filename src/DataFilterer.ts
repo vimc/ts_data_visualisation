@@ -648,6 +648,7 @@ export class DataFilterer {
     public getChartJsRow(plotMode: string, valueColor: string,
                           label: string, data: number[], fill: any,
                           show: boolean = true): FilteredRow {
+console.log(64236)
 console.log(valueColor)
 console.log(Color(valueColor).alpha(0.5))
 
@@ -656,7 +657,7 @@ console.log(Color(valueColor).alpha(0.5))
             const fRow: FilteredRow =
                 {
                     // backgroundColor: Color(valueColor).alpha(0.5),
-                    backgroundColor: Color(valueColor),
+                    backgroundColor: valueColor,
                     borderColor: valueColor,
                     borderWidth: show ? 2 : 0.1,
                     data: data,
