@@ -652,12 +652,10 @@ console.log(64236)
 console.log(valueColor)
 console.log(Color(valueColor).alpha(0.5))
 
-
         if (plotMode === "Time series") {
             const fRow: FilteredRow =
                 {
-                    // backgroundColor: Color(valueColor).alpha(0.5),
-                    backgroundColor: valueColor,
+                    backgroundColor: Color(valueColor).alpha(0.5),
                     borderColor: valueColor,
                     borderWidth: show ? 2 : 0.1,
                     data: data,
