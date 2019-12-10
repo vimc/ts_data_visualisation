@@ -231,7 +231,8 @@ class DataVisModel {
     private modalFilterHelpMain
         = ko.observable(filterHelp);
     private modalMetricsHelpMain
-        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot()));
+        = ko.computed<string>(() => generatedMetricsHelp(this.currentPlot(),
+                                                         this.visbleMetricButtons()));
 
     private burdenOutcome = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {

@@ -659,15 +659,21 @@
                 </button>
             </div>
             <div class="modal-body">
+                <a data-bind="visible: showCross"/></a>
                 <h2>Cross-sectional</h2>
                 <p>This method can be thought of as the impact by calendar year, <i>e.g.</i> the number of cases prevented in a given year. While the resulting estimates are intuitively easy to understand, they fail to represent the long-term future impact of vaccination on individual disease risk. In addition, the impact estimates cannot be linked to specific vaccination activities.</p>
+                </a>
 
+                <a data-bind="visible: showCohort"/>
                 <h2>Lifetime</h2>
                 <p>This method can be thought of as the impact by birth year, <i>e.g.</i> the number of cases prevented in a cohort born in a given year over the course of their lifetime. Note that we calculate impact for birth cohorts from 2000 to 2030, and consider the lifetime up to 2100. A lifetime or cohort approach to presenting impact is appropriate for capturing the direct effects of vaccination in protecting the immunised individual. However, indirect effects of vaccination (acting via herd immunity) play out across the whole population.</p>
+                </a>
 
+                <a data-bind="visible: showYearOfVac"/>
                 <h2>Year of Vaccination</h2>
                 <p>This is the approach used by VIMC to estimate vaccine impact by year of vaccination. It can be used to easily determine the efficacy of a particular vaccination campaign.</p>
-
+                </a>
+                <hr>
                 <p>More in-depth descriptions of the science underlying the methods can be found at the
                 <a href="https://www.vaccineimpact.org/resources/" target="_blank">Vaccine Impact Modelling Consortium</a> website. In particular a in pre-print of the
                 <a href="https://medrxiv.org/cgi/content/short/19004358v1" target="_blank">first VIMC paper</a> and the associated

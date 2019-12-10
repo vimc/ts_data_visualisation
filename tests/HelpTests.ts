@@ -30,15 +30,15 @@ describe("filterHelp", () => {
 
     it("generatedMetricsHelp", () => {
 
-        const help = generatedMetricsHelp("Hello World!");
+        const help = generatedMetricsHelp("Hello World!",[]);
 
         expect(help).to.be.equal("Unkown plot type!");
 
-        const help_2 = generatedMetricsHelp("Impact");
+        const help_2 = generatedMetricsHelp("Impact",["dalys"]);
 
-        expect(help_2).to.have.string("Disease affected life years");
+        expect(help_2).to.have.string("disease affected life years");
 
-        const help_3 = generatedMetricsHelp("Time series");
+        const help_3 = generatedMetricsHelp("Time series",["deaths_rate"]);
 
         expect(help_3).to.have.string("The proportion of the vaccinated population who die");
 

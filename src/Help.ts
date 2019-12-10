@@ -23,12 +23,6 @@ export const filterHelp: string =
     "<p><h4>Touchstone</h4>The touchstone for which we show the data. This should usually be set to the latest touchstone, and selecting multiple touchstone is usually incorrect.</p>" +
     "<p><h4>Support Type</h4>Gavi vs non-Gavi vaccination programs</p>";
 
-const metricBaseHelp: string =
-    "<p><h4>Deaths</h4>The number of deaths corresponding to that year</p>" +
-    "<p><h4>DALYS</h4>Disease affected life years</p>" +
-    "<p><h4>Cases</h4>The number of cases corresponding to that year</p>" +
-    "<p><h4>FVPS</h4>Fully vaccinated persons</p>";
-
 export function generatedHelpTitle(plot: string): string {
     return plot + " plots";
 }
@@ -47,17 +41,44 @@ export function generatedHelpBody(plot: string): string {
     return "Unkown plot type!"
 }
 
-export function generatedMetricsHelp(plot: string) {
-    if (plot === "Impact") {
-        return metricBaseHelp;
+export function generatedMetricsHelp(plot: string,
+                                     visible: string[]) {
+    if ((plot !== "Impact") && (plot !== "Time series"))
+        return "Unkown plot type!"
+
+    let returnString: string  = "";
+
+    if (visible.includes('deaths')) {
+        returnString = returnString.concat("<p><h4>Deaths</h4>The number of deaths corresponding to that year.</p>")
+    }
+    if (visible.includes('deaths_averted')) {
+        returnString = returnString.concat("<p><h4>Deaths averted</h4>The number of deaths averted corresponding to that year.</p>")
+    }
+    if (visible.includes('dalys')) {
+        returnString = returnString.concat("<p><h4>DALYs</h4>The number of disease affected life years corresponding to that year.</p>")
+    }
+    if (visible.includes('dalys_averted')) {
+        returnString = returnString.concat("<p><h4>DALYs averted</h4>The number of disease affected life years averted corresponding to that year.</p>")
+    }
+    if (visible.includes('cases')) {
+        returnString = returnString.concat("<p><h4>Cases</h4>The number of cases corresponding to that year.</p>")
+    }
+    if (visible.includes('cases_averted')) {
+        returnString = returnString.concat("<p><h4>Cases averted</h4>The number of cases averted corresponding to that year.</p>")
+    }
+    if (visible.includes('fvps')) {
+        returnString = returnString.concat("<p><h4>FVPs</h4>Fully vaccinated persons</p>")
     }
 
-    if (plot === "Time series") {
-        return metricBaseHelp +
-        "<p><h4>Coverage</h4>The proportion of the population covered by the vaccine (between 0 an 1)</p>" +
-        "<p><h4>Deaths (rate)</h4>The proportion of the vaccinated population who die of the disease (between 0 an 1)</p>" +
-        "<p><h4>Cases (rate)</h4>The proportion of the vaccinated population who will become infected with the disease (between 0 an 1)</p>";
+    if (visible.includes('coverage')) {
+        returnString = returnString.concat("<p><h4>Coverage</h4>The proportion of the population covered by the vaccine (between 0 an 1).</p>")
+    }
+    if (visible.includes('deaths_rate')) {
+        returnString = returnString.concat("<p><h4>Deaths (rate)</h4>The proportion of the vaccinated population who die of the disease (between 0 an 1).</p>")
+    }
+    if (visible.includes('cases_rate')) {
+        returnString = returnString.concat("<p><h4>Cases (rate)</h4>The proportion of the vaccinated population who will become infected with the disease (between 0 an 1).</p>")
     }
 
-    return "Unkown plot type!"
+    return returnString
 }
