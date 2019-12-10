@@ -34,14 +34,24 @@ describe("filterHelp", () => {
 
         expect(help).to.be.equal("Unkown plot type!");
 
-        const help_2 = generatedMetricsHelp("Impact",["dalys"]);
+        const help_2 = generatedMetricsHelp("Impact",["deaths", "dalys", "cases", "fvps"]);
 
+        expect(help_2).to.have.string("The number of deaths corresponding ");
         expect(help_2).to.have.string("disease affected life years");
+        expect(help_2).to.have.string("The number of cases corresponding");
+        expect(help_2).to.have.string("Fully vaccinated persons");
 
-        const help_3 = generatedMetricsHelp("Time series",["deaths_rate"]);
+        const help_3 = generatedMetricsHelp("Time series",["deaths_averted","dalys_averted", "cases_averted"]);
 
-        expect(help_3).to.have.string("The proportion of the vaccinated population who die");
+        expect(help_3).to.have.string("The number of deaths averted");
+        expect(help_3).to.have.string("The number of disease affected life years averted");
+        expect(help_3).to.have.string("The number of cases averted");
 
+        const help_4 = generatedMetricsHelp("Time series",["coverage","deaths_rate", "cases_rate"]);
+
+        expect(help_4).to.have.string("The proportion of the population covered by the vaccine");
+        expect(help_4).to.have.string("the vaccinated population who die of the");
+        expect(help_4).to.have.string("vaccinated population who will become infected");
     })
 
 });
