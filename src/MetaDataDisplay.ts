@@ -9,7 +9,7 @@ function prettyDateAndTime(): string {
 function largest(max: number, option: string) {
     const plural: boolean = max > 1;
     return "The largest " + max + " " + toPlural(option, plural) +
-            (plural ? " are " : " is ") + "shown.\n";
+            (plural ? " are " : " is ") + "shown;<br>";
 }
 
 export function toPlural(noun: string, plural: boolean): string {
@@ -112,29 +112,29 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
                                 countrydict: { [code: string]: string },
                                 vacDict: { [code: string]: string }): string {
     if (chartOptions.plotType === "Impact") {
-        const metaStr: string = "This plot shows the " +
-                                chartOptions.metric.replace("_", " ") + " data for:\n" +
-                                prettyActivities(chartOptions.activityTypes) + ";\n" +
-                                prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";\n" +
-                                prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";\n" +
-                                prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
-                                prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ".\n" +
+        const metaStr: string = "<p>This plot shows the " +
+                                chartOptions.metric.replace("_", " ") + " data for:<br>" +
+                                prettyActivities(chartOptions.activityTypes) + ";<br>" +
+                                prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";<br>" +
+                                prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";<br>" +
+                                prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";<br>" +
+                                prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";<br>" +
                                 "The data is divided up by " +
-                                chartOptions.xAxis + " and " + chartOptions.yAxis + ".\n" +
-                                largest(chartOptions.maxPlot, chartOptions.xAxis) +
-                                "Plot produced at " + prettyDateAndTime();
+                                chartOptions.xAxis + " and " + chartOptions.yAxis + ";<br>" +
+                                largest(chartOptions.maxPlot, chartOptions.xAxis) + "<\p>"+
+                                "Plot produced at " + prettyDateAndTime() + "<\p>";
         return metaStr;
     } else if (chartOptions.plotType === "Time series") {
-        const metaStr: string = "This plot shows the " +
-                                chartOptions.metric.replace("_", " ") + " data for:\n" +
-                                prettyActivities(chartOptions.activityTypes) + ";\n" +
-                                 prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";\n" +
-                                 prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";\n" +
-                                 prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";\n" +
-                                 prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";\n" +
-                                 "Each line represents a " + chartOptions.yAxis + ";\n" +
-                                 largest(chartOptions.maxPlot, chartOptions.xAxis) +
-                                 "Plot produced at " + prettyDateAndTime();
+        const metaStr: string = "<p>This plot shows the " +
+                                chartOptions.metric.replace("_", " ") + " data for:<br>" +
+                                prettyActivities(chartOptions.activityTypes) + ";<br>" +
+                                 prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";<br>" +
+                                 prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";<br>" +
+                                 prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";<br>" +
+                                 prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";<br>" +
+                                 "Each line represents a " + chartOptions.yAxis + ";<br>" +
+                                 largest(chartOptions.maxPlot, chartOptions.xAxis) + "<\p>" +
+                                 "Plot produced at " + prettyDateAndTime() + "<\p>";
         return metaStr;
     } else {
         return "ERROR!";

@@ -442,6 +442,7 @@
 
                     <button class="btn btn-success" data-bind="click: exportPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportData">Export data as csv</button>
+                    <button class="float-bottom btn btn-success" data-toggle="modal" data-target="#metadataModal">Show Metadata</button>
                 </div>
             </div>
         </div>
@@ -557,25 +558,10 @@
                     </div>
                     <button class="btn btn-success" data-bind="click: exportTSPlot">Export plot as png</button>
                     <button class="btn btn-success" data-bind="click: exportTSData">Export data as csv</button>
+                    <button class="float-bottom btn btn-success" data-toggle="modal" data-target="#metadataModal">Show Metadata</button>
                 </div>
             </div>
         </div>
-
-        <div class="card" style="width: 50rem;">
-            <div class="card-header">
-                <a class="nav-link nav-parent collapsed"
-                   data-toggle="collapse"
-                   href="#showHideMeta"
-                   aria-expanded="false"
-                   aria-controls="showHideMeta">
-                    <span class="if-collapsed">Show description</span>
-                    <span class="if-not-collapsed">Hide description</span>
-                </a>
-            </div>
-            <div style="white-space: pre-wrap" id="showHideMeta" class="card-body collapse" data-bind="text: metaData"></div>
-        </div>
-
-
     </div>
 </div>
 </div>
@@ -646,7 +632,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Method Modal -->
 <div class="modal fade" id="methodModal" tabindex="-1" role="dialog" aria-labelledby="methodModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -677,6 +663,26 @@
                 <a href="https://medrxiv.org/cgi/content/short/19004358v1" target="_blank">first VIMC paper</a> and the associated
 
                  <a href="https://www.vaccineimpact.org/resources/VIMC_impact_estimates-03Sep19.html" target="_blank">technical description of the methods.</a> </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Meta-data modal -->
+<div class="modal fade" id="metadataModal" tabindex="-1" role="dialog" aria-labelledby="metadataModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="methodModalLabel">Plot Metadata</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span data-bind="html: metaData"></span>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
