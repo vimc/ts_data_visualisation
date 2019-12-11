@@ -4,7 +4,6 @@
     <meta charset="UTF-8"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/js/bootstrap4-toggle.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="styles.css"/>
@@ -307,18 +306,20 @@
                                      css: {active: yearMethod() == 'year_of_vac'}, visible: showYearOfVac">Year of vaccination
                                     </button>
                                 </div>
+                                <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
+                                    <i class="fa fa-question-circle"></i>
+                                </button>
                             </div>
                         </div>
-                        <div>
-                            <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s" data-off="All Ages"
-                                   data-bind="checked: allAges, visible: showAgeGroupCheck, click: () => debug('check box')">
+
+                       <div class="btn-group mt-1" role="group">
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('all'),
+                             css: {active: ageGroup() == 'all'}">All Ages
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('under5'),
+                             css: {active: ageGroup() == 'under5'}">Under 5s
+                            </button>
                         </div>
-<!--                         <div>
-                            <input data-bind="ageGroupToggleOn: active" type="checkbox" data-toggle="toggle"/>
-                        </div> -->
-                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
-                            <i class="fa fa-question-circle"></i>
-                        </button>
                     </form>
                     <hr/>
                     <form class="mb-5">
@@ -360,55 +361,52 @@
                             <i class="fa fa-question-circle"></i>
                         </button>
                         </div>
-
                     </form>
-
-                    <div class ="btn-toolbar">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-primary active btn-sm"
-                                    data-bind="click: () => changeBurden('deaths'),
-                                               css: {active: humanReadableBurdenOutcome() == 'deaths'},
-                                               visible: visbleMetricButtons().includes('deaths')">Deaths
-                            </button>
-                            <button type="button" class="btn btn-primary active btn-sm"
-                                    data-bind="click: () => changeBurden('deaths_averted'),
-                                                css: {active: humanReadableBurdenOutcome() == 'deaths_averted'},
-                                                visible: visbleMetricButtons().includes('deaths_averted')">Deaths averted
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('dalys'),
-                                                css: {active: humanReadableBurdenOutcome() == 'dalys'},
-                                                visible: visbleMetricButtons().includes('dalys')">DALYs
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('dalys_averted'),
-                                               css: {active: humanReadableBurdenOutcome() == 'dalys_averted'},
-                                               visible: visbleMetricButtons().includes('dalys_averted')">DALYs averted
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('cases'),
-                                               css: {active: humanReadableBurdenOutcome() == 'cases'},
-                                               visible: visbleMetricButtons().includes('cases')">Cases
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('cases_averted'),
-                                               css: {active: humanReadableBurdenOutcome() == 'cases_averted'},
-                                               visible: visbleMetricButtons().includes('cases_averted')">Cases averted
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('fvps'),
-                                               css: {active: humanReadableBurdenOutcome() == 'fvps'},
-                                               enable: yearMethod() == 'year_of_vac',
-                                               visible: visbleMetricButtons().includes('fvps')">FVPS
+                    <form class="mb-5">
+                        <div class="form-group row">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary active btn-sm"
+                                        data-bind="click: () => changeBurden('deaths'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'deaths'},
+                                                   visible: visbleMetricButtons().includes('deaths')">Deaths
+                                </button>
+                                <button type="button" class="btn btn-primary active btn-sm"
+                                        data-bind="click: () => changeBurden('deaths_averted'),
+                                                    css: {active: humanReadableBurdenOutcome() == 'deaths_averted'},
+                                                    visible: visbleMetricButtons().includes('deaths_averted')">Deaths averted
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('dalys'),
+                                                    css: {active: humanReadableBurdenOutcome() == 'dalys'},
+                                                    visible: visbleMetricButtons().includes('dalys')">DALYs
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('dalys_averted'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'dalys_averted'},
+                                                   visible: visbleMetricButtons().includes('dalys_averted')">DALYs averted
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('cases'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'cases'},
+                                                   visible: visbleMetricButtons().includes('cases')">Cases
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('cases_averted'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'cases_averted'},
+                                                   visible: visbleMetricButtons().includes('cases_averted')">Cases averted
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('fvps'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'fvps'},
+                                                   enable: yearMethod() == 'year_of_vac',
+                                                   visible: visbleMetricButtons().includes('fvps')">FVPS
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-info btn-circle pull-left" data-toggle="modal" data-target="#helpMetricModal">
+                                            <i class="fa fa-question-circle"></i>
                             </button>
                         </div>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-info btn-circle pull-left" data-toggle="modal" data-target="#helpMetricModal">
-                                        <i class="fa fa-question-circle"></i>
-                        </button>
-                    </div>
-
+                    </form>
 
                     <p style="font-weight:bold;color:red"
                         data-bind="text: warningMessage, visible: showWarning">
@@ -464,15 +462,19 @@
                                      css: {active: yearMethod() == 'year_of_vac'}, visible: showYearOfVac">Year of vaccination
                                     </button>
                                 </div>
+                                 <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
+                                    <i class="fa fa-question-circle"></i>
+                                </button>
                             </div>
                         </div>
-                        <div>
-                            <input type="checkbox" checked data-toggle="toggle" data-on="Under 5s"
-                                   data-off="All Ages"data-bind="checked: allAges, visible: showAgeGroupCheck">
+                       <div class="btn-group mt-1" role="group">
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('all'),
+                             css: {active: ageGroup() == 'all'}">All Ages
+                            </button>
+                            <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('under5'),
+                             css: {active: ageGroup() == 'under5'}">Under 5s
+                            </button>
                         </div>
-                        <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#methodModal">
-                            <i class="fa fa-question-circle"></i>
-                        </button>
                     </form>
                     <hr/>
                     <form class="mb-5">
@@ -500,55 +502,51 @@
                         </button>
                     </div>
                     </form>
-                    <div class ="btn-toolbar">
-                        <div class="btn-group mt-1 mb-6" role="group">
-                            <button type="button" class="btn btn-primary active btn-sm"
-                                    data-bind="click: () => changeBurden('deaths'),
-                                               css: {active: humanReadableBurdenOutcome() == 'deaths'},
-                                               visible: visbleMetricButtons().includes('deaths')">Deaths
-                            </button>
-                            <button type="button" class="btn btn-primary active btn-sm"
-                                    data-bind="click: () => changeBurden('deaths_averted'),
-                                                css: {active: humanReadableBurdenOutcome() == 'deaths_averted'},
-                                                visible: visbleMetricButtons().includes('deaths_averted')">Deaths averted
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('dalys'),
-                                                css: {active: humanReadableBurdenOutcome() == 'dalys'},
-                                                visible: visbleMetricButtons().includes('dalys')">DALYs
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('dalys_averted'),
-                                               css: {active: humanReadableBurdenOutcome() == 'dalys_averted'},
-                                               visible: visbleMetricButtons().includes('dalys_averted')">DALYs averted
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('cases'),
-                                               css: {active: humanReadableBurdenOutcome() == 'cases'},
-                                               visible: visbleMetricButtons().includes('cases')">Cases
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('cases_averted'),
-                                               css: {active: humanReadableBurdenOutcome() == 'cases_averted'},
-                                               visible: visbleMetricButtons().includes('cases_averted')">Cases averted
-                            </button>
-                            <button type="button" class="btn btn-primary"
-                                    data-bind="click: () => changeBurden('fvps'),
-                                               css: {active: humanReadableBurdenOutcome() == 'fvps'},
-                                               enable: yearMethod() == 'year_of_vac',
-                                               visible: visbleMetricButtons().includes('fvps')">FVPS
-                            </button>
-                            <button class="btn btn-warning btn-primary" type="button"
-                                    data-bind="click: () => changeBurden('coverage'),
-                                               css: {active: humanReadableBurdenOutcome() == 'coverage'},
-                                               enable: yearMethod() == 'year_of_vac',
-                                               visible: visbleMetricButtons().includes('coverage')">Coverage
+                    <form class="mb-5">
+                        <div class="form-group row">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary active btn-sm"
+                                        data-bind="click: () => changeBurden('deaths'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'deaths'},
+                                                   visible: visbleMetricButtons().includes('deaths')">Deaths
+                                </button>
+                                <button type="button" class="btn btn-primary active btn-sm"
+                                        data-bind="click: () => changeBurden('deaths_averted'),
+                                                    css: {active: humanReadableBurdenOutcome() == 'deaths_averted'},
+                                                    visible: visbleMetricButtons().includes('deaths_averted')">Deaths averted
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('dalys'),
+                                                    css: {active: humanReadableBurdenOutcome() == 'dalys'},
+                                                    visible: visbleMetricButtons().includes('dalys')">DALYs
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('dalys_averted'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'dalys_averted'},
+                                                   visible: visbleMetricButtons().includes('dalys_averted')">DALYs averted
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('cases'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'cases'},
+                                                   visible: visbleMetricButtons().includes('cases')">Cases
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('cases_averted'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'cases_averted'},
+                                                   visible: visbleMetricButtons().includes('cases_averted')">Cases averted
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        data-bind="click: () => changeBurden('fvps'),
+                                                   css: {active: humanReadableBurdenOutcome() == 'fvps'},
+                                                   enable: yearMethod() == 'year_of_vac',
+                                                   visible: visbleMetricButtons().includes('fvps')">FVPS
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-info btn-circle pull-left" data-toggle="modal" data-target="#helpMetricModal">
+                                            <i class="fa fa-question-circle"></i>
                             </button>
                         </div>
-                    </div>
-                    <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#helpMetricModal">
-                        <i class="fa fa-question-circle"></i>
-                    </button>
+                    </form>
 
                     <p style="font-weight:bold;color:red"
                         data-bind="text: warningMessage, visible: showWarning">

@@ -7,21 +7,21 @@ import {fakeCountryDict, countries, touchstones, activityTypes, diseases, diseas
 // Impact data
 for (let i in touchstones) {
     var tsName = touchstones[i];
-    var fileName0 = "data/test/impactData_" + tsName + "_method_0.json";
+    var fileName0 = "data/test/impactData_" + tsName + "_year_of_vac.json";
     fs.writeFile(fileName0, generateData(tsName), function (err) {
         if (err) {
             return console.log(err);
         }
     });
 
-    var fileName1 = "data/test/impactData_" + tsName + "_method_1.json";
+    var fileName1 = "data/test/impactData_" + tsName + "_cross.json";
         fs.writeFile(fileName1, generateData(tsName), function (err) {
         if (err) {
             return console.log(err);
         }
     });
 
-    var fileName2 = "data/test/impactData_" + tsName + "_method_2.json";
+    var fileName2 = "data/test/impactData_" + tsName + "_cohort.json";
     fs.writeFile(fileName2, generateData(tsName), function (err) {
         if (err) {
             return console.log(err);
@@ -79,6 +79,25 @@ writeToFile("data/test/gavi77.json", countryGroups.gavi77);
 writeToFile("data/test/pine5.json", countryGroups.pine);
 writeToFile("data/test/touchstones.json", touchstones);
 writeToZipFile("data/test/data_set.zip", 100);
+writeToFile("data/test/metricsAndOptions.json",
+            { "mode": "private",
+              "metrics": ["deaths_averted",
+                          "deaths_averted_rate",
+                          "cases_averted",
+                          "cases_averted_rate",
+                          "dalys_averted",
+                          "dalys_averted_rate"],
+              "methods": ["cross", "cohort", "year_of_vac"],
+              "filterOptions": ["country",
+                                "year",
+                                "touchstone",
+                                "activity_type",
+                                "support_type",
+                                "vaccine"],
+              "otherOptions": ["continent", "disease", "region"],
+              "secretOptions": {"is_focal": true}
+            }
+           );
 
 
 function generateData(touchstone) {
