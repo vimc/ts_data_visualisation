@@ -1,8 +1,8 @@
+import * as Color from "color";
 import {FilteredRow} from "./FilteredRow";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetricsAndOptions} from "./MetricsAndOptions";
 import {niceColours} from "./PlotColours";
-import * as Color from "color";
 
 interface SplitImpactData {
     [key: string]: ImpactDataRow[];
@@ -28,28 +28,29 @@ export interface DataFiltererOptions {
     supportType: string[];
     cumulative: boolean;
     ageGroup: string;
+    plotUncertainity: boolean;
 }
 
 export function upperLowerNames(metric: string): { [key: string]: string } {
     switch (metric) {
         case "dalys":
-            return({low: "dalys_lo", high:"dalys_hi"});
+            return({low: "dalys_lo", high: "dalys_hi"});
 
         case "dalys_averted":
-            return({low: "dalys_av_lo", high:"dalys_av_hi"});
+            return({low: "dalys_av_lo", high: "dalys_av_hi"});
 
         case "dalys_no_vac":
-            return({low: "dalys_nv_lo", high:"dalys_nv_hi"});
+            return({low: "dalys_nv_lo", high: "dalys_nv_hi"});
 
         case "deaths":
-            return({low: "deaths_lo", high:"deaths_hi"});
+            return({low: "deaths_lo", high: "deaths_hi"});
 
         case "deaths_averted":
-            return({low: "deaths_av_lo", high:"deaths_av_hi"});
+            return({low: "deaths_av_lo", high: "deaths_av_hi"});
 
         case "deaths_no_vac":
-            return({low: "deaths_nv_lo", high:"deaths_nv_hi"});
-        
+            return({low: "deaths_nv_lo", high: "deaths_nv_hi"});
+
         default:
             console.log("Unexpected metric", metric);
             return({});
@@ -143,7 +144,6 @@ export class DataFilterer {
                     this.filterByxAxis(isTimeSeries ? -1 : maxCompare,  xAxis,
                                        filterOptions.metric, filtData);
 
-        //const temp: UniqueData = this.filterByxAxis(-1, "year", top, filtData);
         // these are the values that go along the x-axis
         const xAxisVals: string[] = temp.xAxisVals;
         const filteredData: ImpactDataRow[] = temp.data;
@@ -166,12 +166,13 @@ export class DataFilterer {
         for (const yAxisVal of yAxisVars) {
             // if we have uncertainity grab the upper and lower bounds
             if ((uncertainity.low != null) && (uncertainity.low != null) &&
-                (filterOptions.plotType === "Time series")) {
-                const fRow = this.getDataRow(organisedData, yAxisVal, xAxisVals,
-                                             filterOptions, plotColours,
-                                             niceColours, uncertainity.low,
-                                             "low");
-                datasets.push(fRow);
+                (filterOptions.plotType === "Time series") &&
+                filterOptions.plotUncertainity) {
+                const fRowLo = this.getDataRow(organisedData, yAxisVal, xAxisVals,
+                                               filterOptions, plotColours,
+                                               niceColours, uncertainity.low,
+                                               "low");
+                datasets.push(fRowLo);
             }
 
             const fRow = this.getDataRow(organisedData, yAxisVal, xAxisVals,
@@ -181,12 +182,13 @@ export class DataFilterer {
             datasets.push(fRow);
 
             if ((uncertainity.low != null) && (uncertainity.low != null) &&
-                (filterOptions.plotType === "Time series")) {
-                const fRow = this.getDataRow(organisedData, yAxisVal, xAxisVals,
-                                             filterOptions, plotColours,
-                                             niceColours, uncertainity.high,
-                                             "high");
-                datasets.push(fRow);
+                (filterOptions.plotType === "Time series") &&
+                filterOptions.plotUncertainity) {
+                const fRowHi = this.getDataRow(organisedData, yAxisVal, xAxisVals,
+                                               filterOptions, plotColours,
+                                               niceColours, uncertainity.high,
+                                               "high");
+                datasets.push(fRowHi);
             }
         }
         // while we're here we might as well calculate the sum for each
@@ -593,8 +595,8 @@ export class DataFilterer {
     *
     * @returns Nothing, modifies colourDict.
     */
-    private getColour(key: string, colourDict: { [key: string]: string },
-                      bonusColours: { [key: string]: string }): void {
+    public getColour(key: string, colourDict: { [key: string]: string },
+                     bonusColours: { [key: string]: string }): void {
         // check if this key is in the dictionary...
         if (!(key in colourDict)) { // ...if not try to find a new colour
             console.log("Warning: " + key + " does not have a default colour");
@@ -619,11 +621,11 @@ export class DataFilterer {
     }
 
     public getDataRow(organisedData: ArrangedSplitImpactData, yAxisVal: string,
-                       xAxisVals: string[], filterOptions: DataFiltererOptions,
-                       plotColours: { [p: string]: string },
-                       niceColours: { [p: string]: string },
-                       metric: string,
-                       pos: string) {
+                      xAxisVals: string[], filterOptions: DataFiltererOptions,
+                      plotColours: { [p: string]: string },
+                      extraColours: { [p: string]: string },
+                      metric: string,
+                      pos: string) {
         let summedMetricByYAxis: number[] =
             this.reduceSummary(organisedData, yAxisVal, xAxisVals,
                                metric);
@@ -636,21 +638,20 @@ export class DataFilterer {
         }
 
         // make sure we have colours for each yAxisVal
-        this.getColour(yAxisVal, plotColours, niceColours);
+        this.getColour(yAxisVal, plotColours, extraColours);
         const fRow = this.getChartJsRow(filterOptions.plotType,
                                         plotColours[yAxisVal], yAxisVal,
                                         summedMetricByYAxis,
-                                        (pos == "low") ? "+2" : false,
-                                        (pos == "mid"));
+                                        (pos === "low") ? "+2" : false,
+                                        (pos === "mid"));
         return fRow;
     }
 
     public getChartJsRow(plotMode: string, valueColor: string,
-                          label: string, data: number[], fill: any,
-                          show: boolean = true): FilteredRow {
+                         label: string, data: number[], fill: any,
+                         show: boolean = true): FilteredRow {
         if (plotMode === "Time series") {
-            const fRow: FilteredRow =
-                {
+            const fRow: FilteredRow = {
                     backgroundColor: Color(valueColor).alpha(0.5).hsl().string(),
                     borderColor: valueColor,
                     borderWidth: show ? 2 : 0.1,
@@ -666,9 +667,8 @@ export class DataFilterer {
                 };
             return fRow;
         } else {
-            const fRow: FilteredRow = 
-                {
-                    backgroundColor:valueColor,
+            const fRow: FilteredRow = {
+                    backgroundColor: valueColor,
                     data: data,
                     label: label,
                 };

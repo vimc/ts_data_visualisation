@@ -199,7 +199,8 @@ describe("DataFilterer", () => {
             plotType: "Impact",
             supportType: ["gavi"],
             cumulative: true,
-            ageGroup: "under5"
+            ageGroup: "under5",
+            plotUncertainity: true,
         }
         let fakeMetricAndOptions: MetricsAndOptions = {
             mode: "public",
@@ -245,30 +246,6 @@ describe("DataFilterer", () => {
         out = upperLowerNames("BAD STRING");
         expect(out).to.include({});
     })
-
-    // it("getDataRow", () => {
-    //     let out = testObject.getDataRow("dalys");
-
-    //     expect(out).to.include({low: "dalys_lo", high:"dalys_hi"});
-
-    //     out = upperLowerNames("dalys_averted");
-    //     expect(out).to.include({low: "dalys_av_lo", high:"dalys_av_hi"});
-
-    //     out = upperLowerNames("dalys_no_vac");
-    //     expect(out).to.include({low: "dalys_nv_lo", high:"dalys_nv_hi"});
-
-    //     out = upperLowerNames("deaths");
-    //     expect(out).to.include({low: "deaths_lo", high:"deaths_hi"});
-
-    //     out = upperLowerNames("deaths_averted");
-    //     expect(out).to.include({low: "deaths_av_lo", high:"deaths_av_hi"});
-
-    //     out = upperLowerNames("deaths_no_vac");
-    //     expect(out).to.include({low: "deaths_nv_lo", high:"deaths_nv_hi"});
-
-    //     out = upperLowerNames("BAD STRING");
-    //     expect(out).to.include({});
-    // })
 
     it("getDataRow", () => {
         let out = testObject.getChartJsRow("Time series",
