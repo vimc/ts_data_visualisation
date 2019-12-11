@@ -102,7 +102,8 @@ class DataVisModel {
         ko.observable(metricsAndOptions.methods.includes("cross"));
     private showCohort =
         ko.observable(metricsAndOptions.methods.includes("cohort"));
-
+    private showUncertainty =
+        ko.observable(metricsAndOptions.otherOptions.includes("uncertainty"));
     private showSidebar = ko.observable(true);
 
     private yearFilter = ko.observable(new RangeFilter({
@@ -190,6 +191,7 @@ class DataVisModel {
     private yAxis = ko.observable<string>("disease");
     private cumulativePlot = ko.observable<boolean>(false);
     private ageGroup = ko.observable<string>("all");
+    private uncertaintyChecked = ko.observable<boolean>(false);
 
     private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
     // if we end up with more datasets move this to arrays of ko strings
@@ -261,6 +263,13 @@ class DataVisModel {
 
     private plotTitle = ko.observable(this.defaultTitle());
 
+    private plotUncertainty = ko.computed<boolean>(() => {
+      // in order to show uncertainty we must have...
+      return ((this.uncertaintyChecked()) &&            // ...checked the option...
+              (this.currentPlot() === "Time series") && // ...be on a time series...
+              (this.yAxis() === "disease"));            // ...be stratifying by disease
+    }, this);
+
     private yAxisTitle = ko.computed(() => {
         switch (this.humanReadableBurdenOutcome()) {
             case "deaths":
@@ -306,6 +315,7 @@ class DataVisModel {
             yAxisTitle: this.yAxisTitle(),
             yearHigh: this.yearFilter().selectedHigh(), // upper bound on yeat
             yearLow: this.yearFilter().selectedLow(), // lower bound on year
+            plotUncertainity: this.plotUncertainty(),
         };
     }, this).extend({rateLimit: 250});
 

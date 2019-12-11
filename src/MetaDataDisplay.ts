@@ -121,7 +121,7 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
                                 prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";<br>" +
                                 "The data is divided up by " +
                                 chartOptions.xAxis + " and " + chartOptions.yAxis + ";<br>" +
-                                largest(chartOptions.maxPlot, chartOptions.xAxis) + "<\p>"+
+                                largest(chartOptions.maxPlot, chartOptions.xAxis) + "<\p>" +
                                 "Plot produced at " + prettyDateAndTime() + "<\p>";
         return metaStr;
     } else if (chartOptions.plotType === "Time series") {
