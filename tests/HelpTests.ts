@@ -47,7 +47,7 @@ describe("filterHelp", () => {
         expect(help_3).to.have.string("The number of disease affected life years averted");
         expect(help_3).to.have.string("The number of cases averted");
 
-        const help_4 = generatedMetricsHelp("Time series",["coverage","deaths_rate", "cases_rate"]);
+        const help_4 = generatedMetricsHelp("Time series",["coverage","deaths_averted_rate", "cases_averted_rate"]);
 
         expect(help_4).to.have.string("The proportion of the population covered by the vaccine");
         expect(help_4).to.have.string("the vaccinated population who die of the");

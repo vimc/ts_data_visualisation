@@ -255,6 +255,12 @@ class DataVisModel {
       case "coverage":
         this.cumulativePlot(false); // this might not be prefered behaviour, if a user goes deaths
         return "coverage";      // -> coverage -> death it will set cumulative to false
+      case "deathsRate":
+        this.cumulativePlot(false); // this might not be prefered behaviour, if a user goes deaths
+        return "deaths_averted_rate";      // -> coverage -> death it will set cumulative to false
+      case "casesRate":
+        this.cumulativePlot(false); // this might not be prefered behaviour, if a user goes deaths
+        return "cases_averted_rate";      // -> coverage -> death it will set cumulative to false
       default:
         this.cumulativePlot(false);
         return "deaths_averted";
