@@ -206,10 +206,10 @@ describe("DataFilterer", () => {
         }
         let fakeMetricAndOptions: MetricsAndOptions = {
             mode: "public",
-            metrics: ["Hello", "world!"],
-            methods: ["deaths", "deaths_averted"],
-            filterOptions: ["Another", "array"],
-            otherOptions: ["Yet", "another", "array"]
+            metrics: ["deaths", "deaths_averted", "deaths_averted_rate"],
+            methods: ["cross", "cohort"],
+            filterOptions: ["country", "year"],
+            otherOptions: ["continent"]
         }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an
@@ -221,8 +221,11 @@ describe("DataFilterer", () => {
         fakeOptions.xAxis = "year";
         fakeOptions.yAxis = "continent";
 
-        out = testObject.calculateMean(fakeOptions, fakeImpactData,
-                                       fakeMetricAndOptions, plotColours);
+        out = testObject.filterData(fakeOptions, fakeImpactData,
+                                    fakeMetricAndOptions, plotColours);
+
+        // out = testObject.calculateMean(fakeOptions, fakeImpactData,
+        //                                fakeMetricAndOptions, plotColours);
     })
 
     it("upperLowerNames", () => {
