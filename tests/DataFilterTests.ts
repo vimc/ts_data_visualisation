@@ -208,8 +208,10 @@ describe("DataFilterer", () => {
             mode: "public",
             metrics: ["deaths", "deaths_averted", "deaths_averted_rate"],
             methods: ["cross", "cohort"],
-            filterOptions: ["country", "year"],
-            otherOptions: ["continent"]
+            dualOptions: ["country", "year"],
+            stratOptions: ["continent"],
+            filterOptions: [],
+            uiVisible: []
         }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an

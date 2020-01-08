@@ -134,9 +134,9 @@ export class DataFilterer {
                     impactData: ImpactDataRow[],
                     metsAndOpts: MetricsAndOptions,
                     plotColours: { [p: string]: string }): FilteredData {
-    const averaged_metrics = ["coverage", "deaths_averted_rate",
-                              "cases_averted_rate", "dalys_averted_rate"];
-    const averaged = averaged_metrics.includes(filterOptions.metric);
+    const averagedMetrics = ["coverage", "deaths_averted_rate",
+                             "cases_averted_rate", "dalys_averted_rate"];
+    const averaged = averagedMetrics.includes(filterOptions.metric);
     if (averaged) {
       return this.calculateMean(filterOptions, impactData, metsAndOpts, plotColours);
     } else {
@@ -502,6 +502,9 @@ export class DataFilterer {
   public filterByAll(filterOptions: DataFiltererOptions,
                      metsAndOpts: MetricsAndOptions,
                      impactData: ImpactDataRow[]): ImpactDataRow[] {
+    // we can filter by dualOptions and filterOptions
+    const usedFilters
+                    = metsAndOpts.dualOptions.concat(metsAndOpts.filterOptions);
     let filtData = impactData;
     // filter by secret options
     if (metsAndOpts.secretOptions) {
@@ -511,42 +514,42 @@ export class DataFilterer {
       }
     }
     // filter so that support = gavi
-    if (metsAndOpts.filterOptions.indexOf("support_type") > -1) {
+    if (usedFilters.indexOf("support_type") > -1) {
       filtData = this.filterIsInList(filtData, "support_type",
                        filterOptions.supportType);
     }
     // filter by years
-    if (metsAndOpts.filterOptions.indexOf("year") > -1) {
+    if (usedFilters.indexOf("year") > -1) {
       filtData = this.filterByNumericBetween(filtData, "year",
                  filterOptions.yearLow, filterOptions.yearHigh);
     }
     // filter by touchstone
-    if (metsAndOpts.filterOptions.indexOf("touchstone") > -1) {
+    if (usedFilters.indexOf("touchstone") > -1) {
       filtData = this.filterIsInList(filtData, "touchstone",
                        filterOptions.selectedTouchstones);
     }
     // filter by activity type
-    if (metsAndOpts.filterOptions.indexOf("activity_type") > -1) {
+    if (usedFilters.indexOf("activity_type") > -1) {
       filtData = this.filterIsInList(filtData, "activity_type",
                        filterOptions.activityTypes);
     }
     // filter by country
-    if (metsAndOpts.filterOptions.indexOf("country") > -1) {
+    if (usedFilters.indexOf("country") > -1) {
       filtData = this.filterIsInList(filtData, "country",
                        filterOptions.selectedCountries);
     }
     // filter by vaccine
-    if (metsAndOpts.filterOptions.indexOf("vaccine") > -1) {
+    if (usedFilters.indexOf("vaccine") > -1) {
       filtData = this.filterIsInList(filtData, "vaccine",
                        filterOptions.selectedVaccines);
     }
     // filter by age group
-    if (metsAndOpts.filterOptions.indexOf("age_group") > -1) {
+    if (usedFilters.indexOf("age_group") > -1) {
       filtData = this.filterByIsEqualTo(filtData, "age_group",
                         filterOptions.ageGroup);
     }
     // filter by disease
-    if (metsAndOpts.filterOptions.indexOf("disease") > -1) {
+    if (usedFilters.indexOf("disease") > -1) {
       filtData = this.filterIsInList(filtData, "disease",
                        filterOptions.selectedDiseases);
     }

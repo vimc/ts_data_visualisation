@@ -103,7 +103,7 @@ class DataVisModel {
   private showCohort =
     ko.observable(metricsAndOptions.methods.includes("cohort"));
   private showUncertainty =
-    ko.observable(metricsAndOptions.otherOptions.includes("uncertainty"));
+    ko.observable(metricsAndOptions.uiVisible.includes("uncertainty"));
   private showSidebar = ko.observable(true);
 
   private yearFilter = ko.observable(new RangeFilter({
@@ -113,66 +113,13 @@ class DataVisModel {
     selectedHigh: 2018,
     selectedLow: 2000,
   }));
-  private showYearFilter =
-      ko.observable(metricsAndOptions.filterOptions.includes("year"));
-
-  private activityFilter = ko.observable(new ListFilter({
-    name: "Activity",
-    options: activityTypes,
-  }));
-  private showActivityFilter =
-      ko.observable(metricsAndOptions.filterOptions.includes("activity_type"));
-
-  private countryFilter = ko.observable(new CountryFilter({
-    groups: countryGroups,
-    humanNames: countryDict,
-    name: "Country",
-    options: countries,
-    selected: countryGroups["pine"],
-  }));
-  private showCountryFilter =
-      ko.observable(metricsAndOptions.filterOptions.includes("country"));
-
-  private vaccineDiseaseFilter = ko.observable(new DiseaseFilter({
-    name: "Disease",
-    vaccineFilters: diseases.map(createVaccineFilterForDisease),
-  }));
-  private showVaccineFilter =
-      ko.observable(metricsAndOptions.filterOptions.includes("vaccine"));
-
-  private diseaseFilter = ko.observable(new ListFilter({
-    name: "Disease",
-    options: diseases,
-  }));
-  private showDiseaseFilter =
-      ko.observable(metricsAndOptions.filterOptions.includes("disease"));
-
-  private touchstoneFilter = ko.observable(new ListFilter({
-    name: "Touchstone",
-    options: touchstones,
-    selected: [initTouchstone],
-  }));
-  private showTouchstoneFilter =
-      ko.observable(metricsAndOptions.filterOptions.includes("touchstone"));
-
-  private supportFilter = ko.observable(new ListFilter({
-    name: "Gavi support",
-    humanNames: { gavi : "yes", other : "no" },
-    options: supportTypes,
-    selected: supportTypes.slice(0, 1),
-  }));
-  private showSupportFilter =
-      ko.observable(metricsAndOptions.filterOptions.includes("support_type"));
-
-  private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
-  private showAgeGroupCheck = ko.observable(metricsAndOptions.otherOptions.includes("age_group"));
 
   private xAxisOptions =
-         metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
+         metricsAndOptions.dualOptions.concat(metricsAndOptions.stratOptions);
 
   private yAxisOptions = ko.computed(() => {
     const catOptions =
-         metricsAndOptions.filterOptions.concat(metricsAndOptions.otherOptions);
+         metricsAndOptions.dualOptions.concat(metricsAndOptions.stratOptions);
     catOptions.push("none");
     switch (this.currentPlot()) {
       case "Impact":
@@ -183,6 +130,63 @@ class DataVisModel {
         return catOptions;
     }
   }, this);
+
+  private filterOptions =
+    metricsAndOptions.dualOptions.concat(metricsAndOptions.filterOptions);
+
+  private showYearFilter =
+      ko.observable(this.filterOptions.includes("year"));
+
+  private activityFilter = ko.observable(new ListFilter({
+    name: "Activity",
+    options: activityTypes,
+  }));
+  private showActivityFilter =
+      ko.observable(this.filterOptions.includes("activity_type"));
+
+  private countryFilter = ko.observable(new CountryFilter({
+    groups: countryGroups,
+    humanNames: countryDict,
+    name: "Country",
+    options: countries,
+    selected: countryGroups["pine"],
+  }));
+  private showCountryFilter =
+      ko.observable(this.filterOptions.includes("country"));
+
+  private vaccineDiseaseFilter = ko.observable(new DiseaseFilter({
+    name: "Disease",
+    vaccineFilters: diseases.map(createVaccineFilterForDisease),
+  }));
+  private showVaccineFilter =
+      ko.observable(this.filterOptions.includes("vaccine"));
+
+  private diseaseFilter = ko.observable(new ListFilter({
+    name: "Disease",
+    options: diseases,
+  }));
+  private showDiseaseFilter =
+      ko.observable(this.filterOptions.includes("disease"));
+
+  private touchstoneFilter = ko.observable(new ListFilter({
+    name: "Touchstone",
+    options: touchstones,
+    selected: [initTouchstone],
+  }));
+  private showTouchstoneFilter =
+      ko.observable(this.filterOptions.includes("touchstone"));
+
+  private supportFilter = ko.observable(new ListFilter({
+    name: "Gavi support",
+    humanNames: { gavi : "yes", other : "no" },
+    options: supportTypes,
+    selected: supportTypes.slice(0, 1),
+  }));
+  private showSupportFilter =
+      ko.observable(this.filterOptions.includes("support_type"));
+
+  private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
+  private showAgeGroupToggle = ko.observable<boolean>(metricsAndOptions.filterOptions.includes("age_group"));
 
   private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
   private maxBars = ko.observable<number>(19);
