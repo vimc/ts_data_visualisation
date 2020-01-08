@@ -52,7 +52,7 @@ export function upperLowerNames(metric: string): { [key: string]: string } {
       return({low: "deaths_nv_lo", high: "deaths_nv_hi"});
 
     case "cases":
-      return({low: "dcases_lo", high: "cases_hi"});
+      return({low: "cases_lo", high: "cases_hi"});
 
     case "cases_averted":
       return({low: "cases_av_lo", high: "cases_av_hi"});
@@ -68,7 +68,7 @@ export function upperLowerNames(metric: string): { [key: string]: string } {
       return({});
 
     default:
-      console.log("Unexpected metric", metric);
+      console.log("Unexpected metric " + metric);
       return({});
   }
 }
