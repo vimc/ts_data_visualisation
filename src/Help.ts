@@ -72,10 +72,10 @@ export function generatedMetricsHelp(plot: string, visible: string[]) {
   if (visible.includes("coverage")) {
     returnString = returnString.concat("<p><h4>Coverage</h4>The proportion of the population covered by the vaccine (between 0 an 1).</p>");
   }
-  if (visible.includes("deaths_rate")) {
+  if (visible.includes("deaths_averted_rate")) {
     returnString = returnString.concat("<p><h4>Deaths (rate)</h4>The proportion of the vaccinated population who die of the disease (between 0 an 1).</p>");
   }
-  if (visible.includes("cases_rate")) {
+  if (visible.includes("cases_averted_rate")) {
     returnString = returnString.concat("<p><h4>Cases (rate)</h4>The proportion of the vaccinated population who will become infected with the disease (between 0 an 1).</p>");
   }
 

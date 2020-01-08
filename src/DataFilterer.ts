@@ -51,8 +51,24 @@ export function upperLowerNames(metric: string): { [key: string]: string } {
     case "deaths_no_vac":
       return({low: "deaths_nv_lo", high: "deaths_nv_hi"});
 
+    case "cases":
+      return({low: "cases_lo", high: "cases_hi"});
+
+    case "cases_averted":
+      return({low: "cases_av_lo", high: "cases_av_hi"});
+
+    case "cases_no_vac":
+      return({low: "cases_nv_lo", high: "cases_nv_hi"});
+
+    case "coverage":
+    case "deathsRate":
+    case "casesRate":
+    case "dalysRate":
+    case "fvps":
+      return({});
+
     default:
-      console.log("Unexpected metric", metric);
+      console.log("Unexpected metric " + metric);
       return({});
   }
 }
@@ -114,6 +130,20 @@ export class DataFilterer {
     return Math.floor(value / (Math.pow(10, m))) * (Math.pow(10, m));
   }
 
+  public filterData(filterOptions: DataFiltererOptions,
+                    impactData: ImpactDataRow[],
+                    metsAndOpts: MetricsAndOptions,
+                    plotColours: { [p: string]: string }): FilteredData {
+    const averaged_metrics = ["coverage", "deaths_averted_rate",
+                              "cases_averted_rate", "dalys_averted_rate"];
+    const averaged = averaged_metrics.includes(filterOptions.metric);
+    if (averaged) {
+      return this.calculateMean(filterOptions, impactData, metsAndOpts, plotColours);
+    } else {
+      return this.calculateSum(filterOptions, impactData, metsAndOpts, plotColours);
+    }
+  }
+
    /**
     * The function filters a dataset (an array of ImpactDataRows) based on some
     * parameters and returns a FilteredData object used by chartjs to produce
@@ -130,10 +160,10 @@ export class DataFilterer {
     * @returns A FilteredData object containing the datasets (for a charjs
     *      plot), the names of the x-axis variables and the totals.
     */
-  public filterData(filterOptions: DataFiltererOptions,
-                    impactData: ImpactDataRow[],
-                    metsAndOpts: MetricsAndOptions,
-                    plotColours: { [p: string]: string }): FilteredData {
+  public calculateSum(filterOptions: DataFiltererOptions,
+                      impactData: ImpactDataRow[],
+                      metsAndOpts: MetricsAndOptions,
+                      plotColours: { [p: string]: string }): FilteredData {
     const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
 
     // now we filter by the compare variable

@@ -6,6 +6,8 @@ import {plotColours} from "../src/PlotColours";
 import {expect} from "chai";
 import * as Color from "color";
 
+import * as sinon from "sinon";
+
 function randomNumber(floor: number, ceiling: number) : number {
     return Math.round(Math.random() * (ceiling - floor) * 100) / 100 + floor;
 };
@@ -204,10 +206,10 @@ describe("DataFilterer", () => {
         }
         let fakeMetricAndOptions: MetricsAndOptions = {
             mode: "public",
-            metrics: ["Hello", "world!"],
-            methods: ["deaths", "deaths_averted"],
-            filterOptions: ["Another", "array"],
-            otherOptions: ["Yet", "another", "array"]
+            metrics: ["deaths", "deaths_averted", "deaths_averted_rate"],
+            methods: ["cross", "cohort"],
+            filterOptions: ["country", "year"],
+            otherOptions: ["continent"]
         }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an
@@ -219,8 +221,8 @@ describe("DataFilterer", () => {
         fakeOptions.xAxis = "year";
         fakeOptions.yAxis = "continent";
 
-        out = testObject.calculateMean(fakeOptions, fakeImpactData,
-                                       fakeMetricAndOptions, plotColours);
+        out = testObject.filterData(fakeOptions, fakeImpactData,
+                                    fakeMetricAndOptions, plotColours);
     })
 
     it("upperLowerNames", () => {
@@ -243,8 +245,35 @@ describe("DataFilterer", () => {
         out = upperLowerNames("deaths_no_vac");
         expect(out).to.include({low: "deaths_nv_lo", high:"deaths_nv_hi"});
 
-        out = upperLowerNames("BAD STRING");
+        out = upperLowerNames("cases");
+        expect(out).to.include({low: "cases_lo", high:"cases_hi"});
+
+        out = upperLowerNames("cases_averted");
+        expect(out).to.include({low: "cases_av_lo", high:"cases_av_hi"});
+
+        out = upperLowerNames("cases_no_vac");
+        expect(out).to.include({low: "cases_nv_lo", high:"cases_nv_hi"});
+
+        out = upperLowerNames("coverage");
         expect(out).to.include({});
+        out = upperLowerNames("deathsRate");
+        expect(out).to.include({});
+        out = upperLowerNames("casesRate");
+        expect(out).to.include({});
+        out = upperLowerNames("dalysRate");
+        expect(out).to.include({});
+        out = upperLowerNames("fvps");
+        expect(out).to.include({});
+
+
+        let spy = sinon.spy(console, 'log');  
+
+        out = upperLowerNames("BAD STRING");
+        sinon.assert.calledWith(spy, "Unexpected metric BAD STRING");
+        expect(out).to.include({});    
+
+        spy.restore();
+
     })
 
     it("getDataRow", () => {

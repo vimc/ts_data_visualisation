@@ -95,7 +95,7 @@ writeToFile("data/test/metricsAndOptions.json",
                                 "support_type",
                                 "vaccine"],
               "otherOptions": ["continent", "disease", "region"],
-              "secretOptions": {"is_focal": true}
+              "secretOptions": {"is_focal": [true]}
             }
            );
 
