@@ -223,9 +223,6 @@ describe("DataFilterer", () => {
 
         out = testObject.filterData(fakeOptions, fakeImpactData,
                                     fakeMetricAndOptions, plotColours);
-
-        // out = testObject.calculateMean(fakeOptions, fakeImpactData,
-        //                                fakeMetricAndOptions, plotColours);
     })
 
     it("upperLowerNames", () => {
