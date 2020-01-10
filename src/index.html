@@ -312,7 +312,7 @@
               </div>
             </div>
 
-             <div class="btn-group mt-1" role="group">
+             <div class="btn-group mt-1" role="group" data-bind="visible: showAgeGroupToggle()">
               <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('all'),
                css: {active: ageGroup() == 'all'}">All Ages
               </button>
@@ -468,7 +468,7 @@
                 </button>
               </div>
             </div>
-             <div class="btn-group mt-1" role="group">
+             <div class="btn-group mt-1" role="group" data-bind="visible: showAgeGroupToggle()">
               <button type="button" class="btn btn-primary" data-bind="click: () => changeAgeGroup('all'),
                css: {active: ageGroup() == 'all'}">All Ages
               </button>
