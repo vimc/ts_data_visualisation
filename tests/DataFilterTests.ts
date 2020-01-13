@@ -283,43 +283,54 @@ describe("DataFilterer", () => {
                                            "#0B588E",
                                            "label",
                                            [1,2,3,4,5,6,7,8,9,10,11,12],
-                                           "+1",
-                                           true);
+                                           "low");
         expect(out).to.include({
             borderColor: '#0B588E',
-            borderWidth: 2,
-            fill: '+1',
-            label: 'label',
+            borderWidth: 0.1,
+            fill: '+2',
+            label: 'label_low',
             lineTension: 0,
             pointBackgroundColor: '#0B588E',
             pointHitRadius: 15,
-            pointHoverRadius: 5,
-            pointRadius: 2.5,
+            pointHoverRadius: 0.0,
+            pointRadius: 0.0,
             pointStyle: 'circle'});
 
         expect(out.data).to.include.members([1,2,3,4,5,6,7,8,9,10,11,12]);
         expect(out.backgroundColor).to.
                                equal(Color('#0B588E').alpha(0.5).hsl().string())
 
-        out = testObject.getChartJsRow("Not time series",
+        out = testObject.getChartJsRow("Time series",
                                        "#0B588E",
                                        "label",
                                        [7,8,9,10,11,12],
-                                       false,
-                                       true);
+                                       "mid");
 
-        expect(out).to.include({backgroundColor: '#0B588E', label: 'label'});
         expect(out.data).to.include.members([7,8,9,10,11,12]);
+        expect(out.borderWidth).to.equal(2);
+        expect(out.pointHoverRadius).to.equal(5.0);
+        expect(out.pointRadius).to.equal(2.5);
+        expect(out.label).to.equal("label");
 
         out = testObject.getChartJsRow("Time series",
                                        "#0B588E",
                                        "label",
                                        [1,2,3,4,5,6,7,8,9,10,11,12],
-                                       false,
-                                       false);
+                                       "high");
 
         expect(out.pointRadius).to.equal(0);
         expect(out.fill).to.equal(false);
         expect(out.borderWidth).to.equal(0.1);
+        expect(out.label).to.equal("label_high");
+
+        out = testObject.getChartJsRow("Not time series",
+                                       "#0B588E",
+                                       "label",
+                                       [7,8,9,10,11,12],
+                                       "mid");
+        
+        expect(out).to.include({backgroundColor: '#0B588E', label: 'label'});
+        expect(out.data).to.include.members([7,8,9,10,11,12]);
+        expect(out.label).to.equal("label");
     })
 });
