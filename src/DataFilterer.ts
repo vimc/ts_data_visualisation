@@ -317,7 +317,7 @@ export class DataFilterer {
       this.getColour(yVar, plotColours, niceColours);
       const fRow = this.getChartJsRow(filterOptions.plotType,
                       plotColours[yVar], yVar,
-                      summedMetricByYAxis, false);
+                      summedMetricByYAxis, "mid");
       datasets.push(fRow);
     }
 
@@ -674,36 +674,34 @@ export class DataFilterer {
     const fRow = this.getChartJsRow(filterOptions.plotType,
                     plotColours[yAxisVal], yAxisVal,
                     summedMetricByYAxis,
-                    (pos === "low") ? "+2" : false,
-                    (pos === "mid"));
+                    pos);
     return fRow;
   }
 
-  public getChartJsRow(plotMode: string, valueColor: string,
-                       label: string, data: number[], fill: any,
-                       show: boolean = true): FilteredRow {
+  public getChartJsRow(plotMode: string, valueColor: string, label: string,
+                       data: number[], pos: string): FilteredRow {
     if (plotMode === "Time series") {
       const fRow: FilteredRow = {
-          backgroundColor: Color(valueColor).alpha(0.5).hsl().string(),
-          borderColor: valueColor,
-          borderWidth: show ? 2 : 0.1,
-          data: data,
-          fill: fill,
-          label: label,
-          lineTension: 0.0,
-          pointBackgroundColor: valueColor,
-          pointHitRadius: 15,
-          pointHoverRadius: show ? 5 : 0.0,
-          pointRadius: show ? 2.5 : 0.0,
-          pointStyle: "circle",
-        };
+        backgroundColor: Color(valueColor).alpha(0.5).hsl().string(),
+        borderColor: valueColor,
+        borderWidth: (pos === "mid") ? 2 : 0.1,
+        data: data,
+        fill: (pos === "low") ? "+2" : false,
+        label: (pos === "mid") ? label : label + "_" + pos,
+        lineTension: 0.0,
+        pointBackgroundColor: valueColor,
+        pointHitRadius: 15,
+        pointHoverRadius: (pos === "mid") ? 5 : 0.0,
+        pointRadius: (pos === "mid") ? 2.5 : 0.0,
+        pointStyle: "circle",
+      };
       return fRow;
     } else {
       const fRow: FilteredRow = {
-          backgroundColor: valueColor,
-          data: data,
-          label: label,
-        };
+        backgroundColor: valueColor,
+        data: data,
+        label: label,
+      };
       return fRow;
     }
   }
