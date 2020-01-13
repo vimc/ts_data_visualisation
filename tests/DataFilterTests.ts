@@ -306,11 +306,11 @@ describe("DataFilterer", () => {
                                        [7,8,9,10,11,12],
                                        "mid");
 
-        expect(out.data).to.include.members([7,8,9,10,11,12]);
         expect(out.borderWidth).to.equal(2);
+        expect(out.fill).to.equal(false);
+        expect(out.label).to.equal("label");
         expect(out.pointHoverRadius).to.equal(5.0);
         expect(out.pointRadius).to.equal(2.5);
-        expect(out.label).to.equal("label");
 
         out = testObject.getChartJsRow("Time series",
                                        "#0B588E",
