@@ -23,25 +23,13 @@ report `internal-2018-interactive-plotting`.
 ## Quick start:
 This method is ideal for UI development where the data does not matter at all.
 1. `npm install`
-1. Generate completely fake data by running `npm run generate-fake-data`
+1. Generate completely fake data by running `npm run generate-fake-data private` or `npm run generate-fake-data public` (depending on whether you want to test the private or public app)
 1. `npm run build-dev` or `npm run build-dev-watch`
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
 Note that the fake data only contains points for years 2014 - 2020 and for the
 most recent 3 touchstones.
-
-## Using realistic data:
-Useful if you want data that resembles the real data set, but still want
-local development to be a bit quicker.
-1. Grab the real data set by downloading the relevant artefact from the
-reporting portal (`https://montagu.vaccineimpact.org/reports/report/internal-2018-interactive-plotting/XXXXXXXX-XXXXXX-XXXXXXXX`)
-and copying it into this repo's `data` directory.
-1. `./scripts/thinData`.
-1. `npm install`
-1. `npm run build-dev` or `npm run build-dev-watch`
-1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
-1. Visit localhost:8000 in your browser to view the app.
 
 ## Using real data:
 This will make development slow, but will give you the most accurate impression
