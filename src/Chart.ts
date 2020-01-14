@@ -177,6 +177,32 @@ export function timeSeriesChartConfig(filterData: FilteredData,
     options: {
       legend: {
         display: true,
+        // this toggles on / off the confidence intervals
+        labels: {
+          // This hides the
+          filter: function(item, chart) {
+            return !item.text.includes('_');
+          }
+        },
+        onClick: function(e, legendItem) { // need to hide index -1 and index +1
+          let index = legendItem.datasetIndex;
+          let ci = this.chart;
+          let alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
+          let meta_lo = ci.getDatasetMeta(index - 1);
+          let meta = ci.getDatasetMeta(index);
+          let meta_hi = ci.getDatasetMeta(index + 1);
+          if (!alreadyHidden) {
+            meta_lo.hidden = true;
+            meta.hidden = true;
+            meta_hi.hidden = true;
+          } else {
+            meta_lo.hidden = null;
+            meta.hidden = null;
+            meta_hi.hidden = null;            
+          }
+
+          ci.update();
+        },
         position: "top",
       },
       title: {
