@@ -495,7 +495,7 @@
                     Cumulative
                   </label>
                 </div>
-                <div class="form-check" data-bind="visible: (yAxis() === 'disease') && showUncertainty">
+                <div class="form-check" data-bind="visible: showUncertainty">
                   <input class="form-check-input" type="checkbox"
                        data-bind="checked: uncertaintyChecked"
                        id="uncertaintyId">
@@ -582,6 +582,10 @@
           <div style="max-width: 1000px">
             <canvas id="timeSeriesChart"></canvas>
           </div>
+
+<!--           <p>
+            When stratifying by anything other than disease, the plots might overstate the total figures. This is because we might count the same person as dying from different diseases.
+          </p> -->
           <button class="btn btn-success" data-bind="click: exportTSPlot">Export plot as png</button>
           <button class="btn btn-success" data-bind="click: exportTSData">Export data as csv</button>
           <button class="float-bottom btn btn-success" data-toggle="modal" data-target="#metadataModal">Show Metadata</button>
