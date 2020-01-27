@@ -79,6 +79,51 @@ export function annotationHelper(touchstone: string, year: number, colour: strin
   return a;
 }
 
+function cleanMetric(metric: string): string {
+  switch (metric) {
+    case "deaths_averted":
+      return("deaths averted");
+      break;
+    case "deaths_averted_rate":
+      return("deaths averted rate");
+      break;
+    case "deaths":
+      return("deaths");
+      break;
+
+    case "cases_averted":
+      return("cases averted");
+      break;
+    case "cases_averted_rate":
+      return("cases averted rate");
+      break;
+    case "cases":
+      return("cases");
+      break;
+
+    case "dalys_averted_rate":
+      return("dalys averted rate");
+      break;
+    case "dalys_averted":
+      return("dalys averted");
+      break;
+    case "dalys":
+      return("dalys");
+      break;
+
+    case "coverage":
+      return("coverage");
+      break;
+    case "fvps":
+      return("fvps");
+      break;
+
+    default:
+      return("Bad metric in cleanMetric");
+      break;
+  }
+}
+
 export function dateToAnnotation(touchstones: string[]): BaseAnnotation[] {
   const anno = touchstones.map( (tch: string): BaseAnnotation => {
           return annotationHelper(tch, touchstoneYears[tch],
@@ -159,19 +204,29 @@ export function impactChartConfig(filterData: FilteredData,
           }
         },
       },
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            let label = data.datasets[tooltipItem.datasetIndex].label + ": ";
+            label += tooltipItem.yLabel + " ";
+            label += cleanMetric(chartOptions.metric);
+            return label;
+          }
+        }
+      },
     },
   };
 }
 
 export function timeSeriesChartConfig(filterData: FilteredData,
-                                      compareNames: string[],
+                                      xAxisNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
   const anno: BaseAnnotation[] = dateToAnnotation(chartOptions.selectedTouchstones);
 
   return {
     type: "line",
     data: {
-      labels: compareNames,
+      labels: xAxisNames,
       datasets: filterData.datasets,
     },
     options: {
@@ -229,6 +284,18 @@ export function timeSeriesChartConfig(filterData: FilteredData,
       annotation: {
         annotations: anno,
       },
+
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            let label = data.datasets[tooltipItem.datasetIndex].label + ": ";
+            label += tooltipItem.yLabel + " ";
+            label += cleanMetric(chartOptions.metric);
+            return label;
+          }
+        }
+      },
+
     },
   };
 }

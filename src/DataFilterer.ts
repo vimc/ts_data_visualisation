@@ -3,6 +3,7 @@ import {FilteredRow} from "./FilteredRow";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetricsAndOptions} from "./MetricsAndOptions";
 import {niceColours} from "./PlotColours";
+import {countryDict, vaccineDict} from "./Dictionaries";
 
 interface SplitImpactData {
   [key: string]: ImpactDataRow[];
@@ -192,6 +193,13 @@ export class DataFilterer {
       this.ArrangeSplitData(xAxis, filterOptions.yAxis,
                   yAxisVars, filteredData);
 
+    let dict = null
+    if (filterOptions.yAxis === "country") {
+      dict = countryDict
+    } else if (filterOptions.yAxis === "vaccine") {
+      dict = vaccineDict
+    }
+
     const datasets: FilteredRow[] = [];
     for (const yAxisVal of yAxisVars) {
       // if we have uncertainity grab the upper and lower bounds
@@ -201,14 +209,14 @@ export class DataFilterer {
         const fRowLo = this.getDataRow(organisedData, yAxisVal, xAxisVals,
                          filterOptions, plotColours,
                          niceColours, uncertainity.low,
-                         "low");
+                         "low", dict);
         datasets.push(fRowLo);
       }
 
       const fRow = this.getDataRow(organisedData, yAxisVal, xAxisVals,
                      filterOptions, plotColours,
                      niceColours, filterOptions.metric,
-                     "mid");
+                     "mid", dict);
       datasets.push(fRow);
 
       if ((uncertainity.low != null) && (uncertainity.low != null) &&
@@ -217,7 +225,7 @@ export class DataFilterer {
         const fRowHi = this.getDataRow(organisedData, yAxisVal, xAxisVals,
                          filterOptions, plotColours,
                          niceColours, uncertainity.high,
-                         "high");
+                         "high", dict);
         datasets.push(fRowHi);
       }
     }
@@ -657,7 +665,8 @@ export class DataFilterer {
                     plotColours: { [p: string]: string },
                     extraColours: { [p: string]: string },
                     metric: string,
-                    pos: string) {
+                    pos: string,
+                    dictionary?: { [p: string]: string }) {
     let summedMetricByYAxis: number[] =
       this.reduceSummary(organisedData, yAxisVal, xAxisVals,
                  metric);
@@ -671,8 +680,15 @@ export class DataFilterer {
 
     // make sure we have colours for each yAxisVal
     this.getColour(yAxisVal, plotColours, extraColours);
+
+
+    let yAxisVal_fixed = yAxisVal
+    if (dictionary !== null) {
+      yAxisVal_fixed = dictionary[yAxisVal]
+    }
+
     const fRow = this.getChartJsRow(filterOptions.plotType,
-                    plotColours[yAxisVal], yAxisVal,
+                    plotColours[yAxisVal], yAxisVal_fixed,
                     summedMetricByYAxis,
                     pos);
     return fRow;

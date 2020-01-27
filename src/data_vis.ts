@@ -443,7 +443,10 @@ class DataVisModel {
     const {datasets, xAxisVals} = filterData;
 
     this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
-    this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, xAxisVals, chartOptions));
+    this.chartObjectTS = new Chart(this.ctxTS,
+                                   timeSeriesChartConfig(filterData,
+                                                         xAxisVals,
+                                                         chartOptions));
   }
 
   private selectPlot(plotName: string) {
