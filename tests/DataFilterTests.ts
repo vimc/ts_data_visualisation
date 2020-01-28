@@ -1,8 +1,9 @@
-import {countries, touchstones, activityTypes, diseases, vaccines} from "../scripts/fakeVariables";
+import {countries, touchstones, activityTypes, diseases, vaccines, fakeCountryDict} from "../scripts/fakeVariables";
 import {upperLowerNames, DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
 import {ImpactDataRow} from "../src/ImpactDataRow";
 import {MetricsAndOptions} from "../src/MetricsAndOptions";
 import {plotColours} from "../src/PlotColours";
+import {parseIntoDictionary} from "../src/Utils";
 import {expect} from "chai";
 import * as Color from "color";
 
@@ -44,6 +45,7 @@ describe("DataFilterer", () => {
                                 "support_type": randomNumber(0, 1) > 0.5 ? "gavi" : "other",
                                 "vaccine": v,
                                 "is_gavi": true,
+                                "age_group": "under_5",
                                 "country": c,
                                 "country_name": `c-fullname`,
                                 "year": y,
@@ -96,6 +98,7 @@ describe("DataFilterer", () => {
                                                     "deaths_averted",
                                                     "disease",
                                                     "is_gavi",
+                                                    "age_group",
                                                     "is_focal",
                                                     "support_type",
                                                     "touchstone",
@@ -186,12 +189,12 @@ describe("DataFilterer", () => {
         }
     })
 
-    it("filterData", () => {
+    it("filterData Impact", () => {
         let fakeOptions: DataFiltererOptions = {
-            metric: "deaths_averted",
+            metric: "deaths_averted_rate",
             maxPlot: 10,
             xAxis: "continent",
-            yAxis: "year",
+            yAxis: "country",
             yearLow: 2005,
             yearHigh: 2025,
             activityTypes: ["routine","campaign"],
@@ -208,7 +211,7 @@ describe("DataFilterer", () => {
             mode: "public",
             metrics: ["deaths", "deaths_averted", "deaths_averted_rate"],
             methods: ["cross", "cohort"],
-            dualOptions: ["country", "year"],
+            dualOptions: ["country", "year", "activity_type", "vaccine", "touchstone"],
             stratOptions: ["continent"],
             filterOptions: [],
             uiVisible: []
@@ -218,13 +221,48 @@ describe("DataFilterer", () => {
         // error
         let out = testObject.filterData(fakeOptions, fakeImpactData,
                                         fakeMetricAndOptions, plotColours, null);
-        fakeOptions.plotType = "Time Series";
-        fakeOptions.metric = "deaths_averted_rate";
-        fakeOptions.xAxis = "year";
-        fakeOptions.yAxis = "continent";
 
+        fakeOptions.metric = "deaths_averted_rate"
+        const countryDict = parseIntoDictionary(fakeCountryDict, "country", "country_name");
         out = testObject.filterData(fakeOptions, fakeImpactData,
-                                    fakeMetricAndOptions, plotColours);
+                                    fakeMetricAndOptions, plotColours, countryDict);
+    })
+
+    it("filterData Time series", () => {
+        let fakeOptions: DataFiltererOptions = {
+            metric: "deaths",
+            maxPlot: 10,
+            xAxis: "year",
+            yAxis: "continent",
+            yearLow: 2005,
+            yearHigh: 2025,
+            activityTypes: ["routine","campaign"],
+            selectedCountries: countries.slice(0, 5),
+            selectedVaccines: ["HepB_BD", "MCV2", "Rota"],
+            selectedTouchstones: touchstones.slice(0, 2),
+            plotType: "Time series",
+            supportType: ["gavi"],
+            cumulative: true,
+            ageGroup: "under5",
+            plotUncertainity: true,
+        }
+
+        let fakeMetricAndOptions: MetricsAndOptions = {
+            mode: "public",
+            metrics: ["deaths", "deaths_averted", "deaths_averted_rate"],
+            methods: ["cross", "cohort"],
+            dualOptions: ["country", "year", "support_type", "age_group", "disease"],
+            stratOptions: ["continent"],
+            filterOptions: [],
+            uiVisible: []
+        }
+
+        let out = testObject.filterData(fakeOptions, fakeImpactData,
+                                        fakeMetricAndOptions, plotColours, null);
+
+        fakeOptions.xAxis = "country"
+        out = testObject.filterData(fakeOptions, fakeImpactData,
+                                    fakeMetricAndOptions, plotColours, null);
     })
 
     it("upperLowerNames", () => {

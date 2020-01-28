@@ -320,7 +320,7 @@ export class DataFilterer {
       this.getColour(yVar, plotColours, niceColours);
 
       let yAxisVal_fixed = yVar
-      if (dict !== undefined) {
+      if (dict !== null) {
         yAxisVal_fixed = dict[yVar]
       }
       const fRow = this.getChartJsRow(filterOptions.plotType,
@@ -577,19 +577,15 @@ export class DataFilterer {
     switch (compareVariable) {
       case "coverage":
         return {top: "fvps", bottom: "target_population"};
-        break;
 
       case "deaths_averted_rate":
         return {top: "deaths_averted", bottom: "fvps"};
-        break;
 
       case "cases_averted_rate":
         return {top: "cases_averted", bottom: "fvps"};
-        break;
 
       default:
         return {top: compareVariable};
-        break;
     }
   }
 
