@@ -83,44 +83,32 @@ export function cleanMetric(metric: string): string {
   switch (metric) {
     case "deaths_averted":
       return("deaths averted");
-      break;
     case "deaths_averted_rate":
       return("deaths averted rate");
-      break;
     case "deaths":
       return("deaths");
-      break;
 
     case "cases_averted":
       return("cases averted");
-      break;
     case "cases_averted_rate":
       return("cases averted rate");
-      break;
     case "cases":
       return("cases");
-      break;
 
     case "dalys_averted_rate":
       return("dalys averted rate");
-      break;
     case "dalys_averted":
       return("dalys averted");
-      break;
     case "dalys":
       return("dalys");
-      break;
 
     case "coverage":
       return("coverage");
-      break;
     case "fvps":
       return("FVPs");
-      break;
 
     default:
       return("Bad metric in cleanMetric");
-      break;
   }
 }
 
