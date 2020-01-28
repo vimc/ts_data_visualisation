@@ -3,7 +3,7 @@ import * as sinon from "sinon";
 
 import {touchstones} from "../scripts/fakeVariables";
 import {ChartConfiguration} from "chart.js";
-import {annotationHelper, dateToAnnotation, impactChartConfig,
+import {annotationHelper, cleanMetric, dateToAnnotation, impactChartConfig,
         timeSeriesChartConfig, AnnotatedChartConfiguration,
         BaseAnnotation, CustomChartOptions} from "../src/Chart";
 import {FilteredData} from "../src/DataFilterer";
@@ -94,4 +94,23 @@ describe("ChartConfigs", () => {
     expect(config.options.scales.yAxes[0].scaleLabel.labelString).
       to.eql(c.yAxisTitle)
   })
+});
+
+describe("ChartConfigs", () => {
+  expect(cleanMetric("deaths_averted")).to.eql("deaths averted");
+  expect(cleanMetric("deaths_averted_rate")).to.eql("deaths averted rate");
+  expect(cleanMetric("deaths")).to.eql("deaths");
+
+  expect(cleanMetric("cases_averted")).to.eql("cases averted");
+  expect(cleanMetric("cases_averted_rate")).to.eql("cases averted rate");
+  expect(cleanMetric("cases")).to.eql("cases");
+
+  expect(cleanMetric("dalys_averted")).to.eql("dalys averted");
+  expect(cleanMetric("dalys_averted_rate")).to.eql("dalys averted rate");
+  expect(cleanMetric("dalys")).to.eql("dalys");
+
+  expect(cleanMetric("coverage")).to.eql("coverage");
+  expect(cleanMetric("fvps")).to.eql("FVPs");
+
+  expect(cleanMetric("BAD")).to.eql("Bad metric in cleanMetric");
 });

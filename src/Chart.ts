@@ -79,7 +79,7 @@ export function annotationHelper(touchstone: string, year: number, colour: strin
   return a;
 }
 
-function cleanMetric(metric: string): string {
+export function cleanMetric(metric: string): string {
   switch (metric) {
     case "deaths_averted":
       return("deaths averted");
@@ -115,7 +115,7 @@ function cleanMetric(metric: string): string {
       return("coverage");
       break;
     case "fvps":
-      return("fvps");
+      return("FVPs");
       break;
 
     default:
