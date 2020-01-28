@@ -217,7 +217,7 @@ describe("DataFilterer", () => {
         // all these tests do is make sure the main function runs without an
         // error
         let out = testObject.filterData(fakeOptions, fakeImpactData,
-                                        fakeMetricAndOptions, plotColours);
+                                        fakeMetricAndOptions, plotColours, null);
         fakeOptions.plotType = "Time Series";
         fakeOptions.metric = "deaths_averted_rate";
         fakeOptions.xAxis = "year";

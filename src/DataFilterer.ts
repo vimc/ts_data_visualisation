@@ -3,7 +3,6 @@ import {FilteredRow} from "./FilteredRow";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetricsAndOptions} from "./MetricsAndOptions";
 import {niceColours} from "./PlotColours";
-import {countryDict, vaccineDict} from "./Dictionaries";
 
 interface SplitImpactData {
   [key: string]: ImpactDataRow[];
@@ -134,14 +133,15 @@ export class DataFilterer {
   public filterData(filterOptions: DataFiltererOptions,
                     impactData: ImpactDataRow[],
                     metsAndOpts: MetricsAndOptions,
-                    plotColours: { [p: string]: string }): FilteredData {
+                    plotColours: { [p: string]: string },
+                    dict?: { [p: string]: string }): FilteredData {
     const averagedMetrics = ["coverage", "deaths_averted_rate",
                              "cases_averted_rate", "dalys_averted_rate"];
     const averaged = averagedMetrics.includes(filterOptions.metric);
     if (averaged) {
-      return this.calculateMean(filterOptions, impactData, metsAndOpts, plotColours);
+      return this.calculateMean(filterOptions, impactData, metsAndOpts, plotColours, dict);
     } else {
-      return this.calculateSum(filterOptions, impactData, metsAndOpts, plotColours);
+      return this.calculateSum(filterOptions, impactData, metsAndOpts, plotColours, dict);
     }
   }
 
@@ -164,7 +164,8 @@ export class DataFilterer {
   public calculateSum(filterOptions: DataFiltererOptions,
                       impactData: ImpactDataRow[],
                       metsAndOpts: MetricsAndOptions,
-                      plotColours: { [p: string]: string }): FilteredData {
+                      plotColours: { [p: string]: string },
+                      dict?: { [p: string]: string }): FilteredData {
     const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
 
     // now we filter by the compare variable
@@ -192,13 +193,6 @@ export class DataFilterer {
     const organisedData: ArrangedSplitImpactData =
       this.ArrangeSplitData(xAxis, filterOptions.yAxis,
                   yAxisVars, filteredData);
-
-    let dict = null
-    if (filterOptions.yAxis === "country") {
-      dict = countryDict
-    } else if (filterOptions.yAxis === "vaccine") {
-      dict = vaccineDict
-    }
 
     const datasets: FilteredRow[] = [];
     for (const yAxisVal of yAxisVars) {
@@ -266,7 +260,8 @@ export class DataFilterer {
   public calculateMean(filterOptions: DataFiltererOptions,
                        impactData: ImpactDataRow[],
                        metsAndOpts: MetricsAndOptions,
-                       plotColours: { [p: string]: string }): FilteredData {
+                       plotColours: { [p: string]: string },
+                       dict?: { [p: string]: string }): FilteredData {
     // x axis will always be year!
     const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
 
@@ -323,8 +318,13 @@ export class DataFilterer {
 
       // make sure we have colours for each yVar
       this.getColour(yVar, plotColours, niceColours);
+
+      let yAxisVal_fixed = yVar
+      if (dict !== undefined) {
+        yAxisVal_fixed = dict[yVar]
+      }
       const fRow = this.getChartJsRow(filterOptions.plotType,
-                      plotColours[yVar], yVar,
+                      plotColours[yVar], yAxisVal_fixed,
                       summedMetricByYAxis, "mid");
       datasets.push(fRow);
     }
@@ -680,7 +680,6 @@ export class DataFilterer {
 
     // make sure we have colours for each yAxisVal
     this.getColour(yAxisVal, plotColours, extraColours);
-
 
     let yAxisVal_fixed = yAxisVal
     if (dictionary !== null) {

@@ -409,10 +409,19 @@ class DataVisModel {
     if (this.chartObject) {
       this.chartObject.destroy();
     }
+
+    let dict = null
+    if (chartOptions.yAxis === "country") {
+      dict = countryDict
+    } else if (chartOptions.yAxis === "vaccine") {
+      dict = vaccineDict
+    }
+
     const filterData = new DataFilterer().filterData(chartOptions,
                              this.impactData(),
                              metricsAndOptions,
-                             plotColours);
+                             plotColours,
+                             dict);
     const {datasets, xAxisVals} = filterData;
 
     let xAxisNames: string[] = [...xAxisVals];
@@ -436,10 +445,18 @@ class DataVisModel {
       this.chartObjectTS.destroy();
     }
 
+    let dict = null
+    if (chartOptions.yAxis === "country") {
+      dict = countryDict
+    } else if (chartOptions.yAxis === "vaccine") {
+      dict = vaccineDict
+    }
+
     const filterData = new DataFilterer().filterData(chartOptions,
                              this.impactData(),
                              metricsAndOptions,
-                             plotColours);
+                             plotColours,
+                             dict);
     const {datasets, xAxisVals} = filterData;
 
     this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
