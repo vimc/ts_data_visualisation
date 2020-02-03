@@ -214,7 +214,8 @@ describe("DataFilterer", () => {
             dualOptions: ["country", "year", "activity_type", "vaccine", "touchstone"],
             stratOptions: ["continent"],
             filterOptions: [],
-            uiVisible: []
+            uiVisible: [],
+            secretOptions: { is_focal: true }
         }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an

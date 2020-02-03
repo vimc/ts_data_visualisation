@@ -197,7 +197,7 @@ export class DataFilterer {
     const datasets: FilteredRow[] = [];
     for (const yAxisVal of yAxisVars) {
       // if we have uncertainity grab the upper and lower bounds
-      if ((uncertainity.low != null) && (uncertainity.low != null) &&
+      if ((uncertainity.low != null) && (uncertainity.high != null) &&
         (filterOptions.plotType === "Time series") &&
         filterOptions.plotUncertainity) {
         const fRowLo = this.getDataRow(organisedData, yAxisVal, xAxisVals,
@@ -213,7 +213,7 @@ export class DataFilterer {
                      "mid", dict);
       datasets.push(fRow);
 
-      if ((uncertainity.low != null) && (uncertainity.low != null) &&
+      if ((uncertainity.low != null) && (uncertainity.high != null) &&
         (filterOptions.plotType === "Time series") &&
         filterOptions.plotUncertainity) {
         const fRowHi = this.getDataRow(organisedData, yAxisVal, xAxisVals,
