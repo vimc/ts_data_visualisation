@@ -1,3 +1,8 @@
+/**
+  * Functions in this file are mostly just helper functions for the chartjs
+  * plotting
+  */
+
 import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
 import {DataFilterer, DataFiltererOptions, FilteredData} from "./DataFilterer";
 import {plotColours} from "./PlotColours";

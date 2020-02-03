@@ -167,7 +167,6 @@ export class DataFilterer {
                       plotColours: { [p: string]: string },
                       dict?: { [p: string]: string }): FilteredData {
     const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
-
     // now we filter by the compare variable
     const isTimeSeries: boolean = (filterOptions.plotType === "Time series");
     const xAxis = isTimeSeries ? "year" : filterOptions.xAxis;

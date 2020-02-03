@@ -52,10 +52,13 @@ describe("DataFilterer", () => {
                                 "coverage": randomNumber(0, 1),
                                 "target_population": randomNumber(100000, 200000),
                                 "fvps": randomNumber(10000, 20000),
+                                "deaths": randomNumber(10000, 20000),
                                 "deaths_averted": randomNumber(10000, 20000),
                                 "deaths_averted_rate": randomNumber(0, 0.8),
+                                "cases": randomNumber(10000, 20000),
                                 "cases_averted": randomNumber(10000, 20000),
                                 "cases_averted_rate": randomNumber(0, 0.8),
+                                "dalys": randomNumber(10000, 20000),
                                 "dalys_averted": randomNumber(10000, 20000),
                                 "dalys_averted_rate": randomNumber(0, 0.8),
                                 "region": "Southern Asia",
@@ -111,7 +114,10 @@ describe("DataFilterer", () => {
                                                     "deaths_averted_rate",
                                                     "fvps",
                                                     "region",
-                                                    "target_population"
+                                                    "target_population",
+                                                    "deaths",
+                                                    "dalys",
+                                                    "cases"
                                                     )
         const sut: string[] = filteredData.map((row) => (row["disease"]));
         const uniqueItems: string[] = [...new Set(sut)];
@@ -220,12 +226,12 @@ describe("DataFilterer", () => {
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an
         // error
-        let out = testObject.filterData(fakeOptions, fakeImpactData,
+        let out1 = testObject.filterData(fakeOptions, fakeImpactData,
                                         fakeMetricAndOptions, plotColours, null);
 
         fakeOptions.metric = "deaths_averted_rate"
         const countryDict = parseIntoDictionary(fakeCountryDict, "country", "country_name");
-        out = testObject.filterData(fakeOptions, fakeImpactData,
+        let out2 = testObject.filterData(fakeOptions, fakeImpactData,
                                     fakeMetricAndOptions, plotColours, countryDict);
     })
 
@@ -240,11 +246,12 @@ describe("DataFilterer", () => {
             activityTypes: ["routine","campaign"],
             selectedCountries: countries.slice(0, 5),
             selectedVaccines: ["HepB_BD", "MCV2", "Rota"],
+            selectedDiseases: diseases.slice(0, 5),
             selectedTouchstones: touchstones.slice(0, 2),
             plotType: "Time series",
             supportType: ["gavi"],
             cumulative: true,
-            ageGroup: "under5",
+            ageGroup: "under_5",
             plotUncertainity: true,
         }
 
@@ -261,7 +268,7 @@ describe("DataFilterer", () => {
         let out = testObject.filterData(fakeOptions, fakeImpactData,
                                         fakeMetricAndOptions, plotColours, null);
 
-        fakeOptions.xAxis = "country"
+        fakeOptions.cumulative = true
         out = testObject.filterData(fakeOptions, fakeImpactData,
                                     fakeMetricAndOptions, plotColours, null);
     })
