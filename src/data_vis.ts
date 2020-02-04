@@ -5,7 +5,7 @@ import {saveAs} from "file-saver";
 import * as $ from "jquery";
 import * as ko from "knockout";
 import "select2/dist/css/select2.min.css";
-import {appendToDataSet, DataSet, DataSetUpdate, getDataSet} from "./AppendDataSets";
+import {appendToDataSet, DataSet, getDataSet} from "./AppendDataSets";
 import {CustomChartOptions, impactChartConfig, timeSeriesChartConfig} from "./Chart";
 import {TableMaker, WideTableRow} from "./CreateDataTable";
 import {activityTypes, countries, countryGroups, dates, diseases, metricsAndOptions,
@@ -31,9 +31,9 @@ if (metricsAndOptions.mode.includes("public")) {
   initMethod = "cross";
 
   montaguDataSets = [
-    { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cross", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+    { name : "year_of_vac", data : [], seen : [], selected: [] },
+    { name : "cross", data : [], seen : [], selected: [] },
+    { name : "cohort", data : [], seen : [], selected: [] },
   ];
 
   appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
@@ -44,9 +44,9 @@ if (metricsAndOptions.mode.includes("public")) {
   initMethod = "year_of_vac";
 
   montaguDataSets = [
-    { name : "year_of_vac", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cross", data : [], seen : [], selectedTouchstones: [] },
-    { name : "cohort", data : [], seen : [], selectedTouchstones: [] },
+    { name : "year_of_vac", data : [], seen : [], selected: [] },
+    { name : "cross", data : [], seen : [], selected: [] },
+    { name : "cohort", data : [], seen : [], selected: [] },
   ];
 
   appendToDataSet(["201710gavi-201907wue"], filePrefix, "year_of_vac", montaguDataSets, true);
@@ -409,10 +409,19 @@ class DataVisModel {
     if (this.chartObject) {
       this.chartObject.destroy();
     }
+
+    let dict = null
+    if (chartOptions.yAxis === "country") {
+      dict = countryDict
+    } else if (chartOptions.yAxis === "vaccine") {
+      dict = vaccineDict
+    }
+
     const filterData = new DataFilterer().filterData(chartOptions,
                              this.impactData(),
                              metricsAndOptions,
-                             plotColours);
+                             plotColours,
+                             dict);
     const {datasets, xAxisVals} = filterData;
 
     let xAxisNames: string[] = [...xAxisVals];
@@ -436,14 +445,25 @@ class DataVisModel {
       this.chartObjectTS.destroy();
     }
 
+    let dict = null
+    if (chartOptions.yAxis === "country") {
+      dict = countryDict
+    } else if (chartOptions.yAxis === "vaccine") {
+      dict = vaccineDict
+    }
+
     const filterData = new DataFilterer().filterData(chartOptions,
                              this.impactData(),
                              metricsAndOptions,
-                             plotColours);
+                             plotColours,
+                             dict);
     const {datasets, xAxisVals} = filterData;
 
     this.filteredTSTable = new TableMaker().createWideTable(datasets, xAxisVals);
-    this.chartObjectTS = new Chart(this.ctxTS, timeSeriesChartConfig(filterData, xAxisVals, chartOptions));
+    this.chartObjectTS = new Chart(this.ctxTS,
+                                   timeSeriesChartConfig(filterData,
+                                                         xAxisVals,
+                                                         chartOptions));
   }
 
   private selectPlot(plotName: string) {
@@ -494,7 +514,7 @@ class DataVisModel {
     const data: DataSet = getDataSet(method, montaguDataSets);
     this.impactData(data.data);
     this.yearMethod(method);
-    this.touchstoneFilter().selectedOptions(data.selectedTouchstones);
+    this.touchstoneFilter().selectedOptions(data.selected);
   }
 
   private changeAgeGroup(ageGroup: string) {
@@ -504,10 +524,19 @@ class DataVisModel {
   private updateXAxisOptions() {
     // refilter the data
     const chartOptions = {...this.chartOptions(), maxPlot: -1};
+
+    let dict = null
+    if (chartOptions.yAxis === "country") {
+      dict = countryDict
+    } else if (chartOptions.yAxis === "vaccine") {
+      dict = vaccineDict
+    }
+
     const filteredData = new DataFilterer().filterData(chartOptions,
                                this.impactData(),
                                metricsAndOptions,
-                               plotColours);
+                               plotColours,
+                               dict);
     this.xAxisNames(filteredData.xAxisVals);
     this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
     this.maxBars(this.xAxisNames().length);

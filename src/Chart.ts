@@ -1,7 +1,19 @@
+/**
+  * Functions in this file are mostly just helper functions for the chartjs
+  * plotting
+  */
+
 import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
 import {DataFilterer, DataFiltererOptions, FilteredData} from "./DataFilterer";
 import {plotColours} from "./PlotColours";
 
+
+/**
+  * For various UI reasons we need to know which years a touchstone ends on.
+  * That is what this is. This probably should be read in from a source file - 
+  * but we already have too many so I hard coded it here.
+  *
+  */
 export const touchstoneYears: { [code: string]: number} = {
   "201210gavi-201303gavi" : 2011,
   "201210gavi-201810gavi" : 2017,
@@ -77,6 +89,39 @@ export function annotationHelper(touchstone: string, year: number, colour: strin
               },
         };
   return a;
+}
+
+export function cleanMetric(metric: string): string {
+  switch (metric) {
+    case "deaths_averted":
+      return("deaths averted");
+    case "deaths_averted_rate":
+      return("deaths averted rate");
+    case "deaths":
+      return("deaths");
+
+    case "cases_averted":
+      return("cases averted");
+    case "cases_averted_rate":
+      return("cases averted rate");
+    case "cases":
+      return("cases");
+
+    case "dalys_averted_rate":
+      return("dalys averted rate");
+    case "dalys_averted":
+      return("dalys averted");
+    case "dalys":
+      return("dalys");
+
+    case "coverage":
+      return("coverage");
+    case "fvps":
+      return("FVPs");
+
+    default:
+      return("Bad metric in cleanMetric");
+  }
 }
 
 export function dateToAnnotation(touchstones: string[]): BaseAnnotation[] {
@@ -159,19 +204,29 @@ export function impactChartConfig(filterData: FilteredData,
           }
         },
       },
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            let label = data.datasets[tooltipItem.datasetIndex].label + ": ";
+            label += tooltipItem.yLabel + " ";
+            label += cleanMetric(chartOptions.metric);
+            return label;
+          }
+        }
+      },
     },
   };
 }
 
 export function timeSeriesChartConfig(filterData: FilteredData,
-                                      compareNames: string[],
+                                      xAxisNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
   const anno: BaseAnnotation[] = dateToAnnotation(chartOptions.selectedTouchstones);
 
   return {
     type: "line",
     data: {
-      labels: compareNames,
+      labels: xAxisNames,
       datasets: filterData.datasets,
     },
     options: {
@@ -229,6 +284,18 @@ export function timeSeriesChartConfig(filterData: FilteredData,
       annotation: {
         annotations: anno,
       },
+
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            let label = data.datasets[tooltipItem.datasetIndex].label + ": ";
+            label += tooltipItem.yLabel + " ";
+            label += cleanMetric(chartOptions.metric);
+            return label;
+          }
+        }
+      },
+
     },
   };
 }

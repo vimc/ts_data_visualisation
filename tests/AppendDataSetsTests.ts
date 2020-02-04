@@ -21,9 +21,9 @@ describe("appendToDataSet", () => {
       );
 
       const ds: DataSet[] = [
-        { name : "data_A", data : [], seen : [], selectedTouchstones: [] },
-        { name : "data_B", data : [], seen : [], selectedTouchstones: [] },
-        { name : "data_C", data : [], seen : [], selectedTouchstones: [] },
+        { name : "data_A", data : [], seen : [], selected: [] },
+        { name : "data_B", data : [], seen : [], selected: [] },
+        { name : "data_C", data : [], seen : [], selected: [] },
       ]
 
       appendToDataSet(["XXX"], "prefix", "data_A", ds, false);
@@ -35,17 +35,17 @@ describe("appendToDataSet", () => {
       appendToDataSet(["YYY"], "prefix", "data_A", ds, false);
       expect(getDataSet("data_A", ds).data).to.have.length(10);
       expect(getDataSet("data_A", ds).seen).to.have.members(["XXX", "YYY"]);
-      expect(getDataSet("data_A", ds).selectedTouchstones).to.have.members([]);
+      expect(getDataSet("data_A", ds).selected).to.have.members([]);
 
       appendToDataSet(["YYY"], "prefix", "data_B", ds, true);
       expect(getDataSet("data_B", ds).data).to.have.length(5);
       expect(getDataSet("data_B", ds).seen).to.have.members(["YYY"]);
-      expect(getDataSet("data_B", ds).selectedTouchstones).to.have.members(["YYY"]);
+      expect(getDataSet("data_B", ds).selected).to.have.members(["YYY"]);
 
 
       expect(getDataSet("data_C", ds).data).to.have.length(0);
       expect(getDataSet("data_C", ds).seen).to.have.length(0);
-      expect(getDataSet("data_C", ds).selectedTouchstones).to.have.length(0);
+      expect(getDataSet("data_C", ds).selected).to.have.length(0);
 
 
       // make sure we capture the console message

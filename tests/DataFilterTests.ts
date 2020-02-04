@@ -1,8 +1,9 @@
-import {countries, touchstones, activityTypes, diseases, vaccines} from "../scripts/fakeVariables";
+import {countries, touchstones, activityTypes, diseases, vaccines, fakeCountryDict} from "../scripts/fakeVariables";
 import {upperLowerNames, DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
 import {ImpactDataRow} from "../src/ImpactDataRow";
 import {MetricsAndOptions} from "../src/MetricsAndOptions";
 import {plotColours} from "../src/PlotColours";
+import {parseIntoDictionary} from "../src/Utils";
 import {expect} from "chai";
 import * as Color from "color";
 
@@ -44,16 +45,20 @@ describe("DataFilterer", () => {
                                 "support_type": randomNumber(0, 1) > 0.5 ? "gavi" : "other",
                                 "vaccine": v,
                                 "is_gavi": true,
+                                "age_group": "under_5",
                                 "country": c,
                                 "country_name": `c-fullname`,
                                 "year": y,
                                 "coverage": randomNumber(0, 1),
                                 "target_population": randomNumber(100000, 200000),
                                 "fvps": randomNumber(10000, 20000),
+                                "deaths": randomNumber(10000, 20000),
                                 "deaths_averted": randomNumber(10000, 20000),
                                 "deaths_averted_rate": randomNumber(0, 0.8),
+                                "cases": randomNumber(10000, 20000),
                                 "cases_averted": randomNumber(10000, 20000),
                                 "cases_averted_rate": randomNumber(0, 0.8),
+                                "dalys": randomNumber(10000, 20000),
                                 "dalys_averted": randomNumber(10000, 20000),
                                 "dalys_averted_rate": randomNumber(0, 0.8),
                                 "region": "Southern Asia",
@@ -96,6 +101,7 @@ describe("DataFilterer", () => {
                                                     "deaths_averted",
                                                     "disease",
                                                     "is_gavi",
+                                                    "age_group",
                                                     "is_focal",
                                                     "support_type",
                                                     "touchstone",
@@ -108,7 +114,10 @@ describe("DataFilterer", () => {
                                                     "deaths_averted_rate",
                                                     "fvps",
                                                     "region",
-                                                    "target_population"
+                                                    "target_population",
+                                                    "deaths",
+                                                    "dalys",
+                                                    "cases"
                                                     )
         const sut: string[] = filteredData.map((row) => (row["disease"]));
         const uniqueItems: string[] = [...new Set(sut)];
@@ -186,12 +195,12 @@ describe("DataFilterer", () => {
         }
     })
 
-    it("filterData", () => {
+    it("filterData Impact", () => {
         let fakeOptions: DataFiltererOptions = {
-            metric: "deaths_averted",
+            metric: "deaths_averted_rate",
             maxPlot: 10,
             xAxis: "continent",
-            yAxis: "year",
+            yAxis: "country",
             yearLow: 2005,
             yearHigh: 2025,
             activityTypes: ["routine","campaign"],
@@ -208,23 +217,60 @@ describe("DataFilterer", () => {
             mode: "public",
             metrics: ["deaths", "deaths_averted", "deaths_averted_rate"],
             methods: ["cross", "cohort"],
-            dualOptions: ["country", "year"],
+            dualOptions: ["country", "year", "activity_type", "vaccine", "touchstone"],
             stratOptions: ["continent"],
             filterOptions: [],
-            uiVisible: []
+            uiVisible: [],
+            secretOptions: { is_focal: true }
         }
         // the functionality of this function covered in the unit testing above
         // all these tests do is make sure the main function runs without an
         // error
-        let out = testObject.filterData(fakeOptions, fakeImpactData,
-                                        fakeMetricAndOptions, plotColours);
-        fakeOptions.plotType = "Time Series";
-        fakeOptions.metric = "deaths_averted_rate";
-        fakeOptions.xAxis = "year";
-        fakeOptions.yAxis = "continent";
+        let out1 = testObject.filterData(fakeOptions, fakeImpactData,
+                                        fakeMetricAndOptions, plotColours, null);
 
+        fakeOptions.metric = "deaths_averted_rate"
+        const countryDict = parseIntoDictionary(fakeCountryDict, "country", "country_name");
+        let out2 = testObject.filterData(fakeOptions, fakeImpactData,
+                                    fakeMetricAndOptions, plotColours, countryDict);
+    })
+
+    it("filterData Time series", () => {
+        let fakeOptions: DataFiltererOptions = {
+            metric: "deaths",
+            maxPlot: 10,
+            xAxis: "year",
+            yAxis: "continent",
+            yearLow: 2005,
+            yearHigh: 2025,
+            activityTypes: ["routine","campaign"],
+            selectedCountries: countries.slice(0, 5),
+            selectedVaccines: ["HepB_BD", "MCV2", "Rota"],
+            selectedDiseases: diseases.slice(0, 5),
+            selectedTouchstones: touchstones.slice(0, 2),
+            plotType: "Time series",
+            supportType: ["gavi"],
+            cumulative: true,
+            ageGroup: "under_5",
+            plotUncertainity: true,
+        }
+
+        let fakeMetricAndOptions: MetricsAndOptions = {
+            mode: "public",
+            metrics: ["deaths", "deaths_averted", "deaths_averted_rate"],
+            methods: ["cross", "cohort"],
+            dualOptions: ["country", "year", "support_type", "age_group", "disease"],
+            stratOptions: ["continent"],
+            filterOptions: [],
+            uiVisible: []
+        }
+
+        let out = testObject.filterData(fakeOptions, fakeImpactData,
+                                        fakeMetricAndOptions, plotColours, null);
+
+        fakeOptions.xAxis = "country"
         out = testObject.filterData(fakeOptions, fakeImpactData,
-                                    fakeMetricAndOptions, plotColours);
+                                    fakeMetricAndOptions, plotColours, null);
     })
 
     it("upperLowerNames", () => {
@@ -332,5 +378,48 @@ describe("DataFilterer", () => {
         expect(out).to.include({backgroundColor: '#0B588E', label: 'label'});
         expect(out.data).to.include.members([7,8,9,10,11,12]);
         expect(out.label).to.equal("label");
+    })
+
+    it("getColours", () => {
+        let plotColours = {"none": "#0000C0",
+                           "HPV":  "#BEBADA",
+                           "HepB": "#8DD3C7"};
+
+        let niceColours = {aqua:  "#00ffff",
+                           azure: "#f0ffff",
+                           beige: "#f5f5dc"}
+
+        // these tests should do nothing
+        let out = testObject.getColour("none", plotColours, niceColours)
+        out = testObject.getColour("HPV", plotColours, niceColours)
+        out = testObject.getColour("HepB", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(3)
+        expect(Object.keys(niceColours)).to.have.lengthOf(3)
+
+        let spy = sinon.spy(console, 'log');
+
+        out = testObject.getColour("a", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(4)
+        expect(Object.keys(niceColours)).to.have.lengthOf(2)
+        sinon.assert.calledWith(spy, "Warning: a does not have a default colour");
+
+        out = testObject.getColour("b", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(5)
+        expect(Object.keys(niceColours)).to.have.lengthOf(1)
+
+        out = testObject.getColour("c", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(6)
+        expect(Object.keys(niceColours)).to.have.lengthOf(0)
+        expect(Object.keys(plotColours)).to.contain("a")
+        expect(Object.keys(plotColours)).to.contain("b")
+        expect(Object.keys(plotColours)).to.contain("c")
+
+        out = testObject.getColour("d", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(7)
+        expect(Object.keys(niceColours)).to.have.lengthOf(0)
+        sinon.assert.calledWith(spy, "Additional warning: We have run out of nice colours");
+        expect(Object.values(plotColours)).to.contain("#999999")
+
+        spy.restore();
     })
 });

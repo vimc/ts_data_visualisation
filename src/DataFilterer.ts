@@ -133,14 +133,15 @@ export class DataFilterer {
   public filterData(filterOptions: DataFiltererOptions,
                     impactData: ImpactDataRow[],
                     metsAndOpts: MetricsAndOptions,
-                    plotColours: { [p: string]: string }): FilteredData {
+                    plotColours: { [p: string]: string },
+                    dict?: { [p: string]: string }): FilteredData {
     const averagedMetrics = ["coverage", "deaths_averted_rate",
                              "cases_averted_rate", "dalys_averted_rate"];
     const averaged = averagedMetrics.includes(filterOptions.metric);
     if (averaged) {
-      return this.calculateMean(filterOptions, impactData, metsAndOpts, plotColours);
+      return this.calculateMean(filterOptions, impactData, metsAndOpts, plotColours, dict);
     } else {
-      return this.calculateSum(filterOptions, impactData, metsAndOpts, plotColours);
+      return this.calculateSum(filterOptions, impactData, metsAndOpts, plotColours, dict);
     }
   }
 
@@ -163,9 +164,9 @@ export class DataFilterer {
   public calculateSum(filterOptions: DataFiltererOptions,
                       impactData: ImpactDataRow[],
                       metsAndOpts: MetricsAndOptions,
-                      plotColours: { [p: string]: string }): FilteredData {
+                      plotColours: { [p: string]: string },
+                      dict?: { [p: string]: string }): FilteredData {
     const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
-
     // now we filter by the compare variable
     const isTimeSeries: boolean = (filterOptions.plotType === "Time series");
     const xAxis = isTimeSeries ? "year" : filterOptions.xAxis;
@@ -195,29 +196,29 @@ export class DataFilterer {
     const datasets: FilteredRow[] = [];
     for (const yAxisVal of yAxisVars) {
       // if we have uncertainity grab the upper and lower bounds
-      if ((uncertainity.low != null) && (uncertainity.low != null) &&
+      if ((uncertainity.low != null) && (uncertainity.high != null) &&
         (filterOptions.plotType === "Time series") &&
         filterOptions.plotUncertainity) {
         const fRowLo = this.getDataRow(organisedData, yAxisVal, xAxisVals,
                          filterOptions, plotColours,
                          niceColours, uncertainity.low,
-                         "low");
+                         "low", dict);
         datasets.push(fRowLo);
       }
 
       const fRow = this.getDataRow(organisedData, yAxisVal, xAxisVals,
                      filterOptions, plotColours,
                      niceColours, filterOptions.metric,
-                     "mid");
+                     "mid", dict);
       datasets.push(fRow);
 
-      if ((uncertainity.low != null) && (uncertainity.low != null) &&
+      if ((uncertainity.low != null) && (uncertainity.high != null) &&
         (filterOptions.plotType === "Time series") &&
         filterOptions.plotUncertainity) {
         const fRowHi = this.getDataRow(organisedData, yAxisVal, xAxisVals,
                          filterOptions, plotColours,
                          niceColours, uncertainity.high,
-                         "high");
+                         "high", dict);
         datasets.push(fRowHi);
       }
     }
@@ -258,7 +259,8 @@ export class DataFilterer {
   public calculateMean(filterOptions: DataFiltererOptions,
                        impactData: ImpactDataRow[],
                        metsAndOpts: MetricsAndOptions,
-                       plotColours: { [p: string]: string }): FilteredData {
+                       plotColours: { [p: string]: string },
+                       dict?: { [p: string]: string }): FilteredData {
     // x axis will always be year!
     const filtData = this.filterByAll(filterOptions, metsAndOpts, impactData);
 
@@ -315,8 +317,13 @@ export class DataFilterer {
 
       // make sure we have colours for each yVar
       this.getColour(yVar, plotColours, niceColours);
+
+      let yAxisVal_fixed = yVar
+      if (dict !== null) {
+        yAxisVal_fixed = dict[yVar]
+      }
       const fRow = this.getChartJsRow(filterOptions.plotType,
-                      plotColours[yVar], yVar,
+                      plotColours[yVar], yAxisVal_fixed,
                       summedMetricByYAxis, "mid");
       datasets.push(fRow);
     }
@@ -569,19 +576,15 @@ export class DataFilterer {
     switch (compareVariable) {
       case "coverage":
         return {top: "fvps", bottom: "target_population"};
-        break;
 
       case "deaths_averted_rate":
         return {top: "deaths_averted", bottom: "fvps"};
-        break;
 
       case "cases_averted_rate":
         return {top: "cases_averted", bottom: "fvps"};
-        break;
 
       default:
         return {top: compareVariable};
-        break;
     }
   }
 
@@ -640,14 +643,14 @@ export class DataFilterer {
         const colourName: string =
           extraCNames[Math.floor(Math.random() * extraCNames.length)];
         // add it to the colourDictionary
-        $.extend(colourDict, { [key]: bonusColours[colourName]});
+        colourDict[key] = bonusColours[colourName];
         // delete it from the list of available colours
         delete bonusColours[colourName];
       } else {
         console.log("Additional warning: We have run out of nice colours");
         // if there are no colours, so add a neutral grey colour so that
         // it should be obvious when we've run out of colours.
-        $.extend(colourDict, { [key]: "#999999"});
+        colourDict[key] = "#999999";
       }
     }
   }
@@ -657,7 +660,8 @@ export class DataFilterer {
                     plotColours: { [p: string]: string },
                     extraColours: { [p: string]: string },
                     metric: string,
-                    pos: string) {
+                    pos: string,
+                    dictionary?: { [p: string]: string }) {
     let summedMetricByYAxis: number[] =
       this.reduceSummary(organisedData, yAxisVal, xAxisVals,
                  metric);
@@ -671,8 +675,14 @@ export class DataFilterer {
 
     // make sure we have colours for each yAxisVal
     this.getColour(yAxisVal, plotColours, extraColours);
+
+    let yAxisVal_fixed = yAxisVal
+    if (dictionary !== null) {
+      yAxisVal_fixed = dictionary[yAxisVal]
+    }
+
     const fRow = this.getChartJsRow(filterOptions.plotType,
-                    plotColours[yAxisVal], yAxisVal,
+                    plotColours[yAxisVal], yAxisVal_fixed,
                     summedMetricByYAxis,
                     pos);
     return fRow;
