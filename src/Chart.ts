@@ -7,6 +7,13 @@ import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
 import {DataFilterer, DataFiltererOptions, FilteredData} from "./DataFilterer";
 import {plotColours} from "./PlotColours";
 
+
+/**
+  * For various UI reasons we need to know which years a touchstone ends on.
+  * That is what this is. This probably should be read in from a source file - 
+  * but we already have too many so I hard coded it here.
+  *
+  */
 export const touchstoneYears: { [code: string]: number} = {
   "201210gavi-201303gavi" : 2011,
   "201210gavi-201810gavi" : 2017,

@@ -268,7 +268,7 @@ describe("DataFilterer", () => {
         let out = testObject.filterData(fakeOptions, fakeImpactData,
                                         fakeMetricAndOptions, plotColours, null);
 
-        fakeOptions.cumulative = true
+        fakeOptions.xAxis = "country"
         out = testObject.filterData(fakeOptions, fakeImpactData,
                                     fakeMetricAndOptions, plotColours, null);
     })
@@ -378,5 +378,48 @@ describe("DataFilterer", () => {
         expect(out).to.include({backgroundColor: '#0B588E', label: 'label'});
         expect(out.data).to.include.members([7,8,9,10,11,12]);
         expect(out.label).to.equal("label");
+    })
+
+    it("getColours", () => {
+        let plotColours = {"none": "#0000C0",
+                           "HPV":  "#BEBADA",
+                           "HepB": "#8DD3C7"};
+
+        let niceColours = {aqua:  "#00ffff",
+                           azure: "#f0ffff",
+                           beige: "#f5f5dc"}
+
+        // these tests should do nothing
+        let out = testObject.getColour("none", plotColours, niceColours)
+        out = testObject.getColour("HPV", plotColours, niceColours)
+        out = testObject.getColour("HepB", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(3)
+        expect(Object.keys(niceColours)).to.have.lengthOf(3)
+
+        let spy = sinon.spy(console, 'log');
+
+        out = testObject.getColour("a", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(4)
+        expect(Object.keys(niceColours)).to.have.lengthOf(2)
+        sinon.assert.calledWith(spy, "Warning: a does not have a default colour");
+
+        out = testObject.getColour("b", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(5)
+        expect(Object.keys(niceColours)).to.have.lengthOf(1)
+
+        out = testObject.getColour("c", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(6)
+        expect(Object.keys(niceColours)).to.have.lengthOf(0)
+        expect(Object.keys(plotColours)).to.contain("a")
+        expect(Object.keys(plotColours)).to.contain("b")
+        expect(Object.keys(plotColours)).to.contain("c")
+
+        out = testObject.getColour("d", plotColours, niceColours)
+        expect(Object.keys(plotColours)).to.have.lengthOf(7)
+        expect(Object.keys(niceColours)).to.have.lengthOf(0)
+        sinon.assert.calledWith(spy, "Additional warning: We have run out of nice colours");
+        expect(Object.values(plotColours)).to.contain("#999999")
+
+        spy.restore();
     })
 });

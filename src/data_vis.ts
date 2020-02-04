@@ -524,10 +524,19 @@ class DataVisModel {
   private updateXAxisOptions() {
     // refilter the data
     const chartOptions = {...this.chartOptions(), maxPlot: -1};
+
+    let dict = null
+    if (chartOptions.yAxis === "country") {
+      dict = countryDict
+    } else if (chartOptions.yAxis === "vaccine") {
+      dict = vaccineDict
+    }
+
     const filteredData = new DataFilterer().filterData(chartOptions,
                                this.impactData(),
                                metricsAndOptions,
-                               plotColours);
+                               plotColours,
+                               dict);
     this.xAxisNames(filteredData.xAxisVals);
     this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
     this.maxBars(this.xAxisNames().length);

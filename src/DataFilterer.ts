@@ -643,14 +643,14 @@ export class DataFilterer {
         const colourName: string =
           extraCNames[Math.floor(Math.random() * extraCNames.length)];
         // add it to the colourDictionary
-        $.extend(colourDict, { [key]: bonusColours[colourName]});
+        colourDict[key] = bonusColours[colourName];
         // delete it from the list of available colours
         delete bonusColours[colourName];
       } else {
         console.log("Additional warning: We have run out of nice colours");
         // if there are no colours, so add a neutral grey colour so that
         // it should be obvious when we've run out of colours.
-        $.extend(colourDict, { [key]: "#999999"});
+        colourDict[key] = "#999999";
       }
     }
   }
