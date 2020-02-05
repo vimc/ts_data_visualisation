@@ -290,7 +290,7 @@ export function timeSeriesChartConfig(filterData: FilteredData,
           const index = legendItem.datasetIndex;
           const ci = this.chart;
           const alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
-          const metaLo = ci.getDatasetMeta(index - offset1);
+          const metaLo = ci.getDatasetMeta(index - offset);
           const meta = ci.getDatasetMeta(index);
           const metaHi = ci.getDatasetMeta(index + offset);
           if (!alreadyHidden) {
