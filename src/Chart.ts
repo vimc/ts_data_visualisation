@@ -261,6 +261,7 @@ export function timeSeriesChartConfig(filterData: FilteredData,
                                       xAxisNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
   const anno: BaseAnnotation[] = dateToAnnotation(chartOptions.selectedTouchstones);
+  const offset: number = chartOptions.plotUncertainity ? 1 : 0;
 
   return {
     type: "line",
@@ -289,9 +290,9 @@ export function timeSeriesChartConfig(filterData: FilteredData,
           const index = legendItem.datasetIndex;
           const ci = this.chart;
           const alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
-          const metaLo = ci.getDatasetMeta(index - 1);
+          const metaLo = ci.getDatasetMeta(index - offset1);
           const meta = ci.getDatasetMeta(index);
-          const metaHi = ci.getDatasetMeta(index + 1);
+          const metaHi = ci.getDatasetMeta(index + offset);
           if (!alreadyHidden) {
             metaLo.hidden = true;
             meta.hidden = true;
