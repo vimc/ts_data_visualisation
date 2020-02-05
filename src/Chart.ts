@@ -40,6 +40,14 @@ export interface AnnotatedChartConfiguration extends ChartConfiguration {
   options: ChartOptionsWithAnnotation;
 }
 
+/**
+  * Produces a label with reasonable units (thousands, millions, billions)
+  *
+  * @param value - The value to be rescaled
+  * @param scale - The scale, this will usually be the largest number we've seen
+  *
+  * @returns The rescaled value + label as a string
+  */
 export function rescaleLabel(value: number, scale: number): string {
   // we need to round down to three significant figures
   const df = new DataFilterer();
@@ -54,7 +62,7 @@ export function rescaleLabel(value: number, scale: number): string {
   }
   if (scale > 1) { // round values in [1, 1000] down to nearest integer
     return Math.floor(value) + "";
-  } // i don't think rounding x in (0,1) is a good idea need to think about this
+  }
   return value.toString();
 }
 
@@ -73,7 +81,16 @@ export interface BaseAnnotation {
   };
 }
 
-export function annotationHelper(touchstone: string, year: number, colour: string): BaseAnnotation {
+/**
+  * Produces a label with reasonable units (thousands, millions, billions)
+  *
+  * @param value - The value to be rescaled
+  * @param scale - The scale, this will usually be the largest number we've seen
+  *
+  * @returns The rescaled value + label as a string
+  */
+export function annotationHelper(touchstone: string, year: number,
+                                 colour: string): BaseAnnotation {
   const a =   {
           drawTime: "afterDatasetsDraw",
           type: "line",
@@ -127,11 +144,20 @@ export function cleanMetric(metric: string): string {
 export function dateToAnnotation(touchstones: string[]): BaseAnnotation[] {
   const anno = touchstones.map( (tch: string): BaseAnnotation => {
           return annotationHelper(tch, touchstoneYears[tch],
-                      plotColours[tch]);
+                                  plotColours[tch]);
         });
   return anno;
 }
 
+/**
+  * Produces a chartjs config object for an impact plot
+  *
+  * @param filterData The filtered data
+  * @param compareNames The names that go along the x axis
+  * @param chartOptions The options that were used to filter the data
+  *
+  * @returns A chartjs config
+  */
 export function impactChartConfig(filterData: FilteredData,
                                   compareNames: string[],
                                   chartOptions: CustomChartOptions): ChartConfiguration {
@@ -169,6 +195,9 @@ export function impactChartConfig(filterData: FilteredData,
           },
         }],
       },
+      // This hides or shows labels on each block. We only show labels if the
+      // block is a least 1/10th of the total block (trying to print a label
+      // on every small block is a mess)
       plugins: {
         datalabels: {
           color: "white",
@@ -185,6 +214,7 @@ export function impactChartConfig(filterData: FilteredData,
           formatter: (value: number, ctx: any) => rescaleLabel(value, maxTotal),
         },
       },
+      // This adds the sum of all values at the top of the bars
       animation: {
         // this has to be a methodName() and not a () => or else it breaks chart.js!
         onComplete() {
@@ -204,6 +234,7 @@ export function impactChartConfig(filterData: FilteredData,
           }
         },
       },
+      // Override the default hover tool-tip
       tooltips: {
         callbacks: {
           label: function(tooltipItem, data) {
@@ -218,6 +249,15 @@ export function impactChartConfig(filterData: FilteredData,
   };
 }
 
+/**
+  * Produces a chartjs config object for a time series plot
+  *
+  * @param filterData The filtered data
+  * @param compareNames The names that go along the x axis
+  * @param chartOptions The options that were used to filter the data
+  *
+  * @returns A chartjs config
+  */
 export function timeSeriesChartConfig(filterData: FilteredData,
                                       xAxisNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
@@ -232,14 +272,21 @@ export function timeSeriesChartConfig(filterData: FilteredData,
     options: {
       legend: {
         display: true,
-        // this toggles on / off the confidence intervals
+        // This hides the legend elements to the confidence intervals
         labels: {
-          // This hides the
+          // This hides the any label with a '_' in it
+          // This works because we have named the data sets
+          // [ABC_lo, ABC, ABC_hi]
           filter: function(item, chart) {
             return !item.text.includes('_');
           }
         },
-        onClick: function(e, legendItem) { // need to hide index -1 and index +1
+        // This makes it so when we click the nth element of the legend we also
+        // hide/show the (n-1)th and the (n+1)th. This combined with setting the
+        // labels to be ordered [ABC_lo, ABC, ABC_hi] has the desired effect.
+        // This is all a bit hacky so be careful when changing how uncertainity
+        // is shown.
+        onClick: function(e, legendItem) {
           let index = legendItem.datasetIndex;
           let ci = this.chart;
           let alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
@@ -284,7 +331,7 @@ export function timeSeriesChartConfig(filterData: FilteredData,
       annotation: {
         annotations: anno,
       },
-
+      // Override the default hover tool-tip
       tooltips: {
         callbacks: {
           label: function(tooltipItem, data) {
