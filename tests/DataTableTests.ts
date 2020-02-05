@@ -14,16 +14,16 @@ describe("TableMaker", () => {
 
     const out: any[] = tbl.createTable(dataset, names)();
 
-    const expected: any[] = [ { compare: 'Cat', label: 'Alfa', data: 1 },
-                              { compare: 'Dog', label: 'Alfa', data: 9 },
-                              { compare: 'Cat', label: 'Bravo', data: 2 },
-                              { compare: 'Dog', label: 'Bravo', data: 8 },
-                              { compare: 'Cat', label: 'Charlie', data: 3 },
-                              { compare: 'Dog', label: 'Charlie', data: 7 },
-                              { compare: 'Cat', label: 'Delta', data: 4 },
-                              { compare: 'Dog', label: 'Delta', data: 6 },
-                              { compare: 'Cat', label: 'Echo', data: 5 },
-                              { compare: 'Dog', label: 'Echo', data: 5 } ];
+    const expected: any[] = [ { xaxis: 'Cat', label: 'Alfa', data: 1 },
+                              { xaxis: 'Dog', label: 'Alfa', data: 9 },
+                              { xaxis: 'Cat', label: 'Bravo', data: 2 },
+                              { xaxis: 'Dog', label: 'Bravo', data: 8 },
+                              { xaxis: 'Cat', label: 'Charlie', data: 3 },
+                              { xaxis: 'Dog', label: 'Charlie', data: 7 },
+                              { xaxis: 'Cat', label: 'Delta', data: 4 },
+                              { xaxis: 'Dog', label: 'Delta', data: 6 },
+                              { xaxis: 'Cat', label: 'Echo', data: 5 },
+                              { xaxis: 'Dog', label: 'Echo', data: 5 } ];
 
     expect(out).to.have.deep.members(expected);
   });
@@ -33,8 +33,8 @@ describe("TableMaker", () => {
 
     const out: any[] = tbl.createWideTable(dataset, names)();
 
-    const expected: any[] = [ { compare: 'Cat', Alfa: 1, Bravo: 2, Charlie: 3, Delta: 4, Echo: 5 },
-                              { compare: 'Dog', Alfa: 9, Bravo: 8, Charlie: 7, Delta: 6, Echo: 5 } ];
+    const expected: any[] = [ { xaxis: 'Cat', Alfa: 1, Bravo: 2, Charlie: 3, Delta: 4, Echo: 5 },
+                              { xaxis: 'Dog', Alfa: 9, Bravo: 8, Charlie: 7, Delta: 6, Echo: 5 } ];
 
     expect(out).to.have.deep.members(expected);
   });
