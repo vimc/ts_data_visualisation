@@ -29,7 +29,11 @@ export interface CountryFilterSettings extends ListFilterSettings {
 export interface DiseaseFilterSettings extends FilterSettings {
   vaccineFilters: ListFilter[];
 }
-
+/*
+ * This is the base class, it does nothing an only has a name member variable
+ * denoting whether or not it is open. Nothing should ever use this filter - we
+ * only export it so that it can be tested.
+ */
 export class Filter {
   public isOpen = ko.observable<boolean>(false);
   public name = ko.observable<string>();
@@ -43,6 +47,10 @@ export class Filter {
   }
 }
 
+/*
+ * This is filter has a list of options and a sub list of selected options.
+ * Options are (de-)selected via a checkbox
+ */
 export class ListFilter extends Filter {
   public options = ko.observableArray<string>();
   public selectedOptions = ko.observableArray<string>();
@@ -55,6 +63,8 @@ export class ListFilter extends Filter {
     this.dictionary = settings.humanNames;
   }
 
+  // sometimes the options use a shortened code and we need to translate it to
+  // something readable (e.g. IND vs India)
   public makeHumanreadable(code: string): string {
     return this.dictionary[code];
   }
@@ -68,6 +78,13 @@ export class ListFilter extends Filter {
   }
 }
 
+/*
+ * This is filter has a list of options and a sub list of selected options.
+ * Options are (de-)selected via a checkbox. It also has functionality to select
+ * groups of options by a button/member function.
+ * This probably should be renamed e.g. GroupedListFilter and some other
+ * renaming since it does need to be restricted to countries.
+ */
 export class CountryFilter extends ListFilter {
   private groups: { [code: string]: string[] };
 
@@ -92,6 +109,11 @@ export class CountryFilter extends ListFilter {
   }
 }
 
+/*
+ * This filter is for a numberic variable e.g. year. The user select two numbers
+ * a lower and upper bound. We do not ensure that the lower<upper, this is done
+ * by the app itself
+ */
 export class RangeFilter extends Filter {
   public selectedLow = ko.observable<number>();
   public selectedHigh = ko.observable<number>();
@@ -111,6 +133,21 @@ export class RangeFilter extends Filter {
   }
 }
 
+/*
+ * This filter has nested lists where each of the top options has list of
+ * sub-options. We use it for diseases and vaccines e.g.
+ * Measles
+ *  |_Measle_Vac_1
+ *  |_Measle_Vac_2
+ * HepB
+ *  |_HepB_Vac_1
+ *  |_HepB_Vac_2
+ * JE
+ *  |_JE_Vac
+ *
+ * We could rename this NestedListFilter since it does not have to apply to
+ * disease/vaccines.
+ */
 export class DiseaseFilter extends Filter {
   public selectedOptions = ko.observableArray([]);
   private vaccineFilters: ListFilter[] = [];
@@ -128,7 +165,6 @@ export class DiseaseFilter extends Filter {
 
   private updateSelectedOptions = () => {
      this.selectedOptions(this.vaccineFilters.map(
-        (v) => v.selectedOptions()).reduce((x, y) => x.concat(y), [])
-     );
+        (v) => v.selectedOptions()).reduce((x, y) => x.concat(y), []));
   }
 }
