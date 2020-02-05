@@ -1,6 +1,9 @@
-import * as ko from "knockout";
+/*
+ * This file contains the logic for the filters - i.e. the UI objects that allow
+ * the use to input their filter options
+*/
 
-import {diseaseDict} from "./Dictionaries";
+import * as ko from "knockout";
 
 export interface FilterSettings {
   name: string;
@@ -124,6 +127,8 @@ export class DiseaseFilter extends Filter {
   }
 
   private updateSelectedOptions = () => {
-     this.selectedOptions(this.vaccineFilters.map((v) => v.selectedOptions()).reduce((x, y) => x.concat(y), []));
+     this.selectedOptions(this.vaccineFilters.map(
+        (v) => v.selectedOptions()).reduce((x, y) => x.concat(y), [])
+     );
   }
 }

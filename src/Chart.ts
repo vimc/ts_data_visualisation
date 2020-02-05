@@ -1,19 +1,18 @@
 /**
-  * Functions in this file are mostly just helper functions for the chartjs
-  * plotting
-  */
+ * Functions in this file are mostly just helper functions for the chartjs
+ * plotting
+ */
 
 import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
 import {DataFilterer, DataFiltererOptions, FilteredData} from "./DataFilterer";
 import {plotColours} from "./PlotColours";
 
-
 /**
-  * For various UI reasons we need to know which years a touchstone ends on.
-  * That is what this is. This probably should be read in from a source file - 
-  * but we already have too many so I hard coded it here.
-  *
-  */
+ * For various UI reasons we need to know which years a touchstone ends on.
+ * That is what this is. This probably should be read in from a source file
+ * but we already have too many so I hard coded it here.
+ *
+ */
 export const touchstoneYears: { [code: string]: number} = {
   "201210gavi-201303gavi" : 2011,
   "201210gavi-201810gavi" : 2017,
@@ -41,13 +40,13 @@ export interface AnnotatedChartConfiguration extends ChartConfiguration {
 }
 
 /**
-  * Produces a label with reasonable units (thousands, millions, billions)
-  *
-  * @param value - The value to be rescaled
-  * @param scale - The scale, this will usually be the largest number we've seen
-  *
-  * @returns The rescaled value + label as a string
-  */
+ * Produces a label with reasonable units (thousands, millions, billions)
+ *
+ * @param value - The value to be rescaled
+ * @param scale - The scale, this will usually be the largest number we've seen
+ *
+ * @returns The rescaled value + label as a string
+ */
 export function rescaleLabel(value: number, scale: number): string {
   // we need to round down to three significant figures
   const df = new DataFilterer();
@@ -82,13 +81,13 @@ export interface BaseAnnotation {
 }
 
 /**
-  * Produces a label with reasonable units (thousands, millions, billions)
-  *
-  * @param value - The value to be rescaled
-  * @param scale - The scale, this will usually be the largest number we've seen
-  *
-  * @returns The rescaled value + label as a string
-  */
+ * Produces a label with reasonable units (thousands, millions, billions)
+ *
+ * @param value - The value to be rescaled
+ * @param scale - The scale, this will usually be the largest number we've seen
+ *
+ * @returns The rescaled value + label as a string
+ */
 export function annotationHelper(touchstone: string, year: number,
                                  colour: string): BaseAnnotation {
   const a =   {
@@ -150,14 +149,14 @@ export function dateToAnnotation(touchstones: string[]): BaseAnnotation[] {
 }
 
 /**
-  * Produces a chartjs config object for an impact plot
-  *
-  * @param filterData The filtered data
-  * @param compareNames The names that go along the x axis
-  * @param chartOptions The options that were used to filter the data
-  *
-  * @returns A chartjs config
-  */
+ * Produces a chartjs config object for an impact plot
+ *
+ * @param filterData The filtered data
+ * @param compareNames The names that go along the x axis
+ * @param chartOptions The options that were used to filter the data
+ *
+ * @returns A chartjs config
+ */
 export function impactChartConfig(filterData: FilteredData,
                                   compareNames: string[],
                                   chartOptions: CustomChartOptions): ChartConfiguration {
@@ -242,22 +241,22 @@ export function impactChartConfig(filterData: FilteredData,
             label += tooltipItem.yLabel + " ";
             label += cleanMetric(chartOptions.metric);
             return label;
-          }
-        }
+          },
+        },
       },
     },
   };
 }
 
 /**
-  * Produces a chartjs config object for a time series plot
-  *
-  * @param filterData The filtered data
-  * @param compareNames The names that go along the x axis
-  * @param chartOptions The options that were used to filter the data
-  *
-  * @returns A chartjs config
-  */
+ * Produces a chartjs config object for a time series plot
+ *
+ * @param filterData The filtered data
+ * @param compareNames The names that go along the x axis
+ * @param chartOptions The options that were used to filter the data
+ *
+ * @returns A chartjs config
+ */
 export function timeSeriesChartConfig(filterData: FilteredData,
                                       xAxisNames: string[],
                                       chartOptions: CustomChartOptions): AnnotatedChartConfiguration {
@@ -279,7 +278,7 @@ export function timeSeriesChartConfig(filterData: FilteredData,
           // [ABC_lo, ABC, ABC_hi]
           filter: function(item, chart) {
             return !item.text.includes('_');
-          }
+          },
         },
         // This makes it so when we click the nth element of the legend we also
         // hide/show the (n-1)th and the (n+1)th. This combined with setting the
@@ -287,20 +286,20 @@ export function timeSeriesChartConfig(filterData: FilteredData,
         // This is all a bit hacky so be careful when changing how uncertainity
         // is shown.
         onClick: function(e, legendItem) {
-          let index = legendItem.datasetIndex;
-          let ci = this.chart;
-          let alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
-          let meta_lo = ci.getDatasetMeta(index - 1);
-          let meta = ci.getDatasetMeta(index);
-          let meta_hi = ci.getDatasetMeta(index + 1);
+          const index = legendItem.datasetIndex;
+          const ci = this.chart;
+          const alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
+          const metaLo = ci.getDatasetMeta(index - 1);
+          const meta = ci.getDatasetMeta(index);
+          const metaHi = ci.getDatasetMeta(index + 1);
           if (!alreadyHidden) {
-            meta_lo.hidden = true;
+            metaLo.hidden = true;
             meta.hidden = true;
-            meta_hi.hidden = true;
+            metaHi.hidden = true;
           } else {
-            meta_lo.hidden = null;
+            metaLo.hidden = null;
             meta.hidden = null;
-            meta_hi.hidden = null;            
+            metaHi.hidden = null;
           }
 
           ci.update();
@@ -339,8 +338,8 @@ export function timeSeriesChartConfig(filterData: FilteredData,
             label += tooltipItem.yLabel + " ";
             label += cleanMetric(chartOptions.metric);
             return label;
-          }
-        }
+          },
+        },
       },
 
     },
