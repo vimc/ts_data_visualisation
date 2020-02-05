@@ -278,7 +278,7 @@ export function timeSeriesChartConfig(filterData: FilteredData,
           // This works because we have named the data sets
           // [ABC_lo, ABC, ABC_hi]
           filter: function(item, chart) {
-            return !item.text.includes('_');
+            return !item.text.includes("_");
           },
         },
         // This makes it so when we click the nth element of the legend we also

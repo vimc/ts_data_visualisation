@@ -1,3 +1,8 @@
+/**
+ * This file contains the code for dynamically creating help messages as strings
+ */
+
+
 // generate help title
 const impactOptionsHelp: string = "<p><h3>Impact Options</h3></p>" +
   "<p><h4>Compare across </h4>What values should we put along the x-axis</p>" +
@@ -49,34 +54,57 @@ export function generatedMetricsHelp(plot: string, visible: string[]) {
   let returnString: string  = "";
 
   if (visible.includes("deaths")) {
-    returnString = returnString.concat("<p><h4>Deaths</h4>The number of deaths corresponding to that year.</p>");
+    returnString =
+      returnString.concat("<p><h4>Deaths</h4>The number of deaths " +
+                          "corresponding to that year.</p>");
   }
   if (visible.includes("deaths_averted")) {
-    returnString = returnString.concat("<p><h4>Deaths averted</h4>The number of deaths averted corresponding to that year.</p>");
+    returnString =
+      returnString.concat("<p><h4>Deaths averted</h4>The number of deaths " +
+                          "averted corresponding to that year.</p>");
   }
   if (visible.includes("dalys")) {
-    returnString = returnString.concat("<p><h4>DALYs</h4>The number of disease affected life years corresponding to that year.</p>");
+    returnString =
+      returnString.concat("<p><h4>DALYs</h4>The number of disease affected " +
+                          "life years corresponding to that year.</p>");
   }
   if (visible.includes("dalys_averted")) {
-    returnString = returnString.concat("<p><h4>DALYs averted</h4>The number of disease affected life years averted corresponding to that year.</p>");
+    returnString =
+      returnString.concat("<p><h4>DALYs averted</h4>The number of disease " +
+                          "affected life years averted corresponding to that " +
+                          "year.</p>");
   }
   if (visible.includes("cases")) {
-    returnString = returnString.concat("<p><h4>Cases</h4>The number of cases corresponding to that year.</p>");
+    returnString =
+      returnString.concat("<p><h4>Cases</h4>The number of cases " +
+                          "corresponding to that year.</p>");
   }
   if (visible.includes("cases_averted")) {
-    returnString = returnString.concat("<p><h4>Cases averted</h4>The number of cases averted corresponding to that year.</p>");
+    returnString =
+      returnString.concat("<p><h4>Cases averted</h4>The number of cases " +
+                          "averted corresponding to that year.</p>");
   }
   if (visible.includes("fvps")) {
-    returnString = returnString.concat("<p><h4>FVPs</h4>Fully vaccinated persons</p>");
+    returnString =
+      returnString.concat("<p><h4>FVPs</h4>Fully vaccinated persons</p>");
   }
   if (visible.includes("coverage")) {
-    returnString = returnString.concat("<p><h4>Coverage</h4>The proportion of the population covered by the vaccine (between 0 an 1).</p>");
+    returnString =
+      returnString.concat("<p><h4>Coverage</h4>The proportion of the " +
+                          "population covered by the vaccine (between 0 and " +
+                          "1).</p>");
   }
   if (visible.includes("deaths_averted_rate")) {
-    returnString = returnString.concat("<p><h4>Deaths (rate)</h4>The proportion of the vaccinated population who die of the disease (between 0 an 1).</p>");
+    returnString =
+      returnString.concat("<p><h4>Deaths (rate)</h4>The proportion of the " +
+                          "vaccinated population who die of the disease " +
+                          "(between 0 an 1).</p>");
   }
   if (visible.includes("cases_averted_rate")) {
-    returnString = returnString.concat("<p><h4>Cases (rate)</h4>The proportion of the vaccinated population who will become infected with the disease (between 0 an 1).</p>");
+    returnString =
+      returnString.concat("<p><h4>Cases (rate)</h4>The proportion of the " +
+                          "vaccinated population who will become infected" +
+                          "with the disease (between 0 an 1).</p>");
   }
 
   return returnString;
