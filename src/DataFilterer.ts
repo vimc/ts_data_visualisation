@@ -468,8 +468,15 @@ export class DataFilterer {
         const sortedCompares = sortedGroupSummed.map((d) => d[0]);
         return sortedCompares.slice(0, maxPlot);
       } else {
-        const unsortedGroupSummed = [...groupedSummed].map((d) => d[0]);
-        return unsortedGroupSummed.slice(0, maxPlot).sort();
+        // There is question around what should we do if the user is plotting
+        // year along the x axis and asks for N bars, we could either:
+        // * Show the N years with the greatest impact (treat years like all
+        //   other variables),
+        // * Show the first N years chronologically.
+        // At the moment we do the second, but there is a reasonable case for
+        // the first.
+        const unsortedGroupSummed = [...groupedSummed].map((d) => d[0]).sort();
+        return unsortedGroupSummed.slice(0, maxPlot);
       }
     } else {
       return [...new Set((impactData.map((x) => x[xAxisVar])))].sort();
