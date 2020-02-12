@@ -318,12 +318,12 @@ export class DataFilterer {
       // make sure we have colours for each yVar
       this.getColour(yVar, plotColours, niceColours);
 
-      let yAxisVal_fixed = yVar
+      let yAxisValFixed = yVar;
       if (dict !== null) {
-        yAxisVal_fixed = dict[yVar]
+        yAxisValFixed = dict[yVar];
       }
       const fRow = this.getChartJsRow(filterOptions.plotType,
-                      plotColours[yVar], yAxisVal_fixed,
+                      plotColours[yVar], yAxisValFixed,
                       summedMetricByYAxis, "mid");
       datasets.push(fRow);
     }
@@ -676,13 +676,13 @@ export class DataFilterer {
     // make sure we have colours for each yAxisVal
     this.getColour(yAxisVal, plotColours, extraColours);
 
-    let yAxisVal_fixed = yAxisVal
+    let yAxisValFixed = yAxisVal;
     if (dictionary !== null) {
-      yAxisVal_fixed = dictionary[yAxisVal]
+      yAxisValFixed = dictionary[yAxisVal];
     }
 
     const fRow = this.getChartJsRow(filterOptions.plotType,
-                    plotColours[yAxisVal], yAxisVal_fixed,
+                    plotColours[yAxisVal], yAxisValFixed,
                     summedMetricByYAxis,
                     pos);
     return fRow;

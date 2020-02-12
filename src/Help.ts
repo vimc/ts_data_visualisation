@@ -2,7 +2,6 @@
  * This file contains the code for dynamically creating help messages as strings
  */
 
-
 // generate help title
 const impactOptionsHelp: string = "<p><h3>Impact Options</h3></p>" +
   "<p><h4>Compare across </h4>What values should we put along the x-axis</p>" +

@@ -1,5 +1,5 @@
 /*
- * This file reads the data files into javascript objects using the 
+ * This file reads the data files into javascript objects using the
  * loadObjectFromJSONFile. There is nothing clever going on here. If there are
  * problems withany of these objects first check that the files exist in the
  * same directory as the app. Then check loadObjectFromJSONFile.

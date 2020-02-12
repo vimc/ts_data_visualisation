@@ -275,8 +275,8 @@ class DataVisModel {
 
   private plotUncertainty = ko.computed<boolean>(() => {
     // in order to show uncertainty we must have...
-    return ((this.uncertaintyChecked()) &&      // ...checked the option...
-        (this.currentPlot() === "Time series"));// ...be on a time series...
+    return ((this.uncertaintyChecked()) &&       // ...checked the option...
+        (this.currentPlot() === "Time series")); // ...be on a time series...
   }, this);
 
   private yAxisTitle = ko.computed(() => {
@@ -409,11 +409,11 @@ class DataVisModel {
       this.chartObject.destroy();
     }
 
-    let dict = null
+    let dict = null;
     if (chartOptions.yAxis === "country") {
-      dict = countryDict
+      dict = countryDict;
     } else if (chartOptions.yAxis === "vaccine") {
-      dict = vaccineDict
+      dict = vaccineDict;
     }
 
     const filterData = new DataFilterer().filterData(chartOptions,
@@ -444,11 +444,11 @@ class DataVisModel {
       this.chartObjectTS.destroy();
     }
 
-    let dict = null
+    let dict = null;
     if (chartOptions.yAxis === "country") {
-      dict = countryDict
+      dict = countryDict;
     } else if (chartOptions.yAxis === "vaccine") {
-      dict = vaccineDict
+      dict = vaccineDict;
     }
 
     const filterData = new DataFilterer().filterData(chartOptions,
@@ -524,11 +524,11 @@ class DataVisModel {
     // refilter the data
     const chartOptions = {...this.chartOptions(), maxPlot: -1};
 
-    let dict = null
+    let dict = null;
     if (chartOptions.yAxis === "country") {
-      dict = countryDict
+      dict = countryDict;
     } else if (chartOptions.yAxis === "vaccine") {
-      dict = vaccineDict
+      dict = vaccineDict;
     }
 
     const filteredData = new DataFilterer().filterData(chartOptions,
