@@ -127,31 +127,41 @@ describe("DataFilterer", () => {
     it("getUniqueVariables", () => {
         const max: number = 2;
 
-        const out1: any[] = 
+        const out1: any[] =
             testObject.getUniqueVariables(max, "activity_type", "deaths_averted", fakeImpactData);
         // all of the members of compvars should be diseases
         expect(activityTypes).to.include.members(out1);
 
-        const out2: any[] = 
+        const out2: any[] =
             testObject.getUniqueVariables(max, "disease", "deaths_averted", fakeImpactData);
         // all of the members of compvars should be diseases
         expect(diseases).to.include.members(out2);
 
-        const out3: any[] = 
+        const out3: any[] =
             testObject.getUniqueVariables(max, "continent", "deaths_averted", fakeImpactData);
         // all of the members of compvars should be diseases
         expect(["Asia"]).to.include.members(out3);
 
-        const out4: any[] = 
+        const out4: any[] =
             testObject.getUniqueVariables(max, "country", "deaths_averted", fakeImpactData);
         // all of the members of compvars should be diseases
         expect(countries).to.include.members(out4);
 
 
-        const out5: any[] = 
+        const out5: any[] =
             testObject.getUniqueVariables(max, "touchstone", "deaths_averted", fakeImpactData);
         // all of the members of compvars should be diseases
         expect(touchstones).to.include.members(out5);
+
+        const out6: any[] =
+            testObject.getUniqueVariables(max, "year", "deaths_averted", fakeImpactData);
+        // all of the members of compvars should be diseases
+        expect(out6).to.include.members([2010, 2011]);
+
+        const out7: any[] =
+            testObject.getUniqueVariables(5, "year", "deaths_averted", fakeImpactData);
+        // all of the members of compvars should be diseases
+        expect([2010, 2011, 2012, 2013, 2014]).to.include.members(out7);
     })
 
     it("meanVariables", () => {
