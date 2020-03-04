@@ -66,10 +66,9 @@
 
     <div class="contents container-fluid">
         <div class="row">
-            <div class="tab-content col-9">
-                <div id="impact" class="container tab-pane" data-bind="css: {'active': currentPlot() == 'Impact'}">
-                    <div class="row">
-                        <div class="col-12 p-5">
+            <div class="tab-content col-lg-8 col-md-9">
+                <div id="impact" class="tab-pane" data-bind="css: {'active': currentPlot() == 'Impact'}">
+                        <div class="p-5">
 
                             <p style="font-weight:bold;color:red"
                                data-bind="text: warningMessage, visible: showWarning">
@@ -103,12 +102,10 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
                 </div>
-                <div id="timeseries" class="container tab-pane"
+                <div id="timeseries" class="tab-pane"
                      data-bind="css: {'active': currentPlot() == 'Time series'}">
-                    <div class="row">
-                        <div class="col-12 p-5">
+                        <div class="p-5">
 
                             <p style="font-weight:bold;color:red"
                                data-bind="text: warningMessage, visible: showWarning">
@@ -122,7 +119,6 @@
                                         When stratifying by anything other than disease, the plots might overstate the total figures. This is because we might count the same person as dying from different diseases.
                                       </p> -->
                         </div>
-                    </div>
                 </div>
             </div>
             <div class="col-3 mt-5 pr-5">
