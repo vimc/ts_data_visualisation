@@ -7,14 +7,6 @@ html, body , .page-wrapper {
 }
 
 .sidebar {
-    float: left;
-    overflow-y: auto;
-    -webkit-transition: width 500s ease;
-    -moz-transition: width 500s ease;
-    -o-transition: width 500ms ease;
-    transition: width 500ms ease;
-    width: 0;
-    border: 0;
     bottom: 0;
     min-height: 100%;
 }
