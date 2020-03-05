@@ -39,6 +39,20 @@
             text-decoration: none;
             background-color: #007bff;
         }
+
+        .nav-tabs {
+            border-bottom: 2px solid rgba(54, 162, 235, 0.2);
+        }
+
+        .nav-tabs .nav-link {
+            border: 0;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+            background-color: rgba(54, 162, 235, 0.2);
+            border-color: rgba(54, 162, 235, 0.2);
+        }
     </style>
 
     <!-- Loading Screen -->
@@ -56,102 +70,118 @@
 <div class="d-none page-wrapper" data-bind="css:{'d-none':false}">
 
     <nav class="navbar navbar-light d-block">
-        <a class="navbar-brand" href="#">
+        <span class="navbar-brand" style="margin-top: -6px">
             <img src="./logo-dark-drop.png" height="50px"/>
-        </a>
+        </span>
         <div class="d-inline-block"
-             style="color: #0056b3; font-size: 22px; font-weight: 500;vertical-align: -webkit-baseline-middle;">
+             style="color: #0056b3; border-right: 1px solid #007bff; padding-right: 15px; font-weight: 500;vertical-align: -webkit-baseline-middle;">
             VIMC Data Visualisation Tool
         </div>
-    </nav>
-
-    <nav class="navbar navbar-light d-block py-0 px-1">
-        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-            File
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#exportModal" data-toggle="modal" data-target="#exportModal">Export png</a>
-            <a class="dropdown-item" href="#">Export csv</a>
-            <hr/>
-            <a class="dropdown-item" href="#">Export whole dataset</a>
+        <div class="dropdown d-inline-block">
+            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" style="margin-top: 9px;">
+                File
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#exportModal" data-toggle="modal" data-target="#exportModal">Export
+                    png</a>
+                <a class="dropdown-item" href="#">Export csv</a>
+                <hr/>
+                <a class="dropdown-item" href="#">Export whole dataset</a>
+            </div>
         </div>
-        <a href="#" style="border-left: 1px solid #007bff; padding-left: 15px;">
-            Version
-        </a>
+        <div class="d-inline-block"
+             style="border-left: 1px solid #007bff; padding-left: 15px; vertical-align: middle; margin-top: 9px;">
+            <a href="#">
+                Version
+            </a>
+        </div>
     </nav>
 
     <div class="clearfix"></div>
 
     <div class="contents container-fluid">
         <div class="row">
-            <div class="tab-content col-lg-8 col-md-9">
-                <div id="impact" class="tab-pane" data-bind="css: {'active': currentPlot() == 'Impact'}">
-                    <div class="p-5">
+            <div class="col-lg-8 col-md-9 pt-5 pl-5">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Impact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Time series</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Map</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div id="impact" class="tab-pane" data-bind="css: {'active': currentPlot() == 'Impact'}">
+                        <div class="py-5 px-3">
 
-                        <p style="font-weight:bold;color:red"
-                           data-bind="text: warningMessage, visible: showWarning">
-                        </p>
+                            <p style="font-weight:bold;color:red"
+                               data-bind="text: warningMessage, visible: showWarning">
+                            </p>
 
-                        <canvas id="myChart"></canvas>
+                            <canvas id="myChart"></canvas>
 
-                    </div>
-                </div>
-                <div id="timeseries" class="tab-pane"
-                     data-bind="css: {'active': currentPlot() == 'Time series'}">
-                    <div class="p-5">
-
-                        <p style="font-weight:bold;color:red"
-                           data-bind="text: warningMessage, visible: showWarning">
-                        </p>
-
-                        <div style="max-width: 1000px">
-                            <canvas id="timeSeriesChart"></canvas>
                         </div>
-
-                        <!--           <p>
-                                    When stratifying by anything other than disease, the plots might overstate the total figures. This is because we might count the same person as dying from different diseases.
-                                  </p> -->
                     </div>
-                </div>
-                <form class="px-5">
-                    <div class="form-group row">
-                        <div class="col">
-                            <label>
-                                Compare across <span class="info icon" data-toggle="tooltip" data-placement="top"
-                                                     title="What should we use as the x-axis for the graph?"></span>
-                            </label>
-                            <select class="form-control" data-bind="options: xAxisOptions, value: xAxis"></select>
-                            <div class="form-check mt-3" data-bind="visible: xAxis() == 'year'">
-                                <input class="form-check-input" type="checkbox" data-bind="checked: cumulativePlot"
-                                       id="cumulativePlotId">
-                                <label class="form-check-label" for="cumulativePlotId">
-                                    Cumulative
+                    <div id="timeseries" class="tab-pane"
+                         data-bind="css: {'active': currentPlot() == 'Time series'}">
+                        <div class="p-5">
+
+                            <p style="font-weight:bold;color:red"
+                               data-bind="text: warningMessage, visible: showWarning">
+                            </p>
+
+                            <div style="max-width: 1000px">
+                                <canvas id="timeSeriesChart"></canvas>
+                            </div>
+
+                            <!--           <p>
+                                        When stratifying by anything other than disease, the plots might overstate the total figures. This is because we might count the same person as dying from different diseases.
+                                      </p> -->
+                        </div>
+                    </div>
+                    <form class="px-3">
+                        <div class="form-group row">
+                            <div class="col">
+                                <label>
+                                    Compare across <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                                         title="What should we use as the x-axis for the graph?"></span>
                                 </label>
+                                <select class="form-control" data-bind="options: xAxisOptions, value: xAxis"></select>
+                                <div class="form-check mt-3" data-bind="visible: xAxis() == 'year'">
+                                    <input class="form-check-input" type="checkbox" data-bind="checked: cumulativePlot"
+                                           id="cumulativePlotId">
+                                    <label class="form-check-label" for="cumulativePlotId">
+                                        Cumulative
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label>Stratify by <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                                         title="What should we stratify by?"></span>
+                                </label>
+                                <select class="form-control" data-bind="options: yAxisOptions, value: yAxis"></select>
+                            </div>
+                            <div class="col">
+                                <label style="display: block">Show top</label>
+                                <select type="number" class="form-control"
+                                        style="width: 100px; display:inline;margin-right: 5px;"
+                                        data-bind="options: maxPlotOptions, value: maxBars"></select> values
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox"
+                                           data-bind="checked: hideLabels"
+                                           id="hideLabelsId">
+                                    <label class="form-check-label" for="hideLabelsId">Hide Labels</label>
+                                </div>
                             </div>
                         </div>
-                        <div class="col">
-                            <label>Stratify by <span class="info icon" data-toggle="tooltip" data-placement="top"
-                                                     title="What should we stratify by?"></span>
-                            </label>
-                            <select class="form-control" data-bind="options: yAxisOptions, value: yAxis"></select>
-                        </div>
-                        <div class="col">
-                            <label style="display: block">Show top</label>
-                            <select type="number" class="form-control"
-                                    style="width: 100px; display:inline;margin-right: 5px;"
-                                    data-bind="options: maxPlotOptions, value: maxBars"></select> values
-                            <div class="form-check mt-3">
-                                <input class="form-check-input" type="checkbox"
-                                       data-bind="checked: hideLabels"
-                                       id="hideLabelsId">
-                                <label class="form-check-label" for="hideLabelsId">Hide Labels</label>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-            <div class="col-3 mt-5 pr-5">
+            <div class="col-3 mt-5 pl-5 pr-3">
                 <form>
                     <div class="form-group">
                         <label>Metric</label>
@@ -219,7 +249,8 @@
                                data-bind="value: fileName"/>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-success"  data-dismiss="modal" data-bind="click: exportPlot">Export</button>
+                        <button class="btn btn-success" data-dismiss="modal" data-bind="click: exportPlot">Export
+                        </button>
                     </div>
                 </form>
             </div>
