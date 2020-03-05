@@ -198,6 +198,22 @@
                             <option value="cohort">Lifetime</option>
                         </select>
                     </div>
+                    <div class="form-group row" data-bind="with: yearFilter">
+                        <div class="col">
+                            <label>First year</label>
+                            <select class="form-control" data-bind="value: selectedLow">
+                                <option value="2000">2000</option>
+                                <option value="2000">2001</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label>Last year</label>
+                            <select class="form-control" data-bind="value: selectedHigh">
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label>Age</label>
                         <select class="form-control" data-bind="value: ageGroup">
