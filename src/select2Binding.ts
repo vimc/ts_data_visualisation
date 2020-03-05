@@ -16,6 +16,21 @@ ko.bindingHandlers.select2 = {
   init: (element: Node, valueAccessor: () => any, allBindings: AllBindingsAccessor) => {
     const options = ko.toJS(valueAccessor()) || {};
     setTimeout(() => {
+      options.templateResult = function (data: any) {
+        // We only really care if there is an element to pull classes from
+        if (!data.element) {
+          return data.text;
+        }
+
+        var $element = $(data.element);
+
+        var $wrapper = $('<span></span>');
+        $wrapper.addClass($element[0].className);
+
+        $wrapper.text(data.text);
+
+        return $wrapper;
+      };
       $(element).select2(options);
       $(element).on("select2:unselecting", (ev: any) => {
         if (ev.params.args.originalEvent) {

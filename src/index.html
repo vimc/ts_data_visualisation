@@ -17,8 +17,60 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/css/bootstrap4-toggle.min.css"
           rel="stylesheet">
-
     <style>
+        select {
+            background-image: linear-gradient(45deg, transparent 50%, #212529 60%), linear-gradient(135deg, #212529 40%, transparent 50%);
+            background-position: calc(100% - 15px) 15px, calc(100% - 9px) 15px, 100% 0;
+            background-size: 6px 6px, 6px 6px;
+            background-repeat: no-repeat;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .vue-treeselect__control {
+            font-size: inherit;
+            display: table;
+            padding-bottom: 0;
+        }
+
+        .vue-treeselect__control-arrow-container {
+            padding-top: 0 !important;
+        }
+
+        .vue-treeselect__placeholder, .vue-treeselect__control-arrow {
+            color: inherit !important;
+        }
+
+        .vue-treeselect__single-value, .vue-treeselect__placeholder {
+            padding-left: 0;
+            line-height: inherit;
+            font-size: inherit;
+        }
+
+        .vue-treeselect--focused.vue-treeselect--searchable .vue-treeselect__single-value {
+            color: inherit;
+        }
+
+        .vue-treeselect__control-arrow-container {
+            padding-top: 8px;
+            vertical-align: top;
+        }
+
+        .vue-treeselect__control-arrow {
+            color: inherit;
+        }
+        .vue-treeselect__multi-value-item {
+            color: white !important;
+            background-color: #0056b3 !important;
+            border-color: #0056b3 !important;
+            font-size: 14px !important;
+        }
+
+        .vue-treeselect__icon {
+            color: white !important;
+        }
+
         .select2-container {
             width: 100% !important;
         }
@@ -53,6 +105,10 @@
             background-color: rgba(54, 162, 235, 0.2);
             border-color: rgba(54, 162, 235, 0.2);
         }
+
+        .lower-level {
+            padding-left: 10px;
+        }
     </style>
 
     <!-- Loading Screen -->
@@ -62,6 +118,10 @@
             $(".loader").fadeOut("fast");
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@^2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.umd.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.min.css">
 </head>
 
 <body>
@@ -223,17 +283,16 @@
                     </div>
                     <div class="form-group">
                         <label>Country</label>
-                        <select multiple="multiple" class="form-control"
-                                data-bind="select2: { placeholder: 'Select...', closeOnSelect: true }">
-                        </select>
+                        <div id="country-select">
+                            <treeselect v-model="value" :multiple="true" :options="options"/>
+                        </div>
                     </div>
                     <div class="form-group" data-bind="with: vaccineFilter,
                      visible: showVaccineFilter">
                         <label>Disease/vaccine</label>
-                        <select multiple="multiple" class="form-control"
-                                data-bind="options: options, selectedOptions: selectedOptions,
-                                select2: { placeholder: 'Select...', closeOnSelect: true }">
-                        </select>
+                        <div id="disease-select">
+                            <treeselect v-model="value" :multiple="true" :options="options"/>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -417,6 +476,64 @@
 </div>
 
 <script src="bundle.js"></script>
+
+<script>
+    Vue.component('treeselect', VueTreeselect.Treeselect);
+
+    new Vue({
+        el: '#country-select',
+        data: {
+            // define the default value
+            value: null,
+            // define options
+            options: [{
+                "id": "pine",
+                "label": "PINE",
+                "children": [
+                    {
+                        "id": "1-1",
+                        "label": "Pakistan"
+                    },
+                    {
+                        "id": "1-2",
+                        "label": "India"
+                    },
+                    {
+                        "id": "1-3",
+                        "label": "Nigeria"
+                    },
+                    {
+                        "id": "1-4",
+                        "label": "Ethiopia"
+                    }
+                ]
+            }]
+        },
+    });
+
+
+    new Vue({
+        el: '#disease-select',
+        data: {
+            // define the default value
+            value: null,
+            // define options
+            options: [{
+                id: "HepBparent",
+                label: "HepB",
+                children: [{id: "HepB", label: "HepB"}, {id: "HepB_BD", label: "HepB_BD"}]
+            },
+                {id: "Hibparent", label: "Hib", children: [{id: "Hib3", label: "Hib3"}]},
+                {
+                    id: "Measlesparent",
+                    label: "Measles",
+                    children: [{id: "MCV1", label: "MCV1"}, {id: "MCV2", label: "MCV2"}, {
+                        id: "Measles", label: "Measles"
+                    }]
+                }]
+        },
+    });
+</script>
 
 </body>
 </html>
