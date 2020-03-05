@@ -22,6 +22,23 @@
         .select2-container {
             width: 100% !important;
         }
+
+        .select2-selection__choice {
+            color: white;
+            background-color: #0056b3 !important;
+            border-color: #0056b3 !important;
+            border-radius: 0px !important;
+        }
+
+        .select2-selection__choice__remove {
+            color: white !important;
+        }
+
+        .dropdown-item:hover {
+            color: #fff;
+            text-decoration: none;
+            background-color: #007bff;
+        }
     </style>
 
     <!-- Loading Screen -->
@@ -49,17 +66,19 @@
     </nav>
 
     <nav class="navbar navbar-light d-block py-0 px-1">
-        <div class="dropdown">
-            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                File
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Export png</a>
-                <a class="dropdown-item" href="#">Export csv</a>
-                <hr/>
-                <a class="dropdown-item" href="#">Export whole dataset</a>
-            </div>
+        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            File
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#exportModal" data-toggle="modal" data-target="#exportModal">Export png</a>
+            <a class="dropdown-item" href="#">Export csv</a>
+            <hr/>
+            <a class="dropdown-item" href="#">Export whole dataset</a>
         </div>
+        <a href="#" style="border-left: 1px solid #007bff; padding-left: 15px;">
+            Version
+        </a>
     </nav>
 
     <div class="clearfix"></div>
@@ -68,80 +87,92 @@
         <div class="row">
             <div class="tab-content col-lg-8 col-md-9">
                 <div id="impact" class="tab-pane" data-bind="css: {'active': currentPlot() == 'Impact'}">
-                        <div class="p-5">
+                    <div class="p-5">
 
-                            <p style="font-weight:bold;color:red"
-                               data-bind="text: warningMessage, visible: showWarning">
-                            </p>
+                        <p style="font-weight:bold;color:red"
+                           data-bind="text: warningMessage, visible: showWarning">
+                        </p>
 
-                            <canvas id="myChart"></canvas>
+                        <canvas id="myChart"></canvas>
 
-                            <form class="mt-3">
-                                <div class="form-group row">
-                                    <div class="col-1">
-                                        <label for="plot-title" class="col-form-label">Title</label>
-                                    </div>
-                                    <div class="col-12 col-sm-7">
-                                        <input type="text" id="plot-title" class="form-control"
-                                               data-bind="value: plotTitle"/>
-                                    </div>
-                                    <div class="col-12 col-sm-4">
-                                        <button class="btn btn-success" data-bind="click: applyTitle">Apply</button>
-                                        <button class="btn btn-success" data-bind="click: resetTitle">Reset</button>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"
-                                                   data-bind="checked: hideLabels"
-                                                   id="hideLabelsId">
-                                            <label class="form-check-label" for="hideLabelsId">Hide Labels</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                    </div>
                 </div>
                 <div id="timeseries" class="tab-pane"
                      data-bind="css: {'active': currentPlot() == 'Time series'}">
-                        <div class="p-5">
+                    <div class="p-5">
 
-                            <p style="font-weight:bold;color:red"
-                               data-bind="text: warningMessage, visible: showWarning">
-                            </p>
+                        <p style="font-weight:bold;color:red"
+                           data-bind="text: warningMessage, visible: showWarning">
+                        </p>
 
-                            <div style="max-width: 1000px">
-                                <canvas id="timeSeriesChart"></canvas>
-                            </div>
-
-                            <!--           <p>
-                                        When stratifying by anything other than disease, the plots might overstate the total figures. This is because we might count the same person as dying from different diseases.
-                                      </p> -->
+                        <div style="max-width: 1000px">
+                            <canvas id="timeSeriesChart"></canvas>
                         </div>
+
+                        <!--           <p>
+                                    When stratifying by anything other than disease, the plots might overstate the total figures. This is because we might count the same person as dying from different diseases.
+                                  </p> -->
+                    </div>
                 </div>
+                <form class="px-5">
+                    <div class="form-group row">
+                        <div class="col">
+                            <label>
+                                Compare across <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                                     title="What should we use as the x-axis for the graph?"></span>
+                            </label>
+                            <select class="form-control" data-bind="options: xAxisOptions, value: xAxis"></select>
+                            <div class="form-check mt-3" data-bind="visible: xAxis() == 'year'">
+                                <input class="form-check-input" type="checkbox" data-bind="checked: cumulativePlot"
+                                       id="cumulativePlotId">
+                                <label class="form-check-label" for="cumulativePlotId">
+                                    Cumulative
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label>Stratify by <span class="info icon" data-toggle="tooltip" data-placement="top"
+                                                     title="What should we stratify by?"></span>
+                            </label>
+                            <select class="form-control" data-bind="options: yAxisOptions, value: yAxis"></select>
+                        </div>
+                        <div class="col">
+                            <label style="display: block">Show top</label>
+                            <select type="number" class="form-control"
+                                    style="width: 100px; display:inline;margin-right: 5px;"
+                                    data-bind="options: maxPlotOptions, value: maxBars"></select> values
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox"
+                                       data-bind="checked: hideLabels"
+                                       id="hideLabelsId">
+                                <label class="form-check-label" for="hideLabelsId">Hide Labels</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="col-3 mt-5 pr-5">
                 <form>
                     <div class="form-group">
                         <label>Metric</label>
-                        <select class="form-control">
-                            <option>Deaths</option>
-                            <option>Dalys</option>
+                        <select class="form-control" data-bind="value:  humanReadableBurdenOutcome">
+                            <option value="deaths">Deaths</option>
+                            <option value="deaths_averted">Deaths averted</option>
+                            <option value="dalys">Dalys</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Method</label>
-                        <select class="form-control">
-                            <option>Cross-sectional</option>
-                            <option>Lifetime</option>
+                        <select class="form-control" data-bind="value: yearMethod">
+                            <option value="cross">Cross-sectional</option>
+                            <option value="cohort">Lifetime</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Age</label>
-                        <select class="form-control">
-                            <option>All</option>
-                            <option>Under 5</option>
+                        <select class="form-control" data-bind="value: ageGroup">
+                            <option value="all">All</option>
+                            <option value="under5">Under 5</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -150,17 +181,50 @@
                                 data-bind="select2: { placeholder: 'Select...', closeOnSelect: true }">
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" data-bind="with: vaccineFilter,
+                     visible: showVaccineFilter">
                         <label>Disease/vaccine</label>
                         <select multiple="multiple" class="form-control"
-                                data-bind="select2: { placeholder: 'Select...', closeOnSelect: true }">
+                                data-bind="options: options, selectedOptions: selectedOptions,
+                                select2: { placeholder: 'Select...', closeOnSelect: true }">
                         </select>
                     </div>
                 </form>
             </div>
         </div>
+
     </div>
 
+</div>
+
+<div class="modal fade" id="exportModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Export plot as png</h3>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="plot-title" class="col-form-label">Plot title</label>
+
+                        <input type="text" id="plot-title" class="form-control"
+                               data-bind="value: plotTitle"/>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="plot-title" class="col-form-label">File name</label>
+
+                        <input type="text" id="file-name" class="form-control"
+                               data-bind="value: fileName"/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success"  data-dismiss="modal" data-bind="click: exportPlot">Export</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Help Modal -->

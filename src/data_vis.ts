@@ -154,10 +154,11 @@ class DataVisModel {
   private showCountryFilter =
       ko.observable(this.filterOptions.includes("country"));
 
-  private vaccineDiseaseFilter = ko.observable(new DiseaseFilter({
-    name: "Disease",
-    vaccineFilters: diseases.map(createVaccineFilterForDisease),
+  private vaccineFilter = ko.observable(new ListFilter({
+    name: "Vaccine",
+    options: vaccines,
   }));
+
   private showVaccineFilter =
       ko.observable(this.filterOptions.includes("vaccine"));
 
@@ -272,6 +273,7 @@ class DataVisModel {
   }, this);
 
   private plotTitle = ko.observable(this.defaultTitle());
+  private fileName = ko.observable(this.defaultTitle().replace(/\s/g, "_") + ".png");
 
   private plotUncertainty = ko.computed<boolean>(() => {
     // in order to show uncertainty we must have...
@@ -318,7 +320,7 @@ class DataVisModel {
       plotType: this.currentPlot(),
       selectedCountries: this.countryFilter().selectedOptions(), // which countries do we care about
       selectedTouchstones: this.touchstoneFilter().selectedOptions(), // which touchstones do we care about
-      selectedVaccines: this.vaccineDiseaseFilter().selectedOptions(), // which vaccines do we care about
+      selectedVaccines: this.vaccineFilter().selectedOptions(), // which vaccines do we care about
       selectedDiseases: this.diseaseFilter().selectedOptions(),
       supportType: this.supportFilter().selectedOptions(),
       yAxisTitle: this.yAxisTitle(),
@@ -373,7 +375,7 @@ class DataVisModel {
     this.countryFilter().selectedOptions.subscribe(() => {
       this.updateXAxisOptions();
     });
-    this.vaccineDiseaseFilter().selectedOptions.subscribe(() => {
+    this.vaccineFilter().selectedOptions.subscribe(() => {
       this.updateXAxisOptions();
     });
     this.diseaseFilter().selectedOptions.subscribe(() => {
@@ -478,9 +480,11 @@ class DataVisModel {
   }
 
   private exportPlot() {
+    this.applyTitle();
     this.canvas = document.getElementById("myChart");
+    const fileName = this.fileName();
     this.canvas.toBlob((blob: Blob) => {
-      saveAs(blob, "untitled.png");
+      saveAs(blob, fileName);
     });
   }
 
@@ -602,6 +606,7 @@ $(document).ready(() => {
   const viewModel = new DataVisModel();
 
   ko.applyBindings(viewModel);
+
 
   viewModel.renderImpact();
   viewModel.renderTimeSeries();

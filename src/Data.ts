@@ -13,10 +13,10 @@ export const activityTypes: string[] =
 
 export const disVac = loadObjectFromJSONFile("./diseaseVaccines.json");
 export const diseases: string[] = [];
-export const vaccines: string[] = [];
+export let vaccines: string[] = [];
 for (const k in disVac) {
   diseases.push(k);
-  vaccines.concat(disVac[k]);
+  vaccines = vaccines.concat(disVac[k]);
 }
 
 export const dates: {[code: string]: number[]} =
