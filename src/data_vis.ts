@@ -210,6 +210,7 @@ class DataVisModel {
                         + reportInfo.dep_id[1] + "/");
   private linkText = ko.observable<string>("A report containing the data for the tool");
   private appId = ko.observable<string>("App. id: " + reportInfo.git_id);
+  private githubId = ko.observable<string>(`https://github.com/vimc/ts_data_visualisation/commits/${reportInfo.git_id}`);
 
   private hideLabels = ko.observable<boolean>(false);
   private hideLegend = ko.observable<boolean>(false);
