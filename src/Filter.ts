@@ -108,7 +108,7 @@ export class RangeFilter extends Filter {
   }
 }
 
-const allDiseases = "all_diseases";
+const allDiseases = "All Diseases";
 export class DiseaseFilter extends ListFilter {
   private individualDiseases = ko.computed(() => {
     return this.options()
