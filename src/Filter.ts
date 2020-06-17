@@ -108,7 +108,40 @@ export class RangeFilter extends Filter {
   }
 }
 
-export class DiseaseFilter extends Filter {
+const allDiseases = "all_diseases";
+export class DiseaseFilter extends ListFilter {
+  private individualDiseases = ko.computed(() => {
+    return this.options()
+        .filter((f) => f !== allDiseases);
+  }, this);
+
+  constructor(settings: ListFilterSettings) {
+    super(settings);
+    this.selectedOptions([...this.individualDiseases()]);
+  }
+
+  public displayDiseaseFilter = (disease: string) => disease !== allDiseases;
+
+  public get displayAggregateAll() {
+    return this.options.indexOf(allDiseases) > -1;
+  }
+
+  public get aggregateAll() {
+    return this.selectedOptions.indexOf(allDiseases) > -1;
+  }
+
+  public set aggregateAll(value) {
+    this.selectedOptions.removeAll();
+    if (value) {
+      this.selectedOptions.push(allDiseases);
+    } else {
+      this.individualDiseases()
+          .forEach((d) => this.selectedOptions.push(d));
+    }
+  }
+}
+
+export class VaccineDiseaseFilter extends Filter {
   public selectedOptions = ko.observableArray([]);
   private vaccineFilters: ListFilter[] = [];
 

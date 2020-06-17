@@ -218,25 +218,36 @@
                 click: toggleOpen"></a>
 
       <div class="filter clearfix" data-bind="css: {in: isOpen}">
-        <div class="nav-item nav-option">
+        <div data-bind="if: displayAggregateAll" class="nav-item nav-option">
           <div class="nav-link">
-            <button type="button" class="btn btn-primary mt-1 btn-sm"
-                data-bind="click: () => selectAll()">All
-            </button>
-            <button type="button" class="btn btn-primary mt-1 btn-sm"
-                data-bind="click: () => selectNone()">None
-            </button>
+            <label>
+              <input type="checkbox" data-bind="checked: aggregateAll"/>
+              <span>Aggregate all diseases</span>
+            </label>
           </div>
+          <hr data-bind="visible: !aggregateAll">
         </div>
-        <hr>
-        <div data-bind="foreach: options">
+        <div data-bind="visible: !aggregateAll">
           <div class="nav-item nav-option">
             <div class="nav-link">
-              <label data-bind="attr: {for: $data}">
-                <input type="checkbox" data-bind="attr: {id: $data, value: $data},
-                  checked: $parent.selectedOptions"/>
-                <span data-bind="text: $data"></span>
-              </label>
+              <button type="button" class="btn btn-primary mt-1 btn-sm"
+                  data-bind="click: () => selectAll()">All
+              </button>
+              <button type="button" class="btn btn-primary mt-1 btn-sm"
+                  data-bind="click: () => selectNone()">None
+              </button>
+            </div>
+          </div>
+          <hr>
+          <div data-bind="foreach: options">
+            <div data-bind="if: $parent.displayDiseaseFilter($data)" class="nav-item nav-option">
+              <div class="nav-link">
+                <label data-bind="attr: {for: $data}">
+                  <input type="checkbox" data-bind="attr: {id: $data, value: $data},
+                    checked: $parent.selectedOptions"/>
+                  <span data-bind="text: $data"></span>
+                </label>
+              </div>
             </div>
           </div>
         </div>

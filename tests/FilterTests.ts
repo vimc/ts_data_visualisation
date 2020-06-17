@@ -1,6 +1,6 @@
 import * as sinon from "sinon";
 
-import {CountryFilter, DiseaseFilter, Filter, ListFilter, RangeFilter} from "../src/Filter";
+import {CountryFilter, VaccineDiseaseFilter, Filter, ListFilter, RangeFilter} from "../src/Filter";
 import {countries, countryGroups, fakeCountryDict} from "../scripts/fakeVariables";
 import {parseIntoDictionary} from "../src/Utils";
 import {expect} from "chai";
@@ -140,7 +140,7 @@ describe("Disease-Vaccine filter", () => {
 
         const filterArray = [f1, f2, f3];
 
-        const sut = new DiseaseFilter({name: "whatever",
+        const sut = new VaccineDiseaseFilter({name: "whatever",
                                        vaccineFilters: filterArray
                                      });
 
