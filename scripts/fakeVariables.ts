@@ -57,11 +57,11 @@ export const diseaseVaccines = {
     "Rota":["Rota"],
     "Rubella":["Rubella"],
     "YF":["YF"],
-    "All Diseases": ["All Diseases"]
+    "All Diseases": ["All Vaccines"],
 };
 
 export const vaccines = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1", "MCV2",
-"Measles", "MenA", "PCV3", "Rota", "RCV2", "Rubella", "YF", "All Diseases"];
+"Measles", "MenA", "PCV3", "Rota", "RCV2", "Rubella", "YF", "All Vaccines"];
 
 export const vaccineDict = {
     HPV: "HPV",
@@ -78,7 +78,7 @@ export const vaccineDict = {
     Rota: "Rotavirus",
     Rubella: "Rubella",
     YF: "Yellow Fever",
-    "All Diseases": "All Diseases",
+    "All Vaccines": "All Vaccines",
 };
 
 export const activityTypes = ["routine", "campaign", "combined"];

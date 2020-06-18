@@ -108,8 +108,8 @@ export class RangeFilter extends Filter {
   }
 }
 
-const allDiseases = "All Diseases";
-const allDiseasesVaccine = "All Diseases";
+export const allDiseases = "All Diseases";
+export const allDiseasesVaccine = "All Vaccines";
 export class DiseaseFilter extends ListFilter {
   private unaggregatedSelections: string[] = [];
 

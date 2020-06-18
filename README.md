@@ -43,3 +43,6 @@ Copy the files to `data/test`.
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
+## Testing
+To run tests with coverage, run `npm run coverage`.
+

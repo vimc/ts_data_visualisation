@@ -18,7 +18,7 @@ export const vaccineDict: {[code: string]: string} = {
   Rota: "Rotavirus",
   Rubella: "Rubella",
   YF: "Yellow Fever",
-  "All Diseases": "All Diseases",
+  "All Vaccines": "All Vaccines",
 };
 
 export const diseaseDict: { [code: string]: string} = {

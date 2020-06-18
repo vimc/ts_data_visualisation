@@ -1,6 +1,14 @@
 import * as sinon from "sinon";
 
-import {CountryFilter, VaccineDiseaseFilter, Filter, ListFilter, RangeFilter} from "../src/Filter";
+import {
+    CountryFilter,
+    VaccineDiseaseFilter,
+    Filter,
+    ListFilter,
+    RangeFilter,
+    DiseaseFilter,
+    allDiseases
+} from "../src/Filter";
 import {countries, countryGroups, fakeCountryDict} from "../scripts/fakeVariables";
 import {parseIntoDictionary} from "../src/Utils";
 import {expect} from "chai";
@@ -122,6 +130,48 @@ describe("CountryFilter", () => {
     })
 });
 
+describe("DiseaseFilter", () => {
+
+    const sut = new DiseaseFilter({
+        name: "test",
+        options: ["Rubella", "Rota", allDiseases],
+    });
+
+    const sutWithoutAllDiseases = new DiseaseFilter({
+        name: "test",
+        options: ["Rubella", "Rota"],
+    });
+
+    it("constructor initialises selectedOptions when options includes allDiseases", () => {
+        expect(sut.selectedOptions()).to.have.members([allDiseases]);
+    });
+
+    it("constructor initialises selectedOptions when options does not include allDiseases", () => {
+        expect(sutWithoutAllDiseases.selectedOptions()).to.have.members(["Rota", "Rubella"]);
+    });
+    it("displayDiseaseFilter excludes allDiseases", () => {
+        expect(sut.displayDiseaseFilter(allDiseases)).to.eq(false);
+        expect(sut.displayDiseaseFilter("Rota")).to.eq(true);
+    });
+    it("displayAggregateAll is true when allDiseases is an option", () => {
+        expect(sut.displayAggregateAll).to.eq(true);
+    });
+    it("displayAggregateAll is false when allDiseases is not an option", () => {
+        expect(sutWithoutAllDiseases.displayAggregateAll).to.eq(false);
+    });
+    it("get  aggregateAll returns expected result", () => {
+        expect(sut.aggregateAll).to.eq(true);
+        expect(sutWithoutAllDiseases.aggregateAll).to.eq(false);
+    });
+    it("set aggregateAll saves previous selected options", () => {
+        sut.selectedOptions(["Rota"]);
+        sut.aggregateAll = true;
+        expect(sut.selectedOptions()).to.have.members([allDiseases]);
+        sut.aggregateAll = false;
+        expect(sut.selectedOptions()).to.have.members(["Rota"]);
+    });
+});
+
 describe("Disease-Vaccine filter", () => {
         const f1 = new ListFilter({name: "filter1",
                                     options: ["aa", "ab", "ac"],
@@ -146,6 +196,5 @@ describe("Disease-Vaccine filter", () => {
 
     it("make sure initial selection is correct", () => {
         expect(sut.selectedOptions()).to.have.members(["aa", "bb", "ca", "cb"]);
-    })
-        
+    });
 });
