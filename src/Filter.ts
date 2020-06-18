@@ -109,6 +109,7 @@ export class RangeFilter extends Filter {
 }
 
 const allDiseases = "All Diseases";
+const allDiseasesVaccine = "All Diseases";
 export class DiseaseFilter extends ListFilter {
   private individualDiseases = ko.computed(() => {
     return this.options()
@@ -144,6 +145,12 @@ export class DiseaseFilter extends ListFilter {
 export class VaccineDiseaseFilter extends Filter {
   public selectedOptions = ko.observableArray([]);
   private vaccineFilters: ListFilter[] = [];
+  private unaggregatedSelections: { [disease: string]: string[] } = {};
+
+  private individualDiseaseVaccines = ko.computed(() => {
+    return this.vaccineFilters
+        .filter((f) => f.name() !== allDiseases);
+  }, this);
 
   constructor(settings: DiseaseFilterSettings) {
     super(settings);
@@ -154,6 +161,37 @@ export class VaccineDiseaseFilter extends Filter {
         this.updateSelectedOptions();
       });
     });
+  }
+
+  public displayVaccineFilter = (disease: string) => {
+    return disease !== allDiseases;
+  };
+
+  public get displayAggregateAll() {
+    return !!this.vaccineFilters.find((f) => f.name() === allDiseases);
+  }
+
+  public get aggregateAll() {
+    return this.selectedOptions.indexOf(allDiseasesVaccine) > -1;
+  }
+
+  public set aggregateAll(value) {
+    if (value) {
+      this.vaccineFilters.forEach((f) => {
+        // save previously selected vaccines so we can restore when aggregate all is unchecked
+        this.unaggregatedSelections[f.name()] = [...f.selectedOptions()];
+        f.selectedOptions.removeAll();
+      });
+      const filter = this.vaccineFilters.find((f) => f.name() === allDiseases);
+      if (filter) {
+        filter.selectedOptions.push(allDiseasesVaccine);
+      }
+    } else {
+      // restore previously selected vaccines
+      this.vaccineFilters.forEach((f) => {
+        f.selectedOptions(this.unaggregatedSelections[f.name()] || []);
+      });
+    }
   }
 
   private updateSelectedOptions = () => {

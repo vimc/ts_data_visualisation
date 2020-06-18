@@ -194,21 +194,33 @@
                 css: { active: isOpen },
                 click: toggleOpen"></a>
 
-      <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: vaccineFilters">
-        <div class="nav-item nav-option">
+      <div class="filter clearfix" data-bind="css: {in: isOpen}">
+        <div data-bind="if: displayAggregateAll" class="nav-item nav-option">
           <div class="nav-link">
-            <label data-bind="attr: {for: name}">
-              <span data-bind="text: makeHumanreadable(name())"></span>
-              <select multiple="multiple" class="form-control"
-                  data-bind="options: options, selectedOptions: selectedOptions,
-                    select2: { placeholder: 'Select vaccines', closeOnSelect: true }">
-              </select>
+            <label>
+              <input type="checkbox" data-bind="checked: aggregateAll"/>
+              <span>Aggregate all diseases</span>
             </label>
+          </div>
+          <hr data-bind="visible: !aggregateAll">
+        </div>
+        <div data-bind="if: !aggregateAll">
+          <div data-bind="foreach: vaccineFilters">
+            <div data-bind="if: $parent.displayVaccineFilter($data.name())" class="nav-item nav-option">
+              <div class="nav-link">
+                <label data-bind="attr: {for: name}">
+                  <span data-bind="text: makeHumanreadable(name())"></span>
+                  <select multiple="multiple" class="form-control"
+                      data-bind="options: options, selectedOptions: selectedOptions,
+                        select2: { placeholder: 'Select vaccines', closeOnSelect: true }">
+                  </select>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </li>
-
 
     <li class="nav-item" data-bind="with: diseaseFilter, visible: showDiseaseFilter">
       <a class="nav-link nav-parent"

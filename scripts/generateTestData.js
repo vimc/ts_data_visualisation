@@ -166,7 +166,8 @@ function generatePrivateData(touchstone) {
         PCV: ["PCV3"],
         Rota: ["Rota"],
         Rubella: ["RCV2", "Rubella"],
-        YF: ["YF"]
+        YF: ["YF"],
+        "All Diseases": ["All Diseases"]
     }
 
     const fakeImpactData =
