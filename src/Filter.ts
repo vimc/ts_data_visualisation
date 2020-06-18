@@ -111,14 +111,14 @@ export class RangeFilter extends Filter {
 const allDiseases = "All Diseases";
 const allDiseasesVaccine = "All Diseases";
 export class DiseaseFilter extends ListFilter {
-  private individualDiseases = ko.computed(() => {
-    return this.options()
-        .filter((f) => f !== allDiseases);
-  }, this);
+  private unaggregatedSelections: string[] = [];
 
   constructor(settings: ListFilterSettings) {
     super(settings);
-    this.selectedOptions([...this.individualDiseases()]);
+    if (this.options.indexOf(allDiseases) > -1) {
+      this.selectedOptions([allDiseases]);
+      this.unaggregatedSelections = this.allUnaggregatedOptions();
+    }
   }
 
   public displayDiseaseFilter = (disease: string) => disease !== allDiseases;
@@ -132,25 +132,27 @@ export class DiseaseFilter extends ListFilter {
   }
 
   public set aggregateAll(value) {
-    this.selectedOptions.removeAll();
+
     if (value) {
-      this.selectedOptions.push(allDiseases);
+      // save previously selected vaccines so we can restore later
+      this.unaggregatedSelections = [...this.selectedOptions()];
+      this.selectedOptions([allDiseases]);
     } else {
-      this.individualDiseases()
-          .forEach((d) => this.selectedOptions.push(d));
+      this.selectedOptions([...this.unaggregatedSelections]);
     }
   }
+
+  public selectAll() {
+    this.selectedOptions(this.allUnaggregatedOptions());
+  }
+
+  private allUnaggregatedOptions = () => this.options().filter((f) => f !== allDiseases);
 }
 
 export class VaccineDiseaseFilter extends Filter {
   public selectedOptions = ko.observableArray([]);
   private vaccineFilters: ListFilter[] = [];
   private unaggregatedSelections: { [disease: string]: string[] } = {};
-
-  private individualDiseaseVaccines = ko.computed(() => {
-    return this.vaccineFilters
-        .filter((f) => f.name() !== allDiseases);
-  }, this);
 
   constructor(settings: DiseaseFilterSettings) {
     super(settings);
@@ -165,7 +167,7 @@ export class VaccineDiseaseFilter extends Filter {
 
   public displayVaccineFilter = (disease: string) => {
     return disease !== allDiseases;
-  };
+  }
 
   public get displayAggregateAll() {
     return !!this.vaccineFilters.find((f) => f.name() === allDiseases);
@@ -178,14 +180,12 @@ export class VaccineDiseaseFilter extends Filter {
   public set aggregateAll(value) {
     if (value) {
       this.vaccineFilters.forEach((f) => {
-        // save previously selected vaccines so we can restore when aggregate all is unchecked
+        // save previously selected vaccines so we can restore later
         this.unaggregatedSelections[f.name()] = [...f.selectedOptions()];
-        f.selectedOptions.removeAll();
       });
-      const filter = this.vaccineFilters.find((f) => f.name() === allDiseases);
-      if (filter) {
-        filter.selectedOptions.push(allDiseasesVaccine);
-      }
+      this.vaccineFilters.forEach((f) => {
+        f.selectedOptions(f.name() === allDiseases ? [allDiseasesVaccine] : []);
+      });
     } else {
       // restore previously selected vaccines
       this.vaccineFilters.forEach((f) => {
