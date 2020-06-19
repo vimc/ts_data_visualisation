@@ -182,8 +182,6 @@ export class VaccineDiseaseFilter extends Filter {
       this.vaccineFilters.forEach((f) => {
         // save previously selected vaccines so we can restore later
         this.unaggregatedSelections[f.name()] = [...f.selectedOptions()];
-      });
-      this.vaccineFilters.forEach((f) => {
         f.selectedOptions(f.name() === allDiseases ? [allDiseasesVaccine] : []);
       });
     } else {

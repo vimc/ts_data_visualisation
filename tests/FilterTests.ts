@@ -7,7 +7,7 @@ import {
     ListFilter,
     RangeFilter,
     DiseaseFilter,
-    allDiseases
+    allDiseases, allDiseasesVaccine
 } from "../src/Filter";
 import {countries, countryGroups, fakeCountryDict} from "../scripts/fakeVariables";
 import {parseIntoDictionary} from "../src/Utils";
@@ -193,8 +193,37 @@ describe("Disease-Vaccine filter", () => {
         const sut = new VaccineDiseaseFilter({name: "whatever",
                                        vaccineFilters: filterArray
                                      });
+        const allDiseasesFilter = new ListFilter({name: allDiseases,
+            options: [allDiseasesVaccine],
+            selected: [],
+        });
+        const sutWithAllDiseases = new VaccineDiseaseFilter({
+            name: "withAllDiseases",
+            vaccineFilters: [...filterArray, allDiseasesFilter]
+        });
 
-    it("make sure initial selection is correct", () => {
-        expect(sut.selectedOptions()).to.have.members(["aa", "bb", "ca", "cb"]);
-    });
+        it("make sure initial selection is correct", () => {
+            expect(sut.selectedOptions()).to.have.members(["aa", "bb", "ca", "cb"]);
+        });
+        it("displayVaccineFilters excludes allDiseases", () => {
+            expect(sutWithAllDiseases.displayVaccineFilter(allDiseases)).to.eq(false);
+            expect(sutWithAllDiseases.displayVaccineFilter("disease3")).to.eq(true);
+        });
+        it("displayAggregateAll is true when allDiseases is a filter", () => {
+            expect(sutWithAllDiseases.displayAggregateAll).to.eq(true);
+        });
+        it("displayAggregateAll is false when allDiseases is not a filter", () => {
+            expect(sut.displayAggregateAll).to.eq(false);
+        });
+        it("get aggregateAll returns expected result", () => {
+            expect(sutWithAllDiseases.aggregateAll).to.eq(false);
+            sutWithAllDiseases.selectedOptions([allDiseasesVaccine]);
+            expect(sutWithAllDiseases.aggregateAll).to.eq(true);
+        });
+        it("set aggregateAll saves previous selected options", () => {
+            sutWithAllDiseases.aggregateAll = true;
+            expect(sutWithAllDiseases.selectedOptions()).to.have.members([allDiseasesVaccine]);
+            sutWithAllDiseases.aggregateAll = false;
+            expect(sutWithAllDiseases.selectedOptions()).to.have.members(["aa", "bb", "ca", "cb"]);
+        });
 });
