@@ -40,22 +40,23 @@ export interface AnnotatedChartConfiguration extends ChartConfiguration {
   options: ChartOptionsWithAnnotation;
 }
 
-export function rescaleLabel(value: number, scale: number): string {
+export function rescaleLabel(value: string | number, scale: number): string {
+  const numValue: number = typeof(value) === "string" ? parseFloat(value) : value;
   // we need to round down to three significant figures
   const df = new DataFilterer();
   if (scale > 1000000000) {
-    return df.roundDown(value, 3) / 1000000000 + "B";
+    return df.roundDown(numValue, 3) / 1000000000 + "B";
   }
   if (scale > 1000000) {
-    return df.roundDown(value, 3) / 1000000 + "M";
+    return df.roundDown(numValue, 3) / 1000000 + "M";
   }
   if (scale > 1000) {
-    return df.roundDown(value, 3) / 1000 + "K";
+    return df.roundDown(numValue, 3) / 1000 + "K";
   }
   if (scale > 1) { // round values in [1, 1000] down to nearest integer
-    return Math.floor(value) + "";
+    return Math.floor(numValue) + "";
   } // i don't think rounding x in (0,1) is a good idea need to think about this
-  return value.toString();
+  return numValue.toString();
 }
 
 export interface BaseAnnotation {
