@@ -193,13 +193,13 @@ export function impactChartConfig(filterData: FilteredData,
           const chart = this.chart;
           const context = chart.ctx;
           const lastDataSet: number = ds.length - 1;
-          if (lastDataSet > -1) {
+          const showBarTotals = ["disease", "vaccine"].indexOf(chartOptions.yAxis) < 0;
+          if (showBarTotals && lastDataSet > -1) {
             const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
             // this is a lot of nonsense to grab the plot meta data
             // for the final (topmost) data set
             lastMeta.data.forEach( (bar: any, index: number) => {
-              const data = rescaleLabel(totals[index],
-                totals[index]);
+              const data = rescaleLabel(totals[index], totals[index]);
               // magic numbers to the labels look reasonable
               context.fillText(data, bar._model.x - 12, bar._model.y - 5);
             });
@@ -256,7 +256,7 @@ export function timeSeriesChartConfig(filterData: FilteredData,
           } else {
             meta_lo.hidden = null;
             meta.hidden = null;
-            meta_hi.hidden = null;            
+            meta_hi.hidden = null;
           }
 
           ci.update();

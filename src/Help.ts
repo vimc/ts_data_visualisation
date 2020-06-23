@@ -1,7 +1,7 @@
 // generate help title
 const impactOptionsHelp: string = "<p><h3>Impact Options</h3></p>" +
   "<p><h4>Compare across </h4>What values should we put along the x-axis</p>" +
-  "<p><h4>Stratify by </h4>Which variable should we use to disaggregate the bars by.</p>" +
+  "<p><h4>Stratify by </h4>Which variable should we use to disaggregate the bars by. Note that, when stratifying by disease / vaccine, we do not show total bar values, as these may be misleading due to possible double-counting.</p>" +
   "<p><h4>Max bars </h4>How many bars should we show along the x axis, this defaults to the maximum</p>" +
   "<p><h4>Metric</h4>Which impact metric to show, for more details see the metric help</p>" +
   "<p><h4>Export as...</h4>Save the data as a csv or png file. Export all provides the entire dataset as a zip file.</p>" +
