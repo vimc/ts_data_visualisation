@@ -19,7 +19,7 @@ export const filterHelp: string =
   "<p><h4>Years</h4>The years for which we show the data. The meaning of the year depends on the plot method chosen.</p>" +
   "<p><h4>Activity</h4>The type of vaccination program - routine or campaign.</p>" +
   "<p><h4>Country</h4>The countries for which we show the data.</p>" +
-  "<p><h4>Disease / Vaccine</h4>The vaccines for which we show the data.</p>" +
+  "<p><h4>Disease / Vaccine</h4>The vaccines for which we show the data. Use the 'Aggregate all diseases' checkbox to show data aggregated across all diseases and vaccines to exclude double-counting.</p>" +
   "<p><h4>Touchstone</h4>The touchstone for which we show the data. This should usually be set to the latest touchstone, and selecting multiple touchstone is usually incorrect.</p>" +
   "<p><h4>Support Type</h4>Gavi vs non-Gavi vaccination programs</p>";
 
