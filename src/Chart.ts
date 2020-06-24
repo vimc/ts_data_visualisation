@@ -40,22 +40,24 @@ export interface AnnotatedChartConfiguration extends ChartConfiguration {
   options: ChartOptionsWithAnnotation;
 }
 
-export function rescaleLabel(value: number, scale: number): string {
+export function rescaleLabel(value: string | number, scale: string | number): string {
+  const numValue: number = typeof(value) === "string" ? parseFloat(value) : value;
+  const numScale: number = typeof(scale) === "string" ? parseFloat(scale) : scale;
   // we need to round down to three significant figures
   const df = new DataFilterer();
-  if (scale > 1000000000) {
-    return df.roundDown(value, 3) / 1000000000 + "B";
+  if (numScale > 1000000000) {
+    return df.roundDown(numValue, 3) / 1000000000 + "B";
   }
-  if (scale > 1000000) {
-    return df.roundDown(value, 3) / 1000000 + "M";
+  if (numScale > 1000000) {
+    return df.roundDown(numValue, 3) / 1000000 + "M";
   }
-  if (scale > 1000) {
-    return df.roundDown(value, 3) / 1000 + "K";
+  if (numScale > 1000) {
+    return df.roundDown(numValue, 3) / 1000 + "K";
   }
-  if (scale > 1) { // round values in [1, 1000] down to nearest integer
-    return Math.floor(value) + "";
+  if (numScale > 1) { // round values in [1, 1000] down to nearest integer
+    return Math.floor(numValue) + "";
   } // i don't think rounding x in (0,1) is a good idea need to think about this
-  return value.toString();
+  return numValue.toString();
 }
 
 export interface BaseAnnotation {
@@ -191,13 +193,13 @@ export function impactChartConfig(filterData: FilteredData,
           const chart = this.chart;
           const context = chart.ctx;
           const lastDataSet: number = ds.length - 1;
-          if (lastDataSet > -1) {
+          const showBarTotals = ["disease", "vaccine"].indexOf(chartOptions.yAxis) < 0;
+          if (showBarTotals && lastDataSet > -1) {
             const lastMeta = chart.controller.getDatasetMeta(lastDataSet);
             // this is a lot of nonsense to grab the plot meta data
             // for the final (topmost) data set
             lastMeta.data.forEach( (bar: any, index: number) => {
-              const data = rescaleLabel(totals[index],
-                totals[index]);
+              const data = rescaleLabel(totals[index], totals[index]);
               // magic numbers to the labels look reasonable
               context.fillText(data, bar._model.x - 12, bar._model.y - 5);
             });
@@ -254,7 +256,7 @@ export function timeSeriesChartConfig(filterData: FilteredData,
           } else {
             meta_lo.hidden = null;
             meta.hidden = null;
-            meta_hi.hidden = null;            
+            meta_hi.hidden = null;
           }
 
           ci.update();

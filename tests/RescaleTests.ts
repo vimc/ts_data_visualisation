@@ -25,6 +25,11 @@ describe("rescaleLabels", () => {
         expect(rescaleLabel(123456, 10000)).to.equal("123K")
         expect(rescaleLabel(123456, 10000000)).to.equal("0.123M")
         expect(rescaleLabel(123456, 10000000000)).to.equal("0.000123B")
+
+        expect(rescaleLabel("123456", 0.1)).to.equal("123456");
+        expect(rescaleLabel(123456, "10000000000")).to.equal("0.000123B");
+        expect(rescaleLabel("0.1", "0.1")).to.equal("0.1");
+        expect(rescaleLabel("-1", "-1")).to.equal("-1");
     });
 
 });

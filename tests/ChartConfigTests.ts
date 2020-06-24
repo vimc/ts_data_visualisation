@@ -59,8 +59,53 @@ describe("ChartConfigs", () => {
     expect(config.data.labels).to.eql(["a", "b", "c"]);
     expect(config.options.title.text).to.eql(c.plotTitle);
     expect(config.options.scales.yAxes[0].scaleLabel.labelString).
-      to.eql(c.yAxisTitle)
-  })
+      to.eql(c.yAxisTitle);
+
+  });
+
+  it("Check impactChartConfig bar totals labels", () => {
+      const getTotalsLabels =  (yAxis: string) => {
+          const chartOptions = {yAxis};
+          const filterData = {
+              datasets: [{}],
+              totals: [10000, 20000, 30000],
+          };
+
+          const config = impactChartConfig(filterData as any, [], chartOptions as any);
+
+          const bars = { data: [
+              {_model: {x: 100, y: 200}},
+              {_model: {x: 300, y: 400}},
+              {_model: {x: 500, y: 600}},
+           ] };
+          const generatedLabels: any[] = [];
+          const mockChart = {
+              ctx: {
+                  fillText: (text: string, x: number, y: number) => {
+                      generatedLabels.push({text, x, y});
+                  },
+              },
+              controller: {
+                  getDatasetMeta: () => {
+                      return bars;
+                  },
+              },
+          };
+          const func = config.options.animation.onComplete;
+          func.call({chart: mockChart});
+          return generatedLabels;
+      };
+      // Totals labels should not be generated for 'disease' or 'vaccine' only
+      const labelsForDisease = getTotalsLabels("disease");
+      expect(labelsForDisease.length).to.eq(0);
+      const labelsForVaccine = getTotalsLabels("vaccine");
+      expect(labelsForVaccine.length).to.eq(0);
+      const labelsForCountry = getTotalsLabels("country");
+      expect(labelsForCountry.length).to.eq(3);
+      expect(labelsForCountry[0]).to.eql({text: "10K", x: 88, y: 195});
+      expect(labelsForCountry[1]).to.eql({text: "20K", x: 288, y: 395});
+      expect(labelsForCountry[2]).to.eql({text: "30K", x: 488, y: 595});
+  });
 
   it("Check timeSeriesChartConfig", () => {
     const c: CustomChartOptions

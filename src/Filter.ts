@@ -108,9 +108,51 @@ export class RangeFilter extends Filter {
   }
 }
 
-export class DiseaseFilter extends Filter {
+export const allDiseases = "All Diseases";
+export const allDiseasesVaccine = "All Vaccines";
+export class DiseaseFilter extends ListFilter {
+  private unaggregatedSelections: string[] = [];
+
+  constructor(settings: ListFilterSettings) {
+    super(settings);
+    if (this.options.indexOf(allDiseases) > -1) {
+      this.selectedOptions([allDiseases]);
+      this.unaggregatedSelections = this.allUnaggregatedOptions();
+    }
+  }
+
+  public displayDiseaseFilter = (disease: string) => disease !== allDiseases;
+
+  public get displayAggregateAll() {
+    return this.options.indexOf(allDiseases) > -1;
+  }
+
+  public get aggregateAll() {
+    return this.selectedOptions.indexOf(allDiseases) > -1;
+  }
+
+  public set aggregateAll(value) {
+
+    if (value) {
+      // save previously selected vaccines so we can restore later
+      this.unaggregatedSelections = [...this.selectedOptions()];
+      this.selectedOptions([allDiseases]);
+    } else {
+      this.selectedOptions([...this.unaggregatedSelections]);
+    }
+  }
+
+  public selectAll() {
+    this.selectedOptions(this.allUnaggregatedOptions());
+  }
+
+  private allUnaggregatedOptions = () => this.options().filter((f) => f !== allDiseases);
+}
+
+export class VaccineDiseaseFilter extends Filter {
   public selectedOptions = ko.observableArray([]);
   private vaccineFilters: ListFilter[] = [];
+  private unaggregatedSelections: { [disease: string]: string[] } = {};
 
   constructor(settings: DiseaseFilterSettings) {
     super(settings);
@@ -121,6 +163,33 @@ export class DiseaseFilter extends Filter {
         this.updateSelectedOptions();
       });
     });
+  }
+
+  public displayVaccineFilter = (disease: string) => {
+    return disease !== allDiseases;
+  }
+
+  public get displayAggregateAll() {
+    return !!this.vaccineFilters.find((f) => f.name() === allDiseases);
+  }
+
+  public get aggregateAll() {
+    return this.selectedOptions.indexOf(allDiseasesVaccine) > -1;
+  }
+
+  public set aggregateAll(value) {
+    if (value) {
+      this.vaccineFilters.forEach((f) => {
+        // save previously selected vaccines so we can restore later
+        this.unaggregatedSelections[f.name()] = [...f.selectedOptions()];
+        f.selectedOptions(f.name() === allDiseases ? [allDiseasesVaccine] : []);
+      });
+    } else {
+      // restore previously selected vaccines
+      this.vaccineFilters.forEach((f) => {
+        f.selectedOptions(this.unaggregatedSelections[f.name()] || []);
+      });
+    }
   }
 
   private updateSelectedOptions = () => {

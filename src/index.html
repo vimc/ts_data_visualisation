@@ -194,21 +194,33 @@
                 css: { active: isOpen },
                 click: toggleOpen"></a>
 
-      <div class="filter clearfix" data-bind="css: {in: isOpen}, foreach: vaccineFilters">
-        <div class="nav-item nav-option">
+      <div class="filter clearfix" data-bind="css: {in: isOpen}">
+        <div data-bind="if: displayAggregateAll" class="nav-item nav-option">
           <div class="nav-link">
-            <label data-bind="attr: {for: name}">
-              <span data-bind="text: makeHumanreadable(name())"></span>
-              <select multiple="multiple" class="form-control"
-                  data-bind="options: options, selectedOptions: selectedOptions,
-                    select2: { placeholder: 'Select vaccines', closeOnSelect: true }">
-              </select>
+            <label>
+              <input type="checkbox" data-bind="checked: aggregateAll"/>
+              <span>Aggregate all diseases</span>
             </label>
+          </div>
+          <hr data-bind="visible: !aggregateAll">
+        </div>
+        <div data-bind="if: !aggregateAll">
+          <div data-bind="foreach: vaccineFilters">
+            <div data-bind="if: $parent.displayVaccineFilter($data.name())" class="nav-item nav-option">
+              <div class="nav-link">
+                <label data-bind="attr: {for: name}">
+                  <span data-bind="text: makeHumanreadable(name())"></span>
+                  <select multiple="multiple" class="form-control"
+                      data-bind="options: options, selectedOptions: selectedOptions,
+                        select2: { placeholder: 'Select vaccines', closeOnSelect: true }">
+                  </select>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </li>
-
 
     <li class="nav-item" data-bind="with: diseaseFilter, visible: showDiseaseFilter">
       <a class="nav-link nav-parent"
@@ -218,25 +230,36 @@
                 click: toggleOpen"></a>
 
       <div class="filter clearfix" data-bind="css: {in: isOpen}">
-        <div class="nav-item nav-option">
+        <div data-bind="if: displayAggregateAll" class="nav-item nav-option">
           <div class="nav-link">
-            <button type="button" class="btn btn-primary mt-1 btn-sm"
-                data-bind="click: () => selectAll()">All
-            </button>
-            <button type="button" class="btn btn-primary mt-1 btn-sm"
-                data-bind="click: () => selectNone()">None
-            </button>
+            <label>
+              <input type="checkbox" data-bind="checked: aggregateAll"/>
+              <span>Aggregate all diseases</span>
+            </label>
           </div>
+          <hr data-bind="visible: !aggregateAll">
         </div>
-        <hr>
-        <div data-bind="foreach: options">
+        <div data-bind="visible: !aggregateAll">
           <div class="nav-item nav-option">
             <div class="nav-link">
-              <label data-bind="attr: {for: $data}">
-                <input type="checkbox" data-bind="attr: {id: $data, value: $data},
-                  checked: $parent.selectedOptions"/>
-                <span data-bind="text: $data"></span>
-              </label>
+              <button type="button" class="btn btn-primary mt-1 btn-sm"
+                  data-bind="click: () => selectAll()">All
+              </button>
+              <button type="button" class="btn btn-primary mt-1 btn-sm"
+                  data-bind="click: () => selectNone()">None
+              </button>
+            </div>
+          </div>
+          <hr>
+          <div data-bind="foreach: options">
+            <div data-bind="if: $parent.displayDiseaseFilter($data)" class="nav-item nav-option">
+              <div class="nav-link">
+                <label data-bind="attr: {for: $data}">
+                  <input type="checkbox" data-bind="attr: {id: $data, value: $data},
+                    checked: $parent.selectedOptions"/>
+                  <span data-bind="text: $data"></span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -495,13 +518,21 @@
                     Cumulative
                   </label>
                 </div>
-                <div class="form-check" data-bind="visible: showUncertainty">
+                <div class="form-check" data-bind="if: showUncertainty">
                   <input class="form-check-input" type="checkbox"
                        data-bind="checked: uncertaintyChecked"
                        id="uncertaintyId">
                   <label class="form-check-label" for="uncertaintyId">
                     Show Uncertainty
                   </label>
+                  <span data-bind="with: diseaseFilter">
+                    <span data-bind="if: displayAggregateAll" >
+                      <button type="button" class="btn btn-info btn-circle"
+                              data-toggle="modal" data-target="#helpUncertaintyModal">
+                        <i class="fa fa-question-circle"></i>
+                      </button>
+                    </span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -713,6 +744,31 @@
       </div>
       <div class="modal-body">
         <span data-bind="html: metaData"></span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Uncertainty Modal -->
+<div class="modal fade" id="helpUncertaintyModal" tabindex="-1" role="dialog" aria-labelledby="uncertaintyModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uncertaintyModalLabel">Uncertainty</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Uncertainty is approximate when multiple diseases are selected and the plot is stratified by any value other
+          than disease. This is because uncertainty is summed across each selected disease, which may result in
+          double-counting of some metrics. To see calculated uncertainty across all disease, select
+          'Aggregate all diseases' in the Disease filter.
+        </p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

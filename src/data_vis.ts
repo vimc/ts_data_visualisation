@@ -12,7 +12,7 @@ import {activityTypes, countries, countryGroups, dates, diseases, metricsAndOpti
     reportInfo, supportTypes, touchstones, vaccines} from "./Data";
 import {DataFilterer, DataFiltererOptions} from "./DataFilterer";
 import {countryDict, diseaseDict, diseaseVaccineLookup, vaccineDict} from "./Dictionaries";
-import {CountryFilter, DiseaseFilter, ListFilter, RangeFilter} from "./Filter";
+import {CountryFilter, VaccineDiseaseFilter, ListFilter, RangeFilter, DiseaseFilter} from "./Filter";
 import {filterHelp, generatedHelpBody, generatedHelpTitle, generatedMetricsHelp} from "./Help";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetaDataDisplay} from "./MetaDataDisplay";
@@ -154,14 +154,14 @@ class DataVisModel {
   private showCountryFilter =
       ko.observable(this.filterOptions.includes("country"));
 
-  private vaccineDiseaseFilter = ko.observable(new DiseaseFilter({
+  private vaccineDiseaseFilter = ko.observable(new VaccineDiseaseFilter({
     name: "Disease",
     vaccineFilters: diseases.map(createVaccineFilterForDisease),
   }));
   private showVaccineFilter =
       ko.observable(this.filterOptions.includes("vaccine"));
 
-  private diseaseFilter = ko.observable(new ListFilter({
+  private diseaseFilter = ko.observable(new DiseaseFilter({
     name: "Disease",
     options: diseases,
   }));

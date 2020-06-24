@@ -45,7 +45,7 @@ export const countryGroups = {
 }
 
 export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA", "PCV",
-    "Rota", "Rubella", "YF"];
+    "Rota", "Rubella", "YF", "All Diseases"];
 
 export const diseaseVaccines = {
     "HepB":["HepB","HepB_BD"],
@@ -56,11 +56,12 @@ export const diseaseVaccines = {
     "PCV":["PCV3"],
     "Rota":["Rota"],
     "Rubella":["Rubella"],
-    "YF":["YF"]
+    "YF":["YF"],
+    "All Diseases": ["All Vaccines"],
 };
 
 export const vaccines = ["HepB", "HepB_BD", "Hib3", "HPV", "JE", "MCV1", "MCV2",
-"Measles", "MenA", "PCV3", "Rota", "RCV2", "Rubella", "YF"];
+"Measles", "MenA", "PCV3", "Rota", "RCV2", "Rubella", "YF", "All Vaccines"];
 
 export const vaccineDict = {
     HPV: "HPV",
@@ -77,6 +78,7 @@ export const vaccineDict = {
     Rota: "Rotavirus",
     Rubella: "Rubella",
     YF: "Yellow Fever",
+    "All Vaccines": "All Vaccines",
 };
 
 export const activityTypes = ["routine", "campaign", "combined"];
