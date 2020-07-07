@@ -477,10 +477,10 @@
               <div class="col-9">
                 <div class="btn-group mt-1" role="group">
                   <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cross'),
-                   css: {active: yearMethod() == 'cross'}, visible: showCross">Cross-sectional
+                   css: {active: yearMethod() == 'cross'}, visible: showCross">Calendar year
                   </button>
                   <button type="button" class="btn btn-primary" data-bind="click: () => changeMethod('cohort'),
-                   css: {active: yearMethod() == 'cohort'},visible: showCohort">Lifetime
+                   css: {active: yearMethod() == 'cohort'},visible: showCohort">Year of birth
                   </button>
                   <button type="button" class="btn btn-primary active" data-bind="click: () => changeMethod('year_of_vac'),
                    css: {active: yearMethod() == 'year_of_vac'}, visible: showYearOfVac">Year of vaccination
@@ -705,12 +705,12 @@
       </div>
       <div class="modal-body">
         <a data-bind="visible: showCross"/></a>
-        <h2>Cross-sectional</h2>
+        <h2>Calendar year</h2>
         <p>This method can be thought of as the impact by calendar year, <i>e.g.</i> the number of cases prevented in a given year. While the resulting estimates are intuitively easy to understand, they fail to represent the long-term future impact of vaccination on individual disease risk. In addition, the impact estimates cannot be linked to specific vaccination activities.</p>
         </a>
 
         <a data-bind="visible: showCohort"/>
-        <h2>Lifetime</h2>
+        <h2>Year of birth</h2>
         <p>This method can be thought of as the impact by birth year, <i>e.g.</i> the number of cases prevented in a cohort born in a given year over the course of their lifetime. Note that we calculate impact for birth cohorts from 2000 to 2030, and consider the lifetime up to 2100. A lifetime or cohort approach to presenting impact is appropriate for capturing the direct effects of vaccination in protecting the immunised individual. However, indirect effects of vaccination (acting via herd immunity) play out across the whole population.</p>
         </a>
 
