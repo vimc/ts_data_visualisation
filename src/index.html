@@ -31,18 +31,26 @@
 
 <div class="d-none page-wrapper" data-bind="css:{'d-none':false}">
 
-<nav class="navbar navbar-light d-block">
-  <a class="navbar-brand" href="#">
-    <img src="./logo-dark-drop.png"/>
-  </a>
-  <div class="d-inline-block"
+<nav class="navbar navbar-light" style="justify-content: space-between">
+  <div
      style="color: #0056b3; font-size: 22px; font-weight: 500;vertical-align: -webkit-baseline-middle;">
+    <a class="navbar-brand" href="https://www.vaccineimpact.org">
+      <img src="./logo-dark-drop.png"/>
+    </a>
     VIMC Data Visualisation Tool
   </div>
-  <div class="float-right small" style="color: #0056b3; white-space: pre-wrap;">
-    <a data-bind="text: reportId"/></a>
-    <a data-bind="visible: isPrivate"/>Data ids: </a><a data-bind="attr: { href: dataLink1, title: linkText }, text: dataId1, visible: isPrivate"/></a> <a data-bind="attr: { href: dataLink2, title: linkText }, text: dataId2, visible: isPrivate"/></a>
-    <a data-bind="text: appId"/></a>
+  <div class="small" data-bind="visible: isPrivate" style="color: #0056b3; white-space: pre-wrap;">
+    <span data-bind="text: reportId"></span>
+    <span>Data ids: </span>
+    <a data-bind="attr: { href: dataLink1, title: linkText }, text: dataId1"/></a>
+    <a data-bind="attr: { href: dataLink2, title: linkText }, text: dataId2"/></a>
+    <span data-bind="text: appId"></span>
+  </div>
+  <div class="small" data-bind="visible: !isPrivate()" style="color: #0056b3; white-space: pre-wrap;">
+    This tool shows the Vaccine Impact Modelling Consortium's estimates of health impact from vaccination against
+    10 pathogens in 98 low and middle income countries from 2000 to 2019
+    <a href="https://www.vaccineimpact.org">More information about VIMC</a>
+    <!-- add when paper url is known <a href="">Read the publication underlying these estimates</a>-->
   </div>
 </nav>
 
