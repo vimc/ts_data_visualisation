@@ -282,25 +282,25 @@ class DataVisModel {
   private yAxisTitle = ko.computed(() => {
     switch (this.humanReadableBurdenOutcome()) {
       case "deaths":
-        return "Future deaths";
+        return "Deaths";
       case "deaths_averted":
-        return "Future deaths averted";
+        return "Deaths averted";
       case "cases":
-        return "Future cases averted";
+        return "Cases averted";
       case "dalys":
-        return "Future DALYs";
+        return "DALYs";
       case "dalys_averted":
-        return "Future DALYS averted";
+        return "DALYS averted";
       case "fvps":
         return "fvps";
       case "coverage":
         return "Coverage";
       case "casesRate":
-        return "Future cases averted (rate)";
+        return "Cases averted (rate)";
       case "deathsRate":
-        return "Future deaths averted (rate)";
+        return "Deaths averted (rate)";
       default:
-        return "Future deaths averted";
+        return "";
     }
   }, this);
 
@@ -544,14 +544,23 @@ class DataVisModel {
   private defaultTitle() {
     switch (this.humanReadableBurdenOutcome()) {
       case "deaths":
-        return "Future deaths averted between " + this.yearFilter().selectedLow() +
+        return "Deaths between " + this.yearFilter().selectedLow() +
              " and " + this.yearFilter().selectedHigh();
       case "cases":
-        return "Future cases averted between " + this.yearFilter().selectedLow() +
+        return "Cases between " + this.yearFilter().selectedLow() +
              " and " + this.yearFilter().selectedHigh();
       case "dalys":
-        return "Future DALYS averted between " + this.yearFilter().selectedLow() +
+        return "DALYS between " + this.yearFilter().selectedLow() +
              " and " + this.yearFilter().selectedHigh();
+      case "deaths_averted":
+        return "Deaths averted between " + this.yearFilter().selectedLow() +
+            " and " + this.yearFilter().selectedHigh();
+      case "cases_averted":
+        return "Cases averted between " + this.yearFilter().selectedLow() +
+            " and " + this.yearFilter().selectedHigh();
+      case "dalys_averted":
+        return "DALYS averted between " + this.yearFilter().selectedLow() +
+            " and " + this.yearFilter().selectedHigh();
       case "fvps":
         return "fvps between " + this.yearFilter().selectedLow() +
              " and " + this.yearFilter().selectedHigh();
@@ -565,7 +574,7 @@ class DataVisModel {
         return "Mean rate of death averted between " + this.yearFilter().selectedLow() +
              " and " + this.yearFilter().selectedHigh();
       default:
-        return "Future deaths averted";
+        return "";
     }
   }
 
