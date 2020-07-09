@@ -110,7 +110,7 @@ class DataVisModel {
     max: dates["max"][0],
     min: dates["min"][0],
     name: "Years",
-    selectedHigh: 2018,
+    selectedHigh: dates["max"][0],
     selectedLow: 2000,
   }));
 
