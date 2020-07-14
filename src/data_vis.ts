@@ -148,8 +148,7 @@ class DataVisModel {
     groups: countryGroups,
     humanNames: countryDict,
     name: "Country",
-    options: countries,
-    selected: countryGroups["pine"],
+    options: countries
   }));
   private showCountryFilter =
       ko.observable(this.filterOptions.includes("country"));
