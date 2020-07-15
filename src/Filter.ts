@@ -116,7 +116,7 @@ export class DiseaseFilter extends ListFilter {
   constructor(settings: ListFilterSettings) {
     super(settings);
     if (this.options.indexOf(allDiseases) > -1) {
-      this.selectedOptions([allDiseases]);
+      this.selectedOptions(settings.options.filter(o => o != allDiseases));
       this.unaggregatedSelections = this.allUnaggregatedOptions();
     }
   }

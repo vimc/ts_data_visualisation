@@ -143,7 +143,7 @@ describe("DiseaseFilter", () => {
     });
 
     it("constructor initialises selectedOptions when options includes allDiseases", () => {
-        expect(sut.selectedOptions()).to.have.members([allDiseases]);
+        expect(sut.selectedOptions()).to.have.members(["Rubella", "Rota"]);
     });
 
     it("constructor initialises selectedOptions when options does not include allDiseases", () => {
@@ -160,7 +160,7 @@ describe("DiseaseFilter", () => {
         expect(sutWithoutAllDiseases.displayAggregateAll).to.eq(false);
     });
     it("get  aggregateAll returns expected result", () => {
-        expect(sut.aggregateAll).to.eq(true);
+        expect(sut.aggregateAll).to.eq(false);
         expect(sutWithoutAllDiseases.aggregateAll).to.eq(false);
     });
     it("set aggregateAll saves previous selected options", () => {
