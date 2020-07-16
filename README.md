@@ -46,3 +46,17 @@ Copy the files to `data/test`.
 ## Testing
 To run tests with coverage, run `npm run coverage`.
 
+# Deployment
+
+To deploy the internal app:
+
+1. Make sure the [report dependencies](https://github.com/vimc/montagu-reports/blob/master/src/internal-2018-interactive-plotting/orderly.yml#L88) 
+are up to date (these provide all the data that is displayed in the app)
+2. Run the report `internal-2018-interactive-plotting`
+
+To deploy the public app:
+
+The public app depends on the internal one, so follow the above instructions to make sure it is up to date and additionally:
+3. Make sure its other [report dependencies](https://github.com/vimc/montagu-reports/blob/master/src/paper-first-public-app/orderly.yml#L54) 
+are up to date, as these provide the burden estimates displayed in the public app
+4. Run the report `paper-first-public-app`
