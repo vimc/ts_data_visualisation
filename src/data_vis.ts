@@ -188,7 +188,7 @@ class DataVisModel {
   private showAgeGroupToggle = ko.observable<boolean>(metricsAndOptions.filterOptions.includes("age_group"));
 
   private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
-  private maxBars = ko.observable<number>(19);
+  private maxBars = ko.observable<number>(20);
 
   private xAxis = ko.observable<string>(this.xAxisOptions[1]);
   private yAxis = ko.observable<string>("disease");
