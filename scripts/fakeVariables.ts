@@ -81,6 +81,12 @@ export const vaccineDict = {
     "All Vaccines": "All Vaccines",
 };
 
+export const diseaseDict = {
+    Rota: "Rotavirus",
+    Rubella: "Rubella",
+    YF: "Yellow Fever",
+};
+
 export const activityTypes = ["routine", "campaign", "combined"];
 
 export const plottingVariables = ["year", "country", "continent", "region",

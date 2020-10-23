@@ -149,9 +149,10 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
     const metaStr: string = "<p>This plot shows the " +
                 chartOptions.metric.replace("_", " ") + " data for:<br>" +
                 prettyActivities(chartOptions.activityTypes) + ";<br>" +
-                 prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";<br>" +
-                 prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";<br>" +
-                 prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";<br>" +
+                prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";<br>" +
+                (includeVaccines ? prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";<br>" : "") +
+                (includeDiseases ? prettyDiseases(chartOptions.selectedDiseases, diseaseDict, 4) + ";<br>" :  "") +
+                (includeTouchstones ? prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";<br>" : "") +
                  prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";<br>" +
                  "Each line represents a " + chartOptions.yAxis + ";<br>" +
                  largest(chartOptions.maxPlot, chartOptions.xAxis) + "<\p>" +
