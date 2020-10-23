@@ -85,6 +85,8 @@ export const diseaseDict = {
     Rota: "Rotavirus",
     Rubella: "Rubella",
     YF: "Yellow Fever",
+    HPV: "HPV",
+    Hib: "Hib"
 };
 
 export const activityTypes = ["routine", "campaign", "combined"];

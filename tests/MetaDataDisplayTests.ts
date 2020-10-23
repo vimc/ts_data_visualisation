@@ -106,11 +106,12 @@ describe("MetaDataDisplay", () => {
         chartOptions['selectedCountries'] = ["FJI", "GMB", "GEO", "GHA", "GTM", "GIN", "GNB", "GUY", "HTI", "HND", "IND"];
         chartOptions['selectedTouchstones'] = ["ts1", "ts2"];
         chartOptions['selectedVaccines'] = ["HepB", "HepB_BD"];
+        chartOptions['selectedDiseases'] = ["Rota", "YF", "HPV", "Hib", "Rubella"];
 
         const md = MetaDataDisplay(chartOptions, dict, vaccineDict, diseaseDict, false, false, true);
         expect(md).to.not.include("Touchstones");
         expect(md).to.not.include("Vaccines");
-        expect(md).to.include("Diseases: Rotavirus, Yellow Fever");
+        expect(md).to.include("5 diseases including Rotavirus, Yellow Fever, HPV, Hib");
     });
 
     it("can exclude diseases from time series plot", () => {
@@ -125,7 +126,7 @@ describe("MetaDataDisplay", () => {
         const md = MetaDataDisplay(chartOptions, dict, vaccineDict, diseaseDict, true, true, false);
         expect(md).to.include("Touchstones");
         expect(md).to.include("Vaccines");
-        expect(md).to.not.include("Diseases: Rotavirus, Yellow Fever");
+        expect(md).to.not.include("Diseases");
     });
 });
 
