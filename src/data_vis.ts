@@ -328,7 +328,8 @@ class DataVisModel {
   }, this).extend({rateLimit: 250});
 
   private metaData = ko.computed<string>(() => {
-    return MetaDataDisplay(this.chartOptions(), countryDict, vaccineDict);
+    return MetaDataDisplay(this.chartOptions(), countryDict, vaccineDict, diseaseDict,
+        this.showTouchstoneFilter(), this.showVaccineFilter(), this.showDiseaseFilter());
   }, this);
 
   private warningMessage = ko.computed<string>(() => {
