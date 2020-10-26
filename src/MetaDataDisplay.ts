@@ -89,6 +89,20 @@ function prettyVaccines(vaccineArr: string[],
   }
 }
 
+function prettyDiseases(diseaseArr: string[],
+                        diseaseDict: { [code: string]: string },
+                        maxShow: number): string {
+  const diseaseCount: number = diseaseArr.length;
+  if (diseaseCount > maxShow) {
+    const retStr = diseaseCount.toString() + " diseases including " +
+        diseaseArr.slice(0, maxShow).map((x) => diseaseDict[x]).join(", ");
+    return retStr;
+  } else {
+    const retStr = "Diseases: " + diseaseArr.map((x) => diseaseDict[x]).join(", ");
+    return retStr;
+  }
+}
+
 function prettyTouchstones(touchstoneArr: string[], maxShow: number): string {
   const touchstoneCount: number = touchstoneArr.length;
   if (touchstoneCount > maxShow) {
@@ -112,14 +126,19 @@ function prettyActivities(activityTypes: string[]) {
 
 export function MetaDataDisplay(chartOptions: CustomChartOptions,
                                 countrydict: { [code: string]: string },
-                                vacDict: { [code: string]: string }): string {
+                                vacDict: { [code: string]: string },
+                                diseaseDict: { [code: string]: string },
+                                includeTouchstones: boolean,
+                                includeVaccines: boolean,
+                                includeDiseases: boolean): string {
   if (chartOptions.plotType === "Impact") {
     const metaStr: string = "<p>This plot shows the " +
                 chartOptions.metric.replace("_", " ") + " data for:<br>" +
                 prettyActivities(chartOptions.activityTypes) + ";<br>" +
                 prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";<br>" +
-                prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";<br>" +
-                prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";<br>" +
+                (includeVaccines ? prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";<br>" : "") +
+                (includeDiseases ? prettyDiseases(chartOptions.selectedDiseases, diseaseDict, 4) + ";<br>" :  "") +
+                (includeTouchstones ? prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";<br>" : "") +
                 prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";<br>" +
                 "The data is divided up by " +
                 chartOptions.xAxis + " and " + chartOptions.yAxis + ";<br>" +
@@ -130,9 +149,10 @@ export function MetaDataDisplay(chartOptions: CustomChartOptions,
     const metaStr: string = "<p>This plot shows the " +
                 chartOptions.metric.replace("_", " ") + " data for:<br>" +
                 prettyActivities(chartOptions.activityTypes) + ";<br>" +
-                 prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";<br>" +
-                 prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";<br>" +
-                 prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";<br>" +
+                prettyCountries(chartOptions.selectedCountries, countrydict, 4) + ";<br>" +
+                (includeVaccines ? prettyVaccines(chartOptions.selectedVaccines, vacDict, 4) + ";<br>" : "") +
+                (includeDiseases ? prettyDiseases(chartOptions.selectedDiseases, diseaseDict, 4) + ";<br>" :  "") +
+                (includeTouchstones ? prettyTouchstones(chartOptions.selectedTouchstones, 2) + ";<br>" : "") +
                  prettyYears(chartOptions.yearLow, chartOptions.yearHigh) + ";<br>" +
                  "Each line represents a " + chartOptions.yAxis + ";<br>" +
                  largest(chartOptions.maxPlot, chartOptions.xAxis) + "<\p>" +
