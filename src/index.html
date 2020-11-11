@@ -22,14 +22,15 @@
     <script type="text/javascript">
         $(window).ready(function () {
             // Animate loader off screen
-            $(".loader").fadeOut("fast");
+            $(".loader-wrapper").fadeOut("fast");
         });
     </script>
 </head>
 
 <body>
-<div class="loader"></div>
-
+<div class="loader-wrapper">
+    <div class="loader"></div>
+</div>
 <div class="d-none page-wrapper" data-bind="css:{'d-none':false}">
     <nav class="navbar navbar-light align-items-center">
         <div style="color: #0056b3; font-size: 22px; font-weight: 500;vertical-align: -webkit-baseline-middle;">
