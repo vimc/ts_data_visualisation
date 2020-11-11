@@ -48,7 +48,7 @@ html, body , .page-wrapper {
 }
 
 .sidebar.filter-bar.in {
-    width: 340px;
+    width: 300px;
 }
 
 .nav-link:not(.country-nav-link).active {
@@ -133,7 +133,7 @@ ul.countries-list {
 .nav-tabs {
     margin: 0;
     padding: 0;
-    border: 0;    
+    border: 0;
 }
 .nav-tabs > li > a {
     background: #DADADA;
