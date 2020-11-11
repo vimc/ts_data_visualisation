@@ -479,8 +479,9 @@ class DataVisModel {
 
   private exportPlot() {
     this.canvas = document.getElementById("myChart");
+    const title = this.plotTitle().replace(/ /g,"_") + ".png";
     this.canvas.toBlob((blob: Blob) => {
-      saveAs(blob, "untitled.png");
+      saveAs(blob, title);
     });
   }
 
@@ -587,8 +588,9 @@ class DataVisModel {
   }
 
   private exportTSPlot() {
+    const title = this.plotTitle().replace(/ /g,"_") + ".png";
     this.canvasTS.toBlob((blob: Blob) => {
-      saveAs(blob, "untitled.png");
+      saveAs(blob, title);
     });
   }
 
