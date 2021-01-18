@@ -1,0 +1,27 @@
+# This workflow is based on the npm template: https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml
+name: Build and run datavis tool
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 15.x
+    - run: npm run-script generate-fake-data
+    - run: npm run-script build-dev
+    - run: npm install codecov -g
+    - run: npm run-script coverage
+    - uses: codecov/codecov-action@v1
+      with:
+        files: coverage/*.json
+        fail_ci_if_error: true
