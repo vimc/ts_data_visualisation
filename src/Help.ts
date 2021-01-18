@@ -55,10 +55,10 @@ export function generatedMetricsHelp(plot: string, visible: string[]) {
     returnString = returnString.concat("<p><h4>Deaths averted</h4>The number of deaths averted corresponding to that year.</p>");
   }
   if (visible.includes("dalys")) {
-    returnString = returnString.concat("<p><h4>DALYs</h4>The number of disease affected life years corresponding to that year.</p>");
+    returnString = returnString.concat("<p><h4>DALYs</h4>The number of disability-adjusted life-years corresponding to that year.</p>");
   }
   if (visible.includes("dalys_averted")) {
-    returnString = returnString.concat("<p><h4>DALYs averted</h4>The number of disease affected life years averted corresponding to that year.</p>");
+    returnString = returnString.concat("<p><h4>DALYs averted</h4>The number of disability-adjusted life-years averted corresponding to that year.</p>");
   }
   if (visible.includes("cases")) {
     returnString = returnString.concat("<p><h4>Cases</h4>The number of cases corresponding to that year.</p>");

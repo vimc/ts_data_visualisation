@@ -37,14 +37,14 @@ describe("filterHelp", () => {
         const help_2 = generatedMetricsHelp("Impact",["deaths", "dalys", "cases", "fvps"]);
 
         expect(help_2).to.have.string("The number of deaths corresponding ");
-        expect(help_2).to.have.string("disease affected life years");
+        expect(help_2).to.have.string("disability-adjusted life-years");
         expect(help_2).to.have.string("The number of cases corresponding");
         expect(help_2).to.have.string("Fully vaccinated persons");
 
         const help_3 = generatedMetricsHelp("Time series",["deaths_averted","dalys_averted", "cases_averted"]);
 
         expect(help_3).to.have.string("The number of deaths averted");
-        expect(help_3).to.have.string("The number of disease affected life years averted");
+        expect(help_3).to.have.string("The number of disability-adjusted life-years averted");
         expect(help_3).to.have.string("The number of cases averted");
 
         const help_4 = generatedMetricsHelp("Time series",["coverage","deaths_averted_rate", "cases_averted_rate"]);
