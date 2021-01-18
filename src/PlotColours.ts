@@ -211,6 +211,19 @@ export let plotColours: { [vaccine: string]: string } = {
   "other": "#8b0000",
 };
 
+export const legacyColours: { [vaccine: string]: string } = {
+  "HPV":     "#BEBADA",
+  "HepB":    "#8DD3C7",
+  "Hib":     "#bdb76b",
+  "JE":      "#654321",
+  "Measles": "#0B588E",
+  "MenA":    "#FDB462",
+  "PCV":     "#d6604d",
+  "Rota":    "#FCCDE5",
+  "Rubella": "#D9D9D9",
+  "YF":      "#BC80BD",
+};
+
 export let niceColours = {
   aqua:           "#00ffff",
   azure:          "#f0ffff",
