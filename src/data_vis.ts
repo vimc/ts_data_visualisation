@@ -16,7 +16,7 @@ import {CountryFilter, VaccineDiseaseFilter, ListFilter, RangeFilter, DiseaseFil
 import {filterHelp, generatedHelpBody, generatedHelpTitle, generatedMetricsHelp} from "./Help";
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetaDataDisplay} from "./MetaDataDisplay";
-import {plotColours} from "./PlotColours";
+import {plotColours, legacyColours} from "./PlotColours";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
@@ -95,6 +95,8 @@ class DataVisModel {
 
   private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
   private yearMethod = ko.observable(initMethod);
+
+  private plotColours = ko.observable(this.isPrivate() ? {...plotColours, ...legacyColours} : plotColours);
 
   private showYearOfVac =
     ko.observable(metricsAndOptions.methods.includes("year_of_vac"));
@@ -419,7 +421,7 @@ class DataVisModel {
     const filterData = new DataFilterer().filterData(chartOptions,
                              this.impactData(),
                              metricsAndOptions,
-                             plotColours,
+                             this.plotColours(),
                              dict);
     const {datasets, xAxisVals} = filterData;
 
@@ -454,7 +456,7 @@ class DataVisModel {
     const filterData = new DataFilterer().filterData(chartOptions,
                              this.impactData(),
                              metricsAndOptions,
-                             plotColours,
+                             this.plotColours(),
                              dict);
     const {datasets, xAxisVals} = filterData;
 
@@ -535,7 +537,7 @@ class DataVisModel {
     const filteredData = new DataFilterer().filterData(chartOptions,
                                this.impactData(),
                                metricsAndOptions,
-                               plotColours,
+                               this.plotColours(),
                                dict);
     this.xAxisNames(filteredData.xAxisVals);
     this.maxPlotOptions(createRangeArray(1, this.xAxisNames().length));
