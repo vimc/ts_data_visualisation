@@ -1,0 +1,4 @@
+ignore:
+  - "src/Data.ts"
+  - "src/Dictionaries.ts"
+  - "src/select2Binding.ts"git
