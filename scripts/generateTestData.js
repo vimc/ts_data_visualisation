@@ -99,6 +99,7 @@ writeToFile("data/test/dove94.json", countryGroups.dove94);
 writeToFile("data/test/dove96.json", countryGroups.dove96);
 writeToFile("data/test/gavi68.json", countryGroups.gavi68);
 writeToFile("data/test/gavi72.json", countryGroups.gavi72);
+writeToFile("data/test/gavi73.json", countryGroups.gavi73);
 writeToFile("data/test/gavi77.json", countryGroups.gavi77);
 writeToFile("data/test/pine5.json", countryGroups.pine);
 writeToFile("data/test/touchstones.json", touchstones);
