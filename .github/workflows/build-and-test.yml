@@ -17,4 +17,3 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           files: coverage/*.json
-          fail_ci_if_error: true
