@@ -30,6 +30,11 @@ const notGavi72 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
     "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM", "XK"];
 const gavi72 = countries.filter((x) => notGavi72.indexOf(x) < 0 );
 
+const notGavi73 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
+    "FSM", "GTM", "IRQ", "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR",
+    "TKM", "TON", "TUN", "TUV", "VUT", "WSM", "XK"];
+const gavi73 = countries.filter((x) => notGavi73.indexOf(x) < 0 );
+
 const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
     "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR", "TON", "TUN", "TUV",
     "VUT", "WSM", "XK"];
@@ -41,6 +46,7 @@ export const countryGroups = {
     dove96: dove96,
     gavi68: gavi68,
     gavi72: gavi72,
+    gavi73: gavi73,
     gavi77: gavi77
 }
 

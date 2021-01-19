@@ -46,6 +46,7 @@ export const countryGroups: { [code: string]: string[] } = {
   dove96: loadObjectFromJSONFile("./dove96.json"),
   gavi68: loadObjectFromJSONFile("./gavi68.json"),
   gavi72: loadObjectFromJSONFile("./gavi72.json"),
+  gavi73: loadObjectFromJSONFile("./gavi73.json"),
   gavi77: loadObjectFromJSONFile("./gavi77.json"),
 };
 

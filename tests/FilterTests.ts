@@ -111,6 +111,9 @@ describe("CountryFilter", () => {
         sut.selectCountryGroup("gavi72");
         expect(sut.selectedOptions()).to.have.members(countryGroups["gavi72"]);
 
+        sut.selectCountryGroup("gavi73");
+        expect(sut.selectedOptions()).to.have.members(countryGroups["gavi73"]);
+
         let spy = sinon.spy(console, 'log');      
 
         sut.selectCountryGroup("FISH");
