@@ -25,8 +25,8 @@ let initTouchstone: string = "Uninitialized initTouchstone";
 let montaguDataSets: DataSet[] = [];
 let initMethod: string = "Uninitialized initMethod";
 
-if (metricsAndOptions.mode.includes("public")) {
-  filePrefix = "firstPaper";
+if (metricsAndOptions.mode.includes("public") || metricsAndOptions.mode.includes("paper2")) {
+  filePrefix = metricsAndOptions.mode.includes("public") ? "firstPaper" : "secondPaper";
   initTouchstone = "1";
   initMethod = "cross";
 
@@ -38,6 +38,7 @@ if (metricsAndOptions.mode.includes("public")) {
 
   appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
   appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
+  appendToDataSet(["1"], filePrefix, "year_of_vac", montaguDataSets, true);
 } else if (metricsAndOptions.mode.includes("private")) {
   filePrefix = "impactData";
   initTouchstone = "201710gavi-201907wue";
@@ -83,6 +84,12 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
   },
 );
 
+enum UserMode {
+  Private = "private",
+  Public = "public",
+  Paper2 = "paper2"
+}
+
 class DataVisModel {
   private plots = ko.observableArray(["Impact", "Time series"]);
   private permittedMetrics: { [key: string]: string[] } = {
@@ -91,12 +98,12 @@ class DataVisModel {
   };
   private currentPlot = ko.observable("Impact");
 
-  private isPrivate = ko.observable(metricsAndOptions.mode.includes("private"));
+  private userMode= ko.observable(metricsAndOptions.mode);
 
   private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
   private yearMethod = ko.observable(initMethod);
 
-  private plotColours = ko.observable(this.isPrivate() ? {...plotColours, ...legacyColours} : plotColours);
+  private plotColours = ko.observable(this.userMode() === UserMode.Private ? {...plotColours, ...legacyColours} : plotColours);
 
   private showYearOfVac =
     ko.observable(metricsAndOptions.methods.includes("year_of_vac"));

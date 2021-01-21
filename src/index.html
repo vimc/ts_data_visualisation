@@ -40,7 +40,7 @@
             VIMC Data Visualisation Tool
         </div>
         <div class="small" style="color: #0056b3; max-width: 550px">
-            <div data-bind="visible: isPrivate">
+            <div data-bind="visible: userMode() === UserMode.Private">
                 <div data-bind="text: reportId"></div>
                 <div>Data ids:
                 <a class="d-inline-block" data-bind="attr: { href: dataLink1, title: linkText }, text: dataId1"></a> /
@@ -48,12 +48,19 @@
                 </div>
                 <div data-bind="text: appId"></div>
             </div>
-            <span  data-bind="visible: !isPrivate()">
+            <span  data-bind="visible: userMode() === UserMode.Public">
                 This tool shows the Vaccine Impact Modelling Consortium's estimates of health impact from vaccination
                 against
                 10 pathogens in 98 low and middle income countries from 2000 to 2019. <br/>
                 <a href="https://www.vaccineimpact.org">More information about VIMC</a><br/>
                 <a href="https://doi.org/10.1016/S0140-6736(20)32657-X" target="_blank">Read the publication underlying these estimates</a>
+            </span>
+            <span  data-bind="visible: userMode() === UserMode.Paper2">
+                This tool shows the Vaccine Impact Modelling Consortium's estimates of health impact from vaccination
+                against
+                12 pathogens in 112 low and middle income countries from 2000 to 2030. <br/>
+                <a href="https://www.vaccineimpact.org">More information about VIMC</a><br/>
+                These estimates will be published in our second paper.
             </span>
         </div>
     </nav>
@@ -184,6 +191,10 @@
                             </button>
                             <button type="button" class="btn btn-primary mt-1 btn-sm"
                                     data-bind="click: () => selectCountryGroup('dove96')">Dove 96
+                            </button>
+                            <button type="button" class="btn btn-primary mt-1 btn-sm"
+                                    data-bind="visible: userMode() === UserMode.Paper2, click: () => selectCountryGroup('vimc98')">
+                                VIMC 98
                             </button>
 
                         </div>
@@ -329,7 +340,7 @@
         <button class="btn btn-success btn-block" data-bind="click: exportAllData">
           Export complete dataset <i class="fa fa-download" aria-hidden="true"></i>
         </button>
-        <div class="small" data-bind="visible: !isPrivate()">
+        <div class="small" data-bind="visible: userMode() !== UserMode.Private">
           This data is shared under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0 licence</a>.
         </div>
       </div>
@@ -519,7 +530,7 @@
                         <button class="btn btn-success" data-toggle="modal" data-target="#metadataModal">
                             Show Metadata
                         </button>
-                        <div data-bind="visible: !isPrivate()" class="small">
+                        <div data-bind="visible: userMode() !== UserMode.Private" class="small">
                           This data is shared under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY
                           4.0 licence</a>.
                         </div>
@@ -709,7 +720,7 @@
                           <button class="float-bottom btn btn-success" data-toggle="modal" data-target="#metadataModal">
                               Show Metadata
                           </button>
-                          <div data-bind="visible: !isPrivate()" class="small">
+                          <div data-bind="visible: userMode() !== UserMode.Private" class="small">
                             This data is shared under the <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY
                             4.0 licence</a>.
                           </div>
@@ -760,15 +771,15 @@
             <div class="modal-body">
                 <div><h4>Years</h4>The years for which we show the data. The meaning of the year depends on the plot
                 method chosen.</div>
-                <div data-bind="visible: isPrivate"><h4>Activity</h4>The type of vaccination program - routine or
+                <div data-bind="visible: userMode() === UserMode.Private"><h4>Activity</h4>The type of vaccination program - routine or
                 campaign.</div>
                 <div><h4>Country</h4>The countries for which we show the data.</div>
                 <div><h4>Disease / Vaccine</h4>The vaccines for which we show the data. Use the 'Aggregate all diseases'
                 checkbox to show data aggregated across all diseases and vaccines to exclude double-counting.</div>
-                <div data-bind="visible: isPrivate"><h4>Touchstone</h4>The touchstone for which we show the data. This
+                <div data-bind="visible: userMode() === UserMode.Privatee"><h4>Touchstone</h4>The touchstone for which we show the data. This
                 should usually be set to the latest touchstone, and selecting multiple touchstone is usually
                 incorrect.</div>
-                <div data-bind="visible: isPrivate"><h4>Support Type</h4>Gavi vs non-Gavi vaccination programs</div>
+                <div data-bind="visible: userMode() === UserMode.Private"><h4>Support Type</h4>Gavi vs non-Gavi vaccination programs</div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

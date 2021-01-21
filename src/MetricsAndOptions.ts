@@ -1,6 +1,6 @@
 export interface MetricsAndOptions {
-  // Is this for the private or public tool
-  mode: "public" | "private";
+  // Is this for the private or public (paper 1) or paper2 tool
+  mode: "public" | "private" | "paper2";
   // These are the metric columns in the data set e.g. deaths, dalys, cases_averted etc.
   metrics: string[];
   // These are the methods we can toggle between e.g. deaths, daly, FVPs, etc.
