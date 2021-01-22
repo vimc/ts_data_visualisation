@@ -1,6 +1,6 @@
 // the data for South Sudan (SSD), Palestinian Territories (PSE) and Kosovo (XK)
 // are dodgy so I've omitted them
-export const countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
+export const vimc98Countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
     "BEN", "BTN", "BOL", "BIH", "BFA", "BDI", "KHM", "CMR", "CPV", "CAF", "TCD",
     "CHN", "COM", "CIV", "CUB", "DJI", "PRK", "COD", "EGY", "SLV", "ERI", "ETH",
     "FJI", "GMB", "GEO", "GHA", "GTM", "GIN", "GNB", "GUY", "HTI", "HND", "IND",
@@ -11,34 +11,36 @@ export const countries = ["AFG", "ALB", "AGO", "ARM", "AZE", "BGD", "BLZ",
     "SYR", "TJK", "TZA", "TLS", "TGO", "TON", "TKM", "TUV", "UGA", "UKR", "UZB",
     "VUT", "VNM", "YEM", "ZMB", "ZWE"];
 
+export const paper2NewCountries = ["BLR","COL","DZA","ECU","IRN","JAM","JOR","MKD","NAM","PER","SRB","THA","VEN","ZAF"];
+
 const pineCountries = ["COD", "ETH", "IND", "NGA", "PAK"];
 
 const notDove94 = ["ALB", "BIH", "CHN", "TUN"];
-const dove94 = countries.filter((x) => notDove94.indexOf(x) < 0 );
+const dove94 = vimc98Countries.filter((x) => notDove94.indexOf(x) < 0 );
 
 const notDove96 = ["TUN", "XK"];
-const dove96 = countries.filter((x) => notDove96.indexOf(x) < 0 );
+const dove96 = vimc98Countries.filter((x) => notDove96.indexOf(x) < 0 );
 
 const notGavi68 = ["ALB", "BIH", "BLZ", "BTN", "CHN", "CPV", "EGY",
     "FJI", "FSM", "GTM", "HND", "IRQ", "LKA", "MAR", "MHL", "MNG", "PHL", "PRY",
     "PSE", "SLV", "SWZ", "SYR", "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM",
     "XK"];
-const gavi68 = countries.filter((x) => notGavi68.indexOf(x) < 0 );
+const gavi68 = vimc98Countries.filter((x) => notGavi68.indexOf(x) < 0 );
 
 const notGavi72 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
     "FSM", "GTM", "IRQ", "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR",
     "TKM", "TON", "TUN", "TUV", "UKR", "VUT", "WSM", "XK"];
-const gavi72 = countries.filter((x) => notGavi72.indexOf(x) < 0 );
+const gavi72 = vimc98Countries.filter((x) => notGavi72.indexOf(x) < 0 );
 
 const notGavi73 = ["ALB", "BIH", "BLZ", "CHN", "CPV", "EGY", "FJI",
     "FSM", "GTM", "IRQ", "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR",
     "TKM", "TON", "TUN", "TUV", "VUT", "WSM", "XK"];
-const gavi73 = countries.filter((x) => notGavi73.indexOf(x) < 0 );
+const gavi73 = vimc98Countries.filter((x) => notGavi73.indexOf(x) < 0 );
 
 const notGavi77 = ["BLZ", "CPV", "EGY", "FJI", "FSM", "GTM", "IRQ",
     "MAR", "MHL", "PHL", "PRY", "PSE", "SLV", "SWZ", "SYR", "TON", "TUN", "TUV",
     "VUT", "WSM", "XK"];
-const gavi77 = countries.filter((x) => notGavi77.indexOf(x) < 0 );
+const gavi77 = vimc98Countries.filter((x) => notGavi77.indexOf(x) < 0 );
 
 export const countryGroups = {
     pine: pineCountries,
@@ -47,8 +49,9 @@ export const countryGroups = {
     gavi68: gavi68,
     gavi72: gavi72,
     gavi73: gavi73,
-    gavi77: gavi77
-}
+    gavi77: gavi77,
+    vimc98: vimc98Countries
+};
 
 export const diseases = ["HepB", "Hib", "HPV", "JE", "Measles", "MenA", "PCV",
     "Rota", "Rubella", "YF", "All Diseases"];
@@ -111,10 +114,12 @@ export const supportTypes = ["gavi", "other"];
 export const fakeCountryDict = [
     {"country":"AFG","country_name":"Afghanistan"},
     {"country":"ALB","country_name":"Albania"},
+    {"country":"DZA","country_name":"Algeria"},
     {"country":"AGO","country_name":"Angola"},
     {"country":"ARM","country_name":"Armenia"},
     {"country":"AZE","country_name":"Azerbaijan"},
     {"country":"BGD","country_name":"Bangladesh"},
+    {"country":"BLR","country_name":"Belarus"},
     {"country":"BLZ","country_name":"Belize"},
     {"country":"BEN","country_name":"Benin"},
     {"country":"BTN","country_name":"Bhutan"},
@@ -128,12 +133,14 @@ export const fakeCountryDict = [
     {"country":"CAF","country_name":"Central African Republic"},
     {"country":"TCD","country_name":"Chad"},
     {"country":"CHN","country_name":"China"},
+    {"country":"COL","country_name":"Colombia"},
     {"country":"COM","country_name":"Comoros"},
     {"country":"COG","country_name":"Congo"},
-    {"country":"COD","country_name":"DR Congo"},
     {"country":"CIV","country_name":"Cote d'Ivoire"},
     {"country":"CUB","country_name":"Cuba"},
     {"country":"DJI","country_name":"Djibouti"},
+    {"country":"COD","country_name":"DR Congo"},
+    {"country":"ECU","country_name":"Ecuador"},
     {"country":"EGY","country_name":"Egypt"},
     {"country":"SLV","country_name":"El Salvador"},
     {"country":"ERI","country_name":"Eritrea"},
@@ -150,61 +157,8 @@ export const fakeCountryDict = [
     {"country":"HND","country_name":"Honduras"},
     {"country":"IND","country_name":"India"},
     {"country":"IDN","country_name":"Indonesia"},
+    {"country":"IRN","country_name":"Iran"},
     {"country":"IRQ","country_name":"Iraq"},
-    {"country":"KEN","country_name":"Kenya"},
-    {"country":"KIR","country_name":"Kiribati"},
-    {"country":"PRK","country_name":"North Korea"},
-    {"country":"XK","country_name":"Kosovo"},
-    {"country":"KGZ","country_name":"Kyrgyzstan"},
-    {"country":"LAO","country_name":"Laos"},
-    {"country":"LSO","country_name":"Lesotho"},
-    {"country":"LBR","country_name":"Liberia"},
-    {"country":"MDG","country_name":"Madagascar"},
-    {"country":"MWI","country_name":"Malawi"},
-    {"country":"MLI","country_name":"Mali"},
-    {"country":"MHL","country_name":"Marshall Islands"},
-    {"country":"MRT","country_name":"Mauritania"},
-    {"country":"FSM","country_name":"Micronesia"},
-    {"country":"MDA","country_name":"Moldova"},
-    {"country":"MNG","country_name":"Mongolia"},
-    {"country":"MAR","country_name":"Morocco"},
-    {"country":"MOZ","country_name":"Mozambique"},
-    {"country":"MMR","country_name":"Myanmar"},
-    {"country":"NPL","country_name":"Nepal"},
-    {"country":"NIC","country_name":"Nicaragua"},
-    {"country":"NER","country_name":"Niger"},
-    {"country":"NGA","country_name":"Nigeria"},
-    {"country":"PAK","country_name":"Pakistan"},
-    {"country":"PSE","country_name":"Palestine"},
-    {"country":"PNG","country_name":"Papua New Guinea"},
-    {"country":"PRY","country_name":"Paraguay"},
-    {"country":"PHL","country_name":"Philippines"},
-    {"country":"RWA","country_name":"Rwanda"},
-    {"country":"WSM","country_name":"Samoa"},
-    {"country":"STP","country_name":"Sao Tome and Principe"},
-    {"country":"SEN","country_name":"Senegal"},
-    {"country":"SLE","country_name":"Sierra Leone"},
-    {"country":"SLB","country_name":"Solomon Islands"},
-    {"country":"SOM","country_name":"Somalia"},
-    {"country":"SSD","country_name":"South Sudan"},
-    {"country":"LKA","country_name":"Sri Lanka"},
-    {"country":"SDN","country_name":"Sudan"},
-    {"country":"SWZ","country_name":"Swaziland"},
-    {"country":"SYR","country_name":"Syria"},
-    {"country":"TJK","country_name":"Tajikistan"},
-    {"country":"TZA","country_name":"Tanzania"},
-    {"country":"TLS","country_name":"Timor-Leste"},
-    {"country":"TGO","country_name":"Togo"},
-    {"country":"TON","country_name":"Tonga"},
-    {"country":"TUN","country_name":"Tunisia"},
-    {"country":"TKM","country_name":"Turkmenistan"},
-    {"country":"TUV","country_name":"Tuvalu"},
-    {"country":"UGA","country_name":"Uganda"},
-    {"country":"UKR","country_name":"Ukraine"},
-    {"country":"UZB","country_name":"Uzbekistan"},
-    {"country":"VUT","country_name":"Vanuatu"},
-    {"country":"VNM","country_name":"Viet Nam"},
-    {"country":"YEM","country_name":"Yemen"},
-    {"country":"ZMB","country_name":"Zambia"},
-    {"country":"ZWE","country_name":"Zimbabwe"}
-]
+    {"country":"JAM","country_name":"Jamaica"},
+    {"country":"JOR","country_name":"Jordan"},
+    {"country":"KEN","country_name":"Kenya"},{"country":"KIR","country_name":"Kiribati"},{"country":"XK","country_name":"Kosovo"},{"country":"KGZ","country_name":"Kyrgyzstan"},{"country":"LAO","country_name":"Laos"},{"country":"LSO","country_name":"Lesotho"},{"country":"LBR","country_name":"Liberia"},{"country":"MKD","country_name":"Macedonia"},{"country":"MDG","country_name":"Madagascar"},{"country":"MWI","country_name":"Malawi"},{"country":"MLI","country_name":"Mali"},{"country":"MHL","country_name":"Marshall Islands"},{"country":"MRT","country_name":"Mauritania"},{"country":"FSM","country_name":"Micronesia"},{"country":"MDA","country_name":"Moldova"},{"country":"MNG","country_name":"Mongolia"},{"country":"MAR","country_name":"Morocco"},{"country":"MOZ","country_name":"Mozambique"},{"country":"MMR","country_name":"Myanmar"},{"country":"NAM","country_name":"Namibia"},{"country":"NPL","country_name":"Nepal"},{"country":"NIC","country_name":"Nicaragua"},{"country":"NER","country_name":"Niger"},{"country":"NGA","country_name":"Nigeria"},{"country":"PRK","country_name":"North Korea"},{"country":"PAK","country_name":"Pakistan"},{"country":"PSE","country_name":"Palestine"},{"country":"PNG","country_name":"Papua New Guinea"},{"country":"PRY","country_name":"Paraguay"},{"country":"PER","country_name":"Peru"},{"country":"PHL","country_name":"Philippines"},{"country":"RWA","country_name":"Rwanda"},{"country":"WSM","country_name":"Samoa"},{"country":"STP","country_name":"Sao Tome and Principe"},{"country":"SEN","country_name":"Senegal"},{"country":"SRB","country_name":"Serbia"},{"country":"SLE","country_name":"Sierra Leone"},{"country":"SLB","country_name":"Solomon Islands"},{"country":"SOM","country_name":"Somalia"},{"country":"ZAF","country_name":"South Africa"},{"country":"SSD","country_name":"South Sudan"},{"country":"LKA","country_name":"Sri Lanka"},{"country":"SDN","country_name":"Sudan"},{"country":"SWZ","country_name":"Swaziland"},{"country":"SYR","country_name":"Syria"},{"country":"TJK","country_name":"Tajikistan"},{"country":"TZA","country_name":"Tanzania"},{"country":"THA","country_name":"Thailand"},{"country":"TLS","country_name":"Timor-Leste"},{"country":"TGO","country_name":"Togo"},{"country":"TON","country_name":"Tonga"},{"country":"TUN","country_name":"Tunisia"},{"country":"TKM","country_name":"Turkmenistan"},{"country":"TUV","country_name":"Tuvalu"},{"country":"UGA","country_name":"Uganda"},{"country":"UKR","country_name":"Ukraine"},{"country":"UZB","country_name":"Uzbekistan"},{"country":"VUT","country_name":"Vanuatu"},{"country":"VEN","country_name":"Venezuela"},{"country":"VNM","country_name":"Viet Nam"},{"country":"YEM","country_name":"Yemen"},{"country":"ZMB","country_name":"Zambia"},{"country":"ZWE","country_name":"Zimbabwe"}]
