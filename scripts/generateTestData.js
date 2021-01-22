@@ -1,7 +1,7 @@
 const fs = require('fs');
 import JSZip from 'jszip';
 
-import {fakeCountryDict, vimc98Countries, paper2NewCountries touchstones, activityTypes, diseases, diseaseVaccines,
+import {fakeCountryDict, vimc98Countries, allCountries, touchstones, activityTypes, diseases, diseaseVaccines,
         supportTypes, countryGroups} from "./fakeVariables.ts"
 
 let flag = process.argv.slice(-1)[0];
@@ -29,7 +29,7 @@ if (flag === "public") {
     const paper2Prefix = "data/test/secondPaper_1_";
 
     var fileNameCohort =  paper2Prefix + "cohort" + ".json";
-    fs.writeFile(fileNameCohort, generatePublicData("cohort", 2030), function (err) {
+    fs.writeFile(fileNameCohort, generatePublicData("cohort", 2030, allCountries), function (err) {
         if (err) {
             return console.log(err);
         }
@@ -37,7 +37,7 @@ if (flag === "public") {
     console.log("Fake data saved to " + fileNameCohort);
 
     var fileNameCross = paper2Prefix + "cross" + ".json";
-    fs.writeFile(fileNameCross, generatePublicData("cross", 2030), function (err) {
+    fs.writeFile(fileNameCross, generatePublicData("cross", 2030, allCountries), function (err) {
         if (err) {
             return console.log(err);
         }
@@ -45,7 +45,7 @@ if (flag === "public") {
     console.log("Fake data saved to " + fileNameCross);
 
     var fileNameYearOfVac = paper2Prefix + "year_of_vac" + ".json";
-    fs.writeFile(fileNameCross, generatePublicData("year_of_vac", 2030), function (err) {
+    fs.writeFile(fileNameYearOfVac, generatePublicData("year_of_vac", 2030, allCountries), function (err) {
         if (err) {
             return console.log(err);
         }
@@ -111,11 +111,11 @@ function writeToZipFile(path, lines) {
 if (flag === "paper2") {
     writeToFile("data/test/countryCodes.json", vimc98Countries);
 } else {
-    writeToFile("data/test/countryCodes.json", vimc98Countries.concat(paper2NewCountries));
+    writeToFile("data/test/countryCodes.json", allCountries);
 }
 writeToFile("data/test/countryDictionary.json", fakeCountryDict);
 
-const dates = flag === "paper2" ? {"min":[2000],"max":[2019]} : {"min":[2000],"max":[2030]};
+const dates = flag === "paper2" ? {"min":[2000],"max":[2030]} : {"min":[2000],"max":[2019]};
 writeToFile("data/test/dates.json", dates);
 writeToFile("data/test/diseaseVaccines.json", diseaseVaccines);
 writeToFile("data/test/reportInfo.json",
@@ -229,7 +229,7 @@ function generatePrivateData(touchstone) {
     }
 
     const fakeImpactData =
-        countries.flatMap((c) =>
+        vimc98countries.flatMap((c) =>
             diseases.flatMap((d) =>
                 diseaseVaccineLookup[d].flatMap((v) =>
                     supportTypes.flatMap((s) =>
@@ -269,7 +269,7 @@ function generatePrivateData(touchstone) {
     return JSON.stringify(fakeImpactData);
 }
 
-function generatePublicData(method, lastYear = 2019) {
+function generatePublicData(method, lastYear = 2019, countries = vimc98Countries) {
     const fakeImpactData =
         countries.flatMap((c) =>
             diseases.flatMap((d) =>
