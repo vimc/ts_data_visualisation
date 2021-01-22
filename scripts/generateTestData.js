@@ -229,12 +229,12 @@ function generatePrivateData(touchstone) {
     }
 
     const fakeImpactData =
-        vimc98countries.flatMap((c) =>
+        vimc98Countries.flatMap((c) =>
             diseases.flatMap((d) =>
                 diseaseVaccineLookup[d].flatMap((v) =>
                     supportTypes.flatMap((s) =>
                         activityTypes.flatMap((a) =>
-                            range(2000, 2019)
+                            range(2009, 2019)
                                 .flatMap((y) => {
                                     return {
                                         "touchstone": touchstone,
