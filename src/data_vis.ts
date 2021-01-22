@@ -84,12 +84,6 @@ const createVaccineFilterForDisease = (d: string) => new ListFilter({
   },
 );
 
-enum UserMode {
-  Private = "private",
-  Public = "public",
-  Paper2 = "paper2"
-}
-
 class DataVisModel {
   private plots = ko.observableArray(["Impact", "Time series"]);
   private permittedMetrics: { [key: string]: string[] } = {
@@ -98,12 +92,13 @@ class DataVisModel {
   };
   private currentPlot = ko.observable("Impact");
 
-  private userMode= ko.observable(metricsAndOptions.mode);
+  private mode = ko.observable(metricsAndOptions.mode);
 
   private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
   private yearMethod = ko.observable(initMethod);
 
-  private plotColours = ko.observable(this.userMode() === UserMode.Private ? {...plotColours, ...legacyColours} : plotColours);
+  private plotColours =
+      ko.observable(this.mode() == "private" ? {...plotColours, ...legacyColours} : plotColours);
 
   private showYearOfVac =
     ko.observable(metricsAndOptions.methods.includes("year_of_vac"));
@@ -196,8 +191,8 @@ class DataVisModel {
   private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
   private showAgeGroupToggle = ko.observable<boolean>(metricsAndOptions.filterOptions.includes("age_group"));
 
-  private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
-  private maxBars = ko.observable<number>(20);
+  private maxBars = ko.observable<number>(this.mode() == 'paper2' ? 31 : 20);
+  private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, this.maxBars()));
 
   private xAxis = ko.observable<string>(this.xAxisOptions[1]);
   private yAxis = ko.observable<string>("disease");

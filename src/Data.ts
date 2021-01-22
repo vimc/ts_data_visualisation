@@ -5,7 +5,7 @@ import {loadObjectFromJSONFile} from "./Utils";
 export const metricsAndOptions: MetricsAndOptions =
       loadObjectFromJSONFile("./metricsAndOptions.json");
 
-const paper2 = metricsAndOptions.mode === "paper2";
+const paper2 = metricsAndOptions.mode == "paper2";
 
 export const countries: string[] =
   loadObjectFromJSONFile("./countryCodes.json");
