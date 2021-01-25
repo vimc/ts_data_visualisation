@@ -108,6 +108,8 @@ class DataVisModel {
     ko.observable(metricsAndOptions.uiVisible.includes("uncertainty"));
   private showSidebar = ko.observable(true);
 
+  private paper1Embargo = ko.observable(Date.now() < Date.UTC(2021, 0, 28, 23, 30));
+
   private yearFilter = ko.observable(new RangeFilter({
     max: dates["max"][0],
     min: dates["min"][0],
