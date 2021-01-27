@@ -1,4 +1,4 @@
-import {countries, touchstones, activityTypes, diseases, vaccines, fakeCountryDict} from "../scripts/fakeVariables";
+import {allCountries, touchstones, activityTypes, diseases, vaccines, fakeCountryDict} from "../scripts/fakeVariables";
 import {upperLowerNames, DataFilterer, DataFiltererOptions, UniqueData} from "../src/DataFilterer";
 import {ImpactDataRow} from "../src/ImpactDataRow";
 import {MetricsAndOptions} from "../src/MetricsAndOptions";
@@ -31,7 +31,7 @@ describe("DataFilterer", () => {
 
     const fakeImpactData: ImpactDataRow[] = [];
     //create fake Impact Data
-    countries.slice(0, 10).map((c: string) =>
+    allCountries.slice(0, 10).map((c: string) =>
         diseases.slice(0, 5).map((d: string) =>
             diseaseVaccineLookup[d].map((v: string) =>
                 activityTypes.map((a: string) =>
@@ -145,7 +145,7 @@ describe("DataFilterer", () => {
         const out4: any[] =
             testObject.getUniqueVariables(max, "country", "deaths_averted", fakeImpactData);
         // all of the members of compvars should be diseases
-        expect(countries).to.include.members(out4);
+        expect(allCountries).to.include.members(out4);
 
 
         const out5: any[] =
@@ -214,7 +214,7 @@ describe("DataFilterer", () => {
             yearLow: 2005,
             yearHigh: 2025,
             activityTypes: ["routine","campaign"],
-            selectedCountries: countries.slice(0, 5),
+            selectedCountries: allCountries.slice(0, 5),
             selectedVaccines: ["HepB_BD", "MCV2", "Rota"],
             selectedTouchstones: touchstones.slice(0, 2),
             plotType: "Impact",
@@ -254,7 +254,7 @@ describe("DataFilterer", () => {
             yearLow: 2005,
             yearHigh: 2025,
             activityTypes: ["routine","campaign"],
-            selectedCountries: countries.slice(0, 5),
+            selectedCountries: allCountries.slice(0, 5),
             selectedVaccines: ["HepB_BD", "MCV2", "Rota"],
             selectedDiseases: diseases.slice(0, 5),
             selectedTouchstones: touchstones.slice(0, 2),
