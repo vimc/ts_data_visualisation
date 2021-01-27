@@ -266,7 +266,7 @@ describe("DataFilterer", () => {
         }
 
         let fakeMetricAndOptions: MetricsAndOptions = {
-            mode: "public",
+            mode: "paper2",
             metrics: ["deaths", "deaths_averted", "deaths_averted_rate"],
             methods: ["cross", "cohort"],
             dualOptions: ["country", "year", "support_type", "age_group", "disease"],

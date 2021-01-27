@@ -38,7 +38,9 @@ if (metricsAndOptions.mode.includes("public") || metricsAndOptions.mode.includes
 
   appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
   appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
-  appendToDataSet(["1"], filePrefix, "year_of_vac", montaguDataSets, true);
+  if (metricsAndOptions.mode.includes("paper2")) {
+    appendToDataSet(["1"], filePrefix, "year_of_vac", montaguDataSets, true);
+  }
 } else if (metricsAndOptions.mode.includes("private")) {
   filePrefix = "impactData";
   initTouchstone = "201710gavi-201907wue";
