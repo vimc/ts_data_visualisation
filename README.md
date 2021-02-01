@@ -23,13 +23,14 @@ report `internal-2018-interactive-plotting`.
 ## Quick start:
 This method is ideal for UI development where the data does not matter at all.
 1. `npm install`
-1. Generate completely fake data by running `npm run generate-fake-data private` or `npm run generate-fake-data public` (depending on whether you want to test the private or public app)
+1. Generate completely fake data by running `npm run generate-fake-data private` or `npm run generate-fake-data public` 
+or `npm run generate-fake-data paper2` (depending on whether you want to test the private (funders), public (paper1) 
+or paper 2 app)
 1. `npm run build-dev` or `npm run build-dev-watch`
 1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
-Note that the fake data only contains points for years 2014 - 2020 and for the
-most recent 3 touchstones.
+Note that the fake data only contains points for the most recent 3 touchstones.
 
 ## Using real data:
 This will make development slow, but will give you the most accurate impression
@@ -60,3 +61,8 @@ The public app depends on the internal one, so follow the above instructions to 
 3. Make sure its other [report dependencies](https://github.com/vimc/montagu-reports/blob/master/src/paper-first-public-app/orderly.yml#L54) 
 are up to date, as these provide the burden estimates displayed in the public app
 4. Run the report `paper-first-public-app`
+
+To deploy the paper 2 app:
+1. Make sure the [report dependencies](https://github.com/vimc/montagu-reports/blob/master/src/paper-second-public-app/orderly.yml) 
+are up to date (these provide all the data that is displayed in the app)
+2. Run the report `paper-second-public-app`

@@ -25,8 +25,8 @@ let initTouchstone: string = "Uninitialized initTouchstone";
 let montaguDataSets: DataSet[] = [];
 let initMethod: string = "Uninitialized initMethod";
 
-if (metricsAndOptions.mode.includes("public")) {
-  filePrefix = "firstPaper";
+if (metricsAndOptions.mode.includes("public") || metricsAndOptions.mode.includes("paper2")) {
+  filePrefix = metricsAndOptions.mode.includes("public") ? "firstPaper" : "secondPaper";
   initTouchstone = "1";
   initMethod = "cross";
 
@@ -38,6 +38,9 @@ if (metricsAndOptions.mode.includes("public")) {
 
   appendToDataSet(["1"], filePrefix, "cross", montaguDataSets, true);
   appendToDataSet(["1"], filePrefix, "cohort", montaguDataSets, true);
+  if (metricsAndOptions.mode.includes("paper2")) {
+    appendToDataSet(["1"], filePrefix, "year_of_vac", montaguDataSets, true);
+  }
 } else if (metricsAndOptions.mode.includes("private")) {
   filePrefix = "impactData";
   initTouchstone = "201710gavi-201907wue";
@@ -91,12 +94,13 @@ class DataVisModel {
   };
   private currentPlot = ko.observable("Impact");
 
-  private isPrivate = ko.observable(metricsAndOptions.mode.includes("private"));
+  private mode = ko.observable(metricsAndOptions.mode);
 
   private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
   private yearMethod = ko.observable(initMethod);
 
-  private plotColours = ko.observable(this.isPrivate() ? {...plotColours, ...legacyColours} : plotColours);
+  private plotColours =
+      ko.observable(this.mode() == "private" ? {...plotColours, ...legacyColours} : plotColours);
 
   private showYearOfVac =
     ko.observable(metricsAndOptions.methods.includes("year_of_vac"));
@@ -108,7 +112,7 @@ class DataVisModel {
     ko.observable(metricsAndOptions.uiVisible.includes("uncertainty"));
   private showSidebar = ko.observable(true);
 
-  private paper1Embargo = ko.observable(!this.isPrivate() && (Date.now() < Date.UTC(2021, 0, 28, 23, 30)));
+  private paper1Embargo = ko.observable((this.mode() == "public") && (Date.now() < Date.UTC(2021, 0, 28, 23, 30)));
 
   private yearFilter = ko.observable(new RangeFilter({
     max: dates["max"][0],
@@ -191,8 +195,8 @@ class DataVisModel {
   private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
   private showAgeGroupToggle = ko.observable<boolean>(metricsAndOptions.filterOptions.includes("age_group"));
 
-  private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, 20));
-  private maxBars = ko.observable<number>(20);
+  private maxBars = ko.observable<number>(this.mode() == 'paper2' ? 31 : 20);
+  private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, this.maxBars()));
 
   private xAxis = ko.observable<string>(this.xAxisOptions[1]);
   private yAxis = ko.observable<string>("disease");

@@ -2,14 +2,19 @@ import {ImpactDataRow} from "./ImpactDataRow";
 import {MetricsAndOptions} from "./MetricsAndOptions";
 import {loadObjectFromJSONFile} from "./Utils";
 
+export const metricsAndOptions: MetricsAndOptions =
+      loadObjectFromJSONFile("./metricsAndOptions.json");
+
+const paper2 = metricsAndOptions.mode == "paper2";
+
 export const countries: string[] =
   loadObjectFromJSONFile("./countryCodes.json");
 export const touchstones: string[] =
-  loadObjectFromJSONFile("./touchstones.json");
+  paper2 ? [] : loadObjectFromJSONFile("./touchstones.json");
 export const supportTypes: string[] =
-  loadObjectFromJSONFile("./support.json");
+  paper2 ? [] : loadObjectFromJSONFile("./support.json");
 export const activityTypes: string[] =
-  loadObjectFromJSONFile("./activities.json");
+  paper2 ? [] : loadObjectFromJSONFile("./activities.json");
 
 export const disVac = loadObjectFromJSONFile("./diseaseVaccines.json");
 export const diseases: string[] = [];
@@ -49,9 +54,11 @@ export const countryGroups: { [code: string]: string[] } = {
   gavi73: loadObjectFromJSONFile("./gavi73.json"),
   gavi77: loadObjectFromJSONFile("./gavi77.json"),
 };
+if (paper2) {
+  countryGroups["vimc98"] = loadObjectFromJSONFile("./vimc98.json")
+}
 
 export const reportInfo =
   loadObjectFromJSONFile("./reportInfo.json");
 
-export const metricsAndOptions: MetricsAndOptions =
-      loadObjectFromJSONFile("./metricsAndOptions.json");
+

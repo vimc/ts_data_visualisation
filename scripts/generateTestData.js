@@ -1,15 +1,14 @@
 const fs = require('fs');
 import JSZip from 'jszip';
 
-import {fakeCountryDict, countries, touchstones, activityTypes, diseases, diseaseVaccines, 
+import {fakeCountryDict, vimc98Countries, allCountries, touchstones, activityTypes, diseases, diseaseVaccines,
         supportTypes, countryGroups} from "./fakeVariables.ts"
 
 let flag = process.argv.slice(-1)[0];
-let is_public = (flag === "public")
 console.log("Generating data for the " + flag + " app.")
 
 
-if (is_public) {
+if (flag === "public") {
     var fileNameCohort = "data/test/firstPaper_1_" + "cohort" + ".json";
     fs.writeFile(fileNameCohort, generatePublicData("cohort"), function (err) {
         if (err) {
@@ -25,33 +24,60 @@ if (is_public) {
         }
     });
     console.log("Fake data saved to " + fileNameCross);
-} else {
+
+} else if (flag === "paper2") {
+    const paper2Prefix = "data/test/secondPaper_1_";
+
+    var fileNameCohort =  paper2Prefix + "cohort" + ".json";
+    fs.writeFile(fileNameCohort, generatePublicData("cohort", 2030, allCountries), function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
+    console.log("Fake data saved to " + fileNameCohort);
+
+    var fileNameCross = paper2Prefix + "cross" + ".json";
+    fs.writeFile(fileNameCross, generatePublicData("cross", 2030, allCountries), function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
+    console.log("Fake data saved to " + fileNameCross);
+
+    var fileNameYearOfVac = paper2Prefix + "year_of_vac" + ".json";
+    fs.writeFile(fileNameYearOfVac, generatePublicData("year_of_vac", 2030, allCountries), function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
+    console.log("Fake data saved to " + fileNameYearOfVac);
+} else if (flag === "private") {
     for (let i in touchstones) {
-    var tsName = touchstones[i];
-    var fileName0 = "data/test/impactData_" + tsName + "_year_of_vac.json";
-    fs.writeFile(fileName0, generatePrivateData(tsName), function (err) {
-        if (err) {
-            return console.log(err);
-        }
-    });
+        var tsName = touchstones[i];
+        var fileName0 = "data/test/impactData_" + tsName + "_year_of_vac.json";
+        fs.writeFile(fileName0, generatePrivateData(tsName), function (err) {
+            if (err) {
+                return console.log(err);
+            }
+        });
 
-    var fileName1 = "data/test/impactData_" + tsName + "_cross.json";
-        fs.writeFile(fileName1, generatePrivateData(tsName), function (err) {
-        if (err) {
-            return console.log(err);
-        }
-    });
+        var fileName1 = "data/test/impactData_" + tsName + "_cross.json";
+            fs.writeFile(fileName1, generatePrivateData(tsName), function (err) {
+            if (err) {
+                return console.log(err);
+            }
+        });
 
-    var fileName2 = "data/test/impactData_" + tsName + "_cohort.json";
-    fs.writeFile(fileName2, generatePrivateData(tsName), function (err) {
-        if (err) {
-            return console.log(err);
-        };
-    })
-    console.log("Fake data saved to " + fileName0);
-    console.log("Fake data saved to " + fileName1);
-    console.log("Fake data saved to " + fileName2);
-}   
+        var fileName2 = "data/test/impactData_" + tsName + "_cohort.json";
+        fs.writeFile(fileName2, generatePrivateData(tsName), function (err) {
+            if (err) {
+                return console.log(err);
+            };
+        })
+        console.log("Fake data saved to " + fileName0);
+        console.log("Fake data saved to " + fileName1);
+        console.log("Fake data saved to " + fileName2);
+    }
 }
 // Impact data
 
@@ -82,10 +108,15 @@ function writeToZipFile(path, lines) {
         });
 }
 
-writeToFile("data/test/activities.json", activityTypes);
-writeToFile("data/test/countryCodes.json", countries);
+if (flag === "paper2") {
+    writeToFile("data/test/countryCodes.json", vimc98Countries);
+} else {
+    writeToFile("data/test/countryCodes.json", allCountries);
+}
 writeToFile("data/test/countryDictionary.json", fakeCountryDict);
-writeToFile("data/test/dates.json", {"min":[2010],"max":[2020]});
+
+const dates = flag === "paper2" ? {"min":[2000],"max":[2030]} : {"min":[2000],"max":[2019]};
+writeToFile("data/test/dates.json", dates);
 writeToFile("data/test/diseaseVaccines.json", diseaseVaccines);
 writeToFile("data/test/reportInfo.json",
             { "rep_id": ["test-fake-id"],
@@ -94,7 +125,7 @@ writeToFile("data/test/reportInfo.json",
               "git_id": ["some-fake-git-id"]
             }
            );
-writeToFile("data/test/support.json", supportTypes);
+
 writeToFile("data/test/dove94.json", countryGroups.dove94);
 writeToFile("data/test/dove96.json", countryGroups.dove96);
 writeToFile("data/test/gavi68.json", countryGroups.gavi68);
@@ -102,11 +133,18 @@ writeToFile("data/test/gavi72.json", countryGroups.gavi72);
 writeToFile("data/test/gavi73.json", countryGroups.gavi73);
 writeToFile("data/test/gavi77.json", countryGroups.gavi77);
 writeToFile("data/test/pine5.json", countryGroups.pine);
-writeToFile("data/test/touchstones.json", touchstones);
+if (flag === "paper2") {
+    writeToFile("data/test/vimc98.json", countryGroups.vimc98)
+} else {
+    writeToFile("data/test/activities.json", activityTypes);
+    writeToFile("data/test/touchstones.json", touchstones);
+    writeToFile("data/test/support.json", supportTypes);
+}
+
 writeToZipFile("data/test/data_set.zip", 100);
 
 // are we creating a public app?
-if (is_public) {
+if (flag === "public") {
     writeToFile("data/test/metricsAndOptions.json",
                     {"mode": ["public"],
                      "metrics": ["deaths",
@@ -124,7 +162,25 @@ if (is_public) {
                       "uiVisible": ["uncertainty"]
                     }
                    );
-} else {
+} else if (flag === "paper2") {
+    writeToFile("data/test/metricsAndOptions.json",
+                    {"mode": ["paper2"],
+                     "metrics": ["deaths",
+                                 "deaths_averted",
+                                 "deaths_novac",
+                                 "dalys",
+                                 "dalys_averted",
+                                 "dalys_novac"],
+                      "methods": ["cross", "cohort", "year_of_vac"],
+                      "dualOptions": ["country",
+                                      "year",
+                                      "disease"],
+                      "stratOptions": [],
+                      "filterOptions": ["age_group"],
+                      "uiVisible": ["uncertainty"]
+                    }
+                   );
+} else if (flag === "private") {
     writeToFile("data/test/metricsAndOptions.json",
                 {"mode": ["private"],
                  "metrics": ["deaths_averted",
@@ -150,8 +206,9 @@ if (is_public) {
                );    
 }
 
-
-
+function range(start, end) {
+  return Array(end - start + 1).fill().map((_, idx) => start + idx)
+}
 
 function generatePrivateData(touchstone) {
     const touchstoneSubset = touchstones.slice(0, 3);
@@ -172,12 +229,12 @@ function generatePrivateData(touchstone) {
     }
 
     const fakeImpactData =
-        countries.flatMap((c) =>
+        vimc98Countries.flatMap((c) =>
             diseases.flatMap((d) =>
                 diseaseVaccineLookup[d].flatMap((v) =>
                     supportTypes.flatMap((s) =>
                         activityTypes.flatMap((a) =>
-                            [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+                            range(2009, 2019)
                                 .flatMap((y) => {
                                     return {
                                         "touchstone": touchstone,
@@ -212,12 +269,12 @@ function generatePrivateData(touchstone) {
     return JSON.stringify(fakeImpactData);
 }
 
-function generatePublicData(method) {
+function generatePublicData(method, lastYear = 2019, countries = vimc98Countries) {
     const fakeImpactData =
         countries.flatMap((c) =>
             diseases.flatMap((d) =>
                 ["all", "under5"].flatMap((a) =>
-                    [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020].flatMap((y) => {
+                    range(2000, lastYear).flatMap((y) => {
                         let death    = randomNumber(10000, 20000);
                         let death_av = randomNumber(10000, 20000);
                         let death_nv = randomNumber(10000, 20000);

@@ -9,7 +9,7 @@ import {
     DiseaseFilter,
     allDiseases, allDiseasesVaccine
 } from "../src/Filter";
-import {countries, countryGroups, fakeCountryDict} from "../scripts/fakeVariables";
+import {allCountries, countryGroups, fakeCountryDict} from "../scripts/fakeVariables";
 import {parseIntoDictionary} from "../src/Utils";
 import {expect} from "chai";
 
@@ -79,19 +79,19 @@ describe("CountryFilter", () => {
 
         const sut = new CountryFilter({groups: countryGroups,
                                        name: "whatever",
-                                       options: countries,
+                                       options: allCountries,
                                        selected: ["KIR"],
                                        humanNames: parseIntoDictionary(fakeCountryDict, "country", "country_name")
                                       });
         expect(sut.selectedOptions()).to.have.members(["KIR"]);
-        expect(sut.options()).to.have.members(countries);
+        expect(sut.options()).to.have.members(allCountries);
 
         expect(sut.makeHumanreadable("PAK")).to.equal("Pakistan");
 
         expect(sut.makeHumanreadable("FISH")).to.be.undefined;
 
         sut.selectCountryGroup("all");
-        expect(sut.selectedOptions()).to.have.members(countries);
+        expect(sut.selectedOptions()).to.have.members(allCountries);
 
         sut.selectCountryGroup("none");
         expect(sut.selectedOptions()).to.have.members([]);
@@ -114,6 +114,9 @@ describe("CountryFilter", () => {
         sut.selectCountryGroup("gavi73");
         expect(sut.selectedOptions()).to.have.members(countryGroups["gavi73"]);
 
+        sut.selectCountryGroup("vimc98");
+        expect(sut.selectedOptions()).to.have.members(countryGroups["vimc98"]);
+
         let spy = sinon.spy(console, 'log');      
 
         sut.selectCountryGroup("FISH");
@@ -125,11 +128,11 @@ describe("CountryFilter", () => {
 
     it("Check CountryFilter no selected option", () => {
         const sut = new CountryFilter({name: "whatever",
-                                       options: countries,
+                                       options: allCountries,
                                        humanNames: parseIntoDictionary(fakeCountryDict, "country", "country_name")
                                       });
 
-        expect(sut.selectedOptions()).to.have.members(countries);
+        expect(sut.selectedOptions()).to.have.members(allCountries);
     })
 });
 
