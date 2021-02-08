@@ -32,20 +32,25 @@
     <div class="loader"></div>
 </div>
 <div class="d-none page-wrapper" data-bind="css:{'d-none':false}">
-    <nav class="navbar navbar-light align-items-center">
+    <nav class="navbar navbar-light align-items-center" data-bind="class: mode() == 'paper2' ? 'navbar-paper2' : 'navbar-default'">
         <div style="color: #0056b3; font-size: 22px; font-weight: 500;vertical-align: -webkit-baseline-middle;">
             <a class="navbar-brand" href="https://www.vaccineimpact.org">
                 <img src="./logo-dark-drop.png" height="70px"/>
             </a>
             VIMC Data Visualisation Tool
         </div>
-        <div data-bind="visible: paper1Embargo">
-            <h3 style="color: red;">Embargoed until 23:30 (UK time) on 28 January 2021</h3>
+        <div data-bind="visible: mode() == 'public'" class="navbar-info">
+            You are viewing data from our <strong>first publication</strong><br/>
+            <a href="/2021/visualisation" target="_blank">Click here to view data from our second publication</a>
         </div>
-        <div class="small" style="color: #0056b3; max-width: 550px">
+        <div data-bind="visible: mode() == 'paper2'" class="navbar-info">
+            You are viewing data from our <strong>second publication</strong><br/>
+            <a href="/2020/visualisation" target="_blank">Click here to view data from our first publication</a>
+        </div>
+        <div class="small navbar-info">
             <div data-bind="visible: mode() == 'private'">
                 <div data-bind="text: reportId"></div>
-                <div>Data ids:
+                <div>Data ids:c
                 <a class="d-inline-block" data-bind="attr: { href: dataLink1, title: linkText }, text: dataId1"></a> /
                 <a class="d-inline-block" data-bind="attr: { href: dataLink2, title: linkText }, text: dataId2"></a>
                 </div>
