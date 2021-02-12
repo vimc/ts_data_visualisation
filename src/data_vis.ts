@@ -59,6 +59,7 @@ if (metricsAndOptions.mode.includes("public") || metricsAndOptions.mode.includes
 
 require("./index.html");
 require("./image/logo-dark-drop.png");
+require("./image/logo-green-drop.png")
 require("./image/caret-down.svg");
 require("./image/caret-up.svg");
 require("./image/caret-up-dark.svg");
@@ -99,6 +100,7 @@ class DataVisModel {
   private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
   private yearMethod = ko.observable(initMethod);
 
+  private logo = ko.observable(this.mode() == "paper2" ? "./logo-green-drop.png" : "./logo-dark-drop.png");
   private plotColours =
       ko.observable(this.mode() == "private" ? {...plotColours, ...legacyColours} : plotColours);
 
