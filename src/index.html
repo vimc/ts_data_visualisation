@@ -737,6 +737,9 @@
                 </div>
             </div>
         </div>
+        <div id="footer" class="small" data-bind="visible: mode() == 'public' || mode() == 'paper2'">
+            <a href="#" data-bind="attr: { href: reportLink }, text: reportId" target="_blank"></a>
+        </div>
     </div>
 </div>
 
