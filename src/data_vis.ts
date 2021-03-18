@@ -205,6 +205,14 @@ class DataVisModel {
   private uncertaintyChecked = ko.observable<boolean>(false);
 
   private reportId = ko.observable<string>("Report id: " + reportInfo.rep_id);
+  private reportName = ko.observable<string>(
+      this.mode() == "public" ? "paper-first-public-app" :
+              this.mode() == "paper2" ? "paper-second-public-app" :
+                  "internal-2018-interactive-plotting"
+  );
+  private reportLink = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"
+                        + (this.reportName()) + "/"
+                        + reportInfo.rep_id + "/");
   // if we end up with more datasets move this to arrays of ko strings
   private dataId1 = ko.observable<string>(reportInfo.dep_id[0]);
   private dataId2 = ko.observable<string>(reportInfo.dep_id[1]);
