@@ -125,6 +125,15 @@ writeToFile("data/test/reportInfo.json",
               "git_id": ["some-fake-git-id"]
             }
            );
+if (flag === "public") {
+    writeToFile("data/test/reportInfoFirstPaper.json",
+            { "rep_id": ["test-fake-id-paper-first"],
+              "dep_id": ["test-another-fake-id", "test-yet-another-fake-id"],
+              "dep_name": ["report-name", "another-report-name"],
+              "git_id": ["some-fake-git-id"]
+            }
+           );
+}
 
 writeToFile("data/test/dove94.json", countryGroups.dove94);
 writeToFile("data/test/dove96.json", countryGroups.dove96);

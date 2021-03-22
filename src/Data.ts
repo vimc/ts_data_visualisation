@@ -58,7 +58,8 @@ if (paper2) {
   countryGroups["vimc98"] = loadObjectFromJSONFile("./vimc98.json")
 }
 
-export const reportInfo =
-  loadObjectFromJSONFile("./reportInfo.json");
+const reportInfoFirstPaper = loadObjectFromJSONFile("./reportInfoFirstPaper.json");
+export const reportInfo = reportInfoFirstPaper.rep_id === undefined ?
+    loadObjectFromJSONFile("./reportInfo.json") : reportInfoFirstPaper;
 
 
