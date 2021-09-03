@@ -32,7 +32,7 @@
     <div class="loader"></div>
 </div>
 <div class="d-none page-wrapper" data-bind="css:{'d-none':false}">
-    <nav class="navbar navbar-light align-items-center" data-bind="class: mode() == 'paper2' ? 'navbar-paper2' : 'navbar-default'">
+    <nav class="navbar navbar-light align-items-center" data-bind="class: navbarClass()">
         <div style="color: #0056b3; font-size: 22px; font-weight: 500;vertical-align: -webkit-baseline-middle;">
             <a class="navbar-brand" href="https://www.vaccineimpact.org">
                 <img data-bind="attr:{src: logo} " height="70px"/>
@@ -46,6 +46,10 @@
         <div data-bind="visible: mode() == 'paper2'" class="navbar-info">
             You are viewing data from our <strong>second publication</strong><br/>
             <a href="/2020/visualisation" target="_blank">Click here to view data from our first publication</a>
+        </div>
+        <div data-bind="visible: mode() == 'interim'" class="navbar-info">
+            You are viewing data from our <strong>2021 interim update</strong><br/>
+            <a href="/2021/visualisation" target="_blank">Click here to view data from our second publication</a>
         </div>
         <div class="small navbar-info">
             <div data-bind="visible: mode() == 'private'">
@@ -737,7 +741,7 @@
                 </div>
             </div>
         </div>
-        <div id="footer" class="small" data-bind="visible: mode() == 'public' || mode() == 'paper2'">
+        <div id="footer" class="small" data-bind="visible: ['public', 'paper2', 'interim'].includes(mode())">
             <a href="#" data-bind="attr: { href: reportLink }, text: reportId" target="_blank"></a>
         </div>
     </div>

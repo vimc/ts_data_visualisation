@@ -5,16 +5,18 @@ import {loadObjectFromJSONFile} from "./Utils";
 export const metricsAndOptions: MetricsAndOptions =
       loadObjectFromJSONFile("./metricsAndOptions.json");
 
-const paper2 = metricsAndOptions.mode == "paper2";
+console.log("Mode is " +  JSON.stringify(metricsAndOptions.mode))
+
+const paper2Interface = metricsAndOptions.mode == "paper2" || metricsAndOptions.mode == "interim";
 
 export const countries: string[] =
   loadObjectFromJSONFile("./countryCodes.json");
 export const touchstones: string[] =
-  paper2 ? [] : loadObjectFromJSONFile("./touchstones.json");
+  paper2Interface ? [] : loadObjectFromJSONFile("./touchstones.json");
 export const supportTypes: string[] =
-  paper2 ? [] : loadObjectFromJSONFile("./support.json");
+  paper2Interface ? [] : loadObjectFromJSONFile("./support.json");
 export const activityTypes: string[] =
-  paper2 ? [] : loadObjectFromJSONFile("./activities.json");
+  paper2Interface ? [] : loadObjectFromJSONFile("./activities.json");
 
 export const disVac = loadObjectFromJSONFile("./diseaseVaccines.json");
 export const diseases: string[] = [];
@@ -54,7 +56,7 @@ export const countryGroups: { [code: string]: string[] } = {
   gavi73: loadObjectFromJSONFile("./gavi73.json"),
   gavi77: loadObjectFromJSONFile("./gavi77.json"),
 };
-if (paper2) {
+if (paper2Interface) {
   countryGroups["vimc98"] = loadObjectFromJSONFile("./vimc98.json")
 }
 
