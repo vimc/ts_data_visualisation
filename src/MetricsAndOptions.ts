@@ -2,7 +2,7 @@ export interface MetricsAndOptions {
   // Is this for the private or public (paper 1), paper2, or interim update tool
   mode: "public" | "private" | "paper2" | "interim";
   // Touchstone, if mode is "interim"
-  touchstone: string[];
+  touchstone?: string[];
   // These are the metric columns in the data set e.g. deaths, dalys, cases_averted etc.
   metrics: string[];
   // These are the methods we can toggle between e.g. deaths, daly, FVPs, etc.
