@@ -12,7 +12,7 @@ describe("touchstoneFriendly", () => {
     });
 
     it("returns unchanged touchstone if month part is not numeric", () => {
-        expect(touchstoneFriendly(["2020Q1test"])).to.eq("2021Q1test");
+        expect(touchstoneFriendly(["2021Q1test"])).to.eq("2021Q1test");
     });
 
     it("returns friendly touchstone name for WUENIC touchstone", () => {
