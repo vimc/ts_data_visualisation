@@ -5,8 +5,6 @@ import {loadObjectFromJSONFile} from "./Utils";
 export const metricsAndOptions: MetricsAndOptions =
       loadObjectFromJSONFile("./metricsAndOptions.json");
 
-console.log("Mode is " +  JSON.stringify(metricsAndOptions.mode))
-
 const paper2Interface = metricsAndOptions.mode == "paper2" || metricsAndOptions.mode == "interim";
 
 export const countries: string[] =

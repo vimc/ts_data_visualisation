@@ -48,7 +48,7 @@
             <a href="/2020/visualisation" target="_blank">Click here to view data from our first publication</a>
         </div>
         <div data-bind="visible: mode() == 'interim'" class="navbar-info">
-            You are viewing data from our <strong>2021 interim update</strong><br/>
+            You are viewing data from our <strong><span data-bind="text: touchstoneName"></span> interim update</strong><br/>
             <a href="/2021/visualisation" target="_blank">Click here to view data from our second publication</a>
         </div>
         <div class="small navbar-info">
@@ -67,7 +67,7 @@
                 <a href="https://www.vaccineimpact.org">More information about VIMC</a><br/>
                 <a href="https://doi.org/10.1016/S0140-6736(20)32657-X" target="_blank">Read the publication underlying these estimates</a>
             </span>
-            <span  data-bind="visible: mode() == 'paper2'">
+            <span  data-bind="visible: mode() == 'paper2' || mode() == 'interim'">
                 This tool shows the Vaccine Impact Modelling Consortium's estimates of health impact from vaccination
                 against
                 10 pathogens in 112 low and middle income countries from 2000 to 2030. <br/>

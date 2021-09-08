@@ -17,6 +17,7 @@ import {filterHelp, generatedHelpBody, generatedHelpTitle, generatedMetricsHelp}
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetaDataDisplay} from "./MetaDataDisplay";
 import {plotColours, legacyColours} from "./PlotColours";
+import {touchstoneFriendly} from "./Utils";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
@@ -105,7 +106,7 @@ class DataVisModel {
   private currentPlot = ko.observable("Impact");
 
   private mode = ko.observable(metricsAndOptions.mode.toString());
-  //private touchstone = ko.observable(metricsAndOptions.touchstone.toString());
+  private touchstoneName = ko.observable(this.mode() == "interim" ? touchstoneFriendly(metricsAndOptions.touchstone) : null);
 
   private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
   private yearMethod = ko.observable(initMethod);
