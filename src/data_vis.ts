@@ -208,7 +208,7 @@ class DataVisModel {
   private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
   private showAgeGroupToggle = ko.observable<boolean>(metricsAndOptions.filterOptions.includes("age_group"));
 
-  private maxBars = ko.observable<number>(this.mode() == 'paper2' ? 31 : 20);
+  private maxBars = ko.observable<number>(["paper2", "interim"].includes(this.mode()) ? 31 : 20);
   private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, this.maxBars()));
 
   private xAxis = ko.observable<string>(this.xAxisOptions[1]);
@@ -221,6 +221,7 @@ class DataVisModel {
   private reportName = ko.observable<string>(
       this.mode() == "public" ? "paper-first-public-app" :
               this.mode() == "paper2" ? "paper-second-public-app" :
+               this.mode() == "interim" ? "interim-update-app" :
                   "internal-2018-interactive-plotting"
   );
   private reportLink = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"
