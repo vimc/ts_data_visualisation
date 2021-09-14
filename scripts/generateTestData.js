@@ -51,6 +51,16 @@ if (flag === "public") {
         }
     });
     console.log("Fake data saved to " + fileNameYearOfVac);
+}  else if (flag === "interim") {
+    const interimPrefix = "data/test/interim_1_";
+
+    var fileNameYearOfVac = interimPrefix + "year_of_vac" + ".json";
+    fs.writeFile(fileNameYearOfVac, generateInterimData("year_of_vac", 2030, allCountries), function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
+    console.log("Fake data saved to " + fileNameYearOfVac);
 } else if (flag === "private") {
     for (let i in touchstones) {
         var tsName = touchstones[i];
@@ -108,14 +118,16 @@ function writeToZipFile(path, lines) {
         });
 }
 
-if (flag === "paper2") {
+const paper2DataFormat = (flag === "paper2" || flag === "interim");
+
+if (paper2DataFormat) {
     writeToFile("data/test/countryCodes.json", vimc98Countries);
 } else {
     writeToFile("data/test/countryCodes.json", allCountries);
 }
 writeToFile("data/test/countryDictionary.json", fakeCountryDict);
 
-const dates = flag === "paper2" ? {"min":[2000],"max":[2030]} : {"min":[2000],"max":[2019]};
+const dates = paper2DataFormat ? {"min":[2000],"max":[2030]} : {"min":[2000],"max":[2019]};
 writeToFile("data/test/dates.json", dates);
 writeToFile("data/test/diseaseVaccines.json", diseaseVaccines);
 writeToFile("data/test/reportInfo.json",
@@ -133,7 +145,7 @@ writeToFile("data/test/gavi72.json", countryGroups.gavi72);
 writeToFile("data/test/gavi73.json", countryGroups.gavi73);
 writeToFile("data/test/gavi77.json", countryGroups.gavi77);
 writeToFile("data/test/pine5.json", countryGroups.pine);
-if (flag === "paper2") {
+if (paper2DataFormat) {
     writeToFile("data/test/vimc98.json", countryGroups.vimc98)
 } else {
     writeToFile("data/test/activities.json", activityTypes);
@@ -178,6 +190,21 @@ if (flag === "public") {
                       "stratOptions": [],
                       "filterOptions": ["age_group"],
                       "uiVisible": ["uncertainty"]
+                    }
+                   );
+} else if (flag === "interim") {
+    writeToFile("data/test/metricsAndOptions.json",
+                    {"mode": ["interim"],
+                      "touchstone": ["202107wue"],
+                      "metrics": ["deaths_averted",
+                                 "dalys_averted"],
+                      "methods": ["year_of_vac"],
+                      "dualOptions": ["country",
+                                      "year",
+                                      "disease"],
+                      "stratOptions": [],
+                      "filterOptions": ["age_group"],
+                      "uiVisible": []
                     }
                    );
 } else if (flag === "private") {
@@ -306,6 +333,49 @@ function generatePublicData(method, lastYear = 2019, countries = vimc98Countries
                             "dalys_av_lo":dalys_av - randomNumber(0, 2500),
                             "dalys_averted":dalys_av,
                             "dalys_av_hi":dalys_av + randomNumber(0, 2500),
+                        }
+                    }
+                )
+            )
+        )
+    );
+
+    return JSON.stringify(fakeImpactData);
+}
+
+function generateInterimData(method, lastYear = 2019, countries = vimc98Countries) {
+    const fakeImpactData =
+        countries.flatMap((c) =>
+            diseases.flatMap((d) =>
+                ["all", "under5"].flatMap((a) =>
+                    range(2000, lastYear).flatMap((y) => {
+                        let death_av = randomNumber(10000, 20000);
+                        let dalys_av = randomNumber(10000, 20000);
+                        return {
+                            "year": y,
+                            "disease": d,
+                            "age_group": a,
+                            "method" : method,
+                            "country": c,
+                            "country_name": `c-fullname`,
+                            "deaths_lo": "NA",
+                            "deaths": "NA",
+                            "deaths_hi": "NA",
+                            "deaths_nv_lo": "NA",
+                            "deaths_no_vac": "NA",
+                            "deaths_nv_hi": "NA",
+                            "deaths_av_lo": "NA",
+                            "deaths_averted": death_av,
+                            "deaths_av_hi": "NA",
+                            "dalys_lo": "NA",
+                            "dalys": "NA",
+                            "dalys_hi": "NA",
+                            "dalys_nv_lo": "NA",
+                            "dalys_no_vac": "NA",
+                            "dalys_nv_hi": "NA",
+                            "dalys_av_lo": "NA",
+                            "dalys_averted": dalys_av,
+                            "dalys_av_hi": "NA"
                         }
                     }
                 )

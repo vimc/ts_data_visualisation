@@ -17,6 +17,7 @@ import {filterHelp, generatedHelpBody, generatedHelpTitle, generatedMetricsHelp}
 import {ImpactDataRow} from "./ImpactDataRow";
 import {MetaDataDisplay} from "./MetaDataDisplay";
 import {plotColours, legacyColours} from "./PlotColours";
+import {touchstoneFriendly} from "./Utils";
 import {WarningMessageManager} from "./WarningMessage";
 
 // stuff to handle the data set being split into multiple files
@@ -25,7 +26,16 @@ let initTouchstone: string = "Uninitialized initTouchstone";
 let montaguDataSets: DataSet[] = [];
 let initMethod: string = "Uninitialized initMethod";
 
-if (metricsAndOptions.mode.includes("public") || metricsAndOptions.mode.includes("paper2")) {
+if (metricsAndOptions.mode.includes("interim")) {
+  filePrefix = "interim";
+  initTouchstone = "1";
+  initMethod = "year_of_vac";
+  montaguDataSets = [
+    { name : "year_of_vac", data : [], seen : [], selected: [] }
+  ];
+  appendToDataSet(["1"], filePrefix, "year_of_vac", montaguDataSets, true);
+
+} else if (metricsAndOptions.mode.includes("public") || metricsAndOptions.mode.includes("paper2")) {
   filePrefix = metricsAndOptions.mode.includes("public") ? "firstPaper" : "secondPaper";
   initTouchstone = "1";
   initMethod = "cross";
@@ -95,12 +105,15 @@ class DataVisModel {
   };
   private currentPlot = ko.observable("Impact");
 
-  private mode = ko.observable(metricsAndOptions.mode);
+  private mode = ko.observable(metricsAndOptions.mode.toString());
+  private touchstoneName = ko.observable(this.mode() == "interim" ? touchstoneFriendly(metricsAndOptions.touchstone) : null);
 
   private impactData = ko.observable(getDataSet(initMethod, montaguDataSets).data);
   private yearMethod = ko.observable(initMethod);
 
   private logo = ko.observable(this.mode() == "paper2" ? "./logo-green-drop.png" : "./logo-dark-drop.png");
+  private navbarClass = ko.observable(["paper2", "interim"].includes(this.mode()) ? `navbar-${this.mode()}` : "navbar-default");
+
   private plotColours =
       ko.observable(this.mode() == "private" ? {...plotColours, ...legacyColours} : plotColours);
 
@@ -195,7 +208,7 @@ class DataVisModel {
   private visbleMetricButtons = ko.observableArray<string>(metricsAndOptions.metrics);
   private showAgeGroupToggle = ko.observable<boolean>(metricsAndOptions.filterOptions.includes("age_group"));
 
-  private maxBars = ko.observable<number>(this.mode() == 'paper2' ? 31 : 20);
+  private maxBars = ko.observable<number>(["paper2", "interim"].includes(this.mode()) ? 31 : 20);
   private maxPlotOptions = ko.observableArray<number>(createRangeArray(1, this.maxBars()));
 
   private xAxis = ko.observable<string>(this.xAxisOptions[1]);
@@ -208,6 +221,7 @@ class DataVisModel {
   private reportName = ko.observable<string>(
       this.mode() == "public" ? "paper-first-public-app" :
               this.mode() == "paper2" ? "paper-second-public-app" :
+               this.mode() == "interim" ? "interim-update-app" :
                   "internal-2018-interactive-plotting"
   );
   private reportLink = ko.observable<string>("https://montagu.vaccineimpact.org/reports/report/"

@@ -167,7 +167,8 @@ export function impactChartConfig(filterData: FilteredData,
           },
           stacked: true,
           ticks: {
-            callback: (value, index, values) => rescaleLabel(value, value),
+            min: 0,
+            callback: (value, index, values) => rescaleLabel(value, value)
           },
         }],
       },
@@ -279,8 +280,8 @@ export function timeSeriesChartConfig(filterData: FilteredData,
             labelString: chartOptions.yAxisTitle,
           },
           ticks: {
-            callback: (value, index, values) => rescaleLabel(value, value),
-            beginAtZero: true,
+            min: 0,
+            callback: (value, index, values) => rescaleLabel(value, value)
           },
         }],
       },

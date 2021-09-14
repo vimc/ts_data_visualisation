@@ -10,6 +10,10 @@ html, body , .page-wrapper {
     background-color: rgba(144,238,144, 0.4)
 }
 
+.navbar-interim {
+    background-color: rgba(250, 195, 127, 0.8)
+}
+
 .navbar-info {
     color: #0056b3;
     max-width: 550px;
