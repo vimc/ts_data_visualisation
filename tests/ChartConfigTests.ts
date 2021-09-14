@@ -60,6 +60,7 @@ describe("ChartConfigs", () => {
     expect(config.options.title.text).to.eql(c.plotTitle);
     expect(config.options.scales.yAxes[0].scaleLabel.labelString).
       to.eql(c.yAxisTitle);
+    expect(config.options.scales.yAxes[0].ticks.min).to.eq(0);
 
   });
 
@@ -138,6 +139,7 @@ describe("ChartConfigs", () => {
     expect(config.options.title.text).to.eql(c.plotTitle);
     expect(config.options.scales.yAxes[0].scaleLabel.labelString).
       to.eql(c.yAxisTitle)
+    expect(config.options.scales.yAxes[0].ticks.min).to.eq(0);
   })
 });
 
