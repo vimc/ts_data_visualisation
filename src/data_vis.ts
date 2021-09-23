@@ -584,14 +584,14 @@ class DataVisModel {
         return "DALYS between " + this.yearFilter().selectedLow() +
              " and " + this.yearFilter().selectedHigh();
       case "deaths_averted":
-        return "Deaths averted between " + this.yearFilter().selectedLow() +
-            " and " + this.yearFilter().selectedHigh();
+        return this.mode() === "interim" ? "Deaths averted by year of vaccination" :
+            "Deaths averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh();
       case "cases_averted":
         return "Cases averted between " + this.yearFilter().selectedLow() +
             " and " + this.yearFilter().selectedHigh();
       case "dalys_averted":
-        return "DALYS averted between " + this.yearFilter().selectedLow() +
-            " and " + this.yearFilter().selectedHigh();
+        return this.mode() === "interim" ? "DALYS averted by year of vaccination" :
+            "DALYS averted between " + this.yearFilter().selectedLow() + " and " + this.yearFilter().selectedHigh();
       case "fvps":
         return "fvps between " + this.yearFilter().selectedLow() +
              " and " + this.yearFilter().selectedHigh();
