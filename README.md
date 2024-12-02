@@ -31,7 +31,7 @@ This method is ideal for UI development where the data does not matter at all.
 - `interim` - the private (Funders') tool for interim updates 
  
 1. `npm run build-dev` or `npm run build-dev-watch`
-1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
+1. `cd out && python3 -m http.server` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
 Note that the fake data only contains points for the most recent 3 touchstones.
@@ -45,7 +45,7 @@ report on the reporting portal
 Copy the files to `data/test`.
 1. `npm install`
 1. `npm run build-dev` or `npm run build-dev-watch`
-1. `cd out && python -m SimpleHTTPServer` to serve the compiled files.
+1. `cd out && python3 -m http.server` to serve the compiled files.
 1. Visit localhost:8000 in your browser to view the app.
 
 ## Testing
